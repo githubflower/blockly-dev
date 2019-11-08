@@ -113,11 +113,11 @@ Blockly.blockRendering.Drawer.prototype.drawOutline_ = function() {
   this.drawTop_();
   for (var r = 1; r < this.info_.rows.length - 1; r++) {
     var row = this.info_.rows[r];
-    if (row.hasJaggedEdge) {
+    if (row.hasJaggedEdge) { // 是否有锯齿 如果是收拢状态则有锯齿 默认无锯齿
       this.drawJaggedEdge_(row);
-    } else if (row.hasStatement) {
+    } else if (row.hasStatement) { // 是否有块级代码输入 默认无
       this.drawStatementInput_(row);
-    } else if (row.hasExternalInput) {
+    } else if (row.hasExternalInput) { // 如果是INPUT_VALUE 块 则有外部输入
       this.drawValueInput_(row);
     } else {
       this.drawRightSideRow_(row);
@@ -141,13 +141,19 @@ Blockly.blockRendering.Drawer.prototype.drawTop_ = function() {
   this.outlinePath_ +=
       Blockly.utils.svgPaths.moveBy(topRow.xPos, this.info_.startY);
   for (var i = 0, elem; (elem = elements[i]); i++) {
+    // console.log('elem.types: ' + elem.type.toString(2)) //debugger
+    // 参考： \core\renderers\measurables\types.js
     if (Blockly.blockRendering.Types.isLeftRoundedCorner(elem)) {
-      this.outlinePath_ +=
-          this.constants_.OUTSIDE_CORNERS.topLeft;
+      //zjie 去掉所有block左上角圆弧
+      /*this.outlinePath_ +=
+          this.constants_.OUTSIDE_CORNERS.topLeft;*/
+      this.outlinePath_ += ' h 8 '; //this.constants_.OUTSIDE_CORNERS.topLeft: m 0,8 a 8 8 0 0,1 8,-8 //zjie
     } else if (Blockly.blockRendering.Types.isPreviousConnection(elem)) {
-      this.outlinePath_ += elem.shape.pathLeft;
+      // this.outlinePath_ += elem.shape.pathLeft;
+      this.outlinePath_ += 6 + 3 + 6; // elem.shape.pathLeft: l 6,4  3,0  6,-4  //zjie
     } else if (Blockly.blockRendering.Types.isHat(elem)) {
       this.outlinePath_ += this.constants_.START_HAT.path;
+      //zjie 始终不会进来？
     } else if (Blockly.blockRendering.Types.isSpacer(elem)) {
       this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', elem.width);
     }
@@ -182,10 +188,9 @@ Blockly.blockRendering.Drawer.prototype.drawValueInput_ = function(row) {
   var pathDown = (typeof input.shape.pathDown == "function") ?
       input.shape.pathDown(input.height) :
       input.shape.pathDown;
-
   this.outlinePath_ +=
       Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
-      pathDown +
+      // pathDown +  //zjie
       Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
 };
 
@@ -247,11 +252,15 @@ Blockly.blockRendering.Drawer.prototype.drawBottom_ = function() {
 
   for (var i = elems.length - 1, elem; (elem = elems[i]); i--) {
     if (Blockly.blockRendering.Types.isNextConnection(elem)) {
-      this.outlinePath_ += elem.shape.pathRight;
+      // this.outlinePath_ += elem.shape.pathRight;
+      this.outlinePath_ += (-6 + -3 + -6); // elem.shape.pathLeft:  l -6,4  -3,0  -6,-4   //zjie
     } else if (Blockly.blockRendering.Types.isLeftSquareCorner(elem)) {
       this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', bottomRow.xPos);
     } else if (Blockly.blockRendering.Types.isLeftRoundedCorner(elem)) {
-      this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.bottomLeft;
+      // this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.bottomLeft;
+      print(this.constants_.OUTSIDE_CORNERS.bottomLeft);
+      // a 8 8 0 0,1 -8,-8 //zjie 
+      this.outlinePath_ += ' h -8 ';
     } else if (Blockly.blockRendering.Types.isSpacer(elem)) {
       this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', elem.width * -1);
     }
@@ -274,11 +283,12 @@ Blockly.blockRendering.Drawer.prototype.drawLeft_ = function() {
         outputConnection.shape.pathUp(outputConnection.height) :
         outputConnection.shape.pathUp;
 
-    // Draw a line up to the bottom of the tab.
+    // Draw a line up to the bottom of the tab. //zjie 画左侧的puzzle tab
     this.outlinePath_ +=
-        Blockly.utils.svgPaths.lineOnAxis('V', tabBottom) +
-        pathUp;
+        Blockly.utils.svgPaths.lineOnAxis('V', tabBottom);
+        // Blockly.utils.svgPaths.lineOnAxis('V', tabBottom) + pathUp;
   }
+  //zjie
   // Close off the path.  This draws a vertical line up to the start of the
   // block's path, which may be either a rounded or a sharp corner.
   this.outlinePath_ += 'z';

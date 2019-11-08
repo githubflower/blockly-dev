@@ -148,7 +148,7 @@ Blockly.blockRendering.ConstantProvider.prototype.init = function() {
 
   /**
    * An object containing sizing and path information about notches.
-   * @type {!Object}
+   * @type {!Object}  凹口
    */
   this.NOTCH = this.makeNotch();
 

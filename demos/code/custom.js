@@ -1,3 +1,5 @@
+window.print = window.console.log; //方便调试
+
 var setNameJson = {
   "message0": "set FirstName to %1%2",
   "message1": "set LastName to %1%2",
