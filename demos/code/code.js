@@ -245,7 +245,6 @@ Code.selected = 'blocks';
  * @param {string} clickedName Name of tab clicked.
  */
 Code.tabClick = function(clickedName) {
-  debugger;
   // If the XML tab was open, save and render the content.
   if (document.getElementById('tab_xml').className == 'tabon') {
     var xmlTextarea = document.getElementById('content_xml');
