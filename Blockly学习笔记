@@ -1,0 +1,28 @@
+11-07
+1.熟悉Blockly代码中category、block的定义, 通过加载自定义js的方式能正常显示自定义block；
+2.搭建调试的环境，跟踪blockly源码，找到创建图形块的代码并开始学习；
+
+TopRow: corners, hats, spacers, and previous connections.
+
+指令	A (绝对) a (相对)
+名称	elliptical arc 椭圆弧
+参数	
+(rx ry x-axis-rotation large-arc-flag sweep-flag x y)+
+rx ry 是椭圆的两个半轴的长度。
+x-axis-rotation 是椭圆相对于坐标系的旋转角度，角度数而非弧度数。
+large-arc-flag 是标记绘制大弧(1)还是小弧(0)部分。
+sweep-flag 是标记向顺时针(1)还是逆时针(0)方向绘制。
+x y 是圆弧终点的坐标。
+描述	从当前点绘制一段椭圆弧到点 (x, y)，椭圆的大小和方向由 (rx, ry) 和 x-axis-rotation 参数决定， x-axis-rotation 参数表示椭圆整体相对于当前坐标系统的旋转角度。椭圆的中心坐标 (cx, cy) 会自动进行计算从而满足其它参数约束。large-arc-flag 和 sweep-flag 也被用于圆弧的计算与绘制。
+原文链接：https://blog.csdn.net/cuixiping/article/details/79663611
+
+11-08
+1.查看blockly源码get到修改block的UI显示的方法（参考core/renderers/common/drawer.js    Blockly.blockRendering.Drawer.prototype.drawTop_, drawBotton, drawLeft等方法，熟悉常用的svg path方法即可自己修改）
+2.TODO: 需查看connection模块源码后思考如何标记不同类型的block以及block的可输入、可输出、可连线标记；
+3.TODO: 查看drag模块源码 思考如何处理原来的模块粘在一起的情况、drag的同时自动连线、以及连线自动调整；
+
+
+
+
+
+
