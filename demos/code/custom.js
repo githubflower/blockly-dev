@@ -1,4 +1,12 @@
 window.print = window.console.log; //方便调试
+const donotDebugger = true;
+window.CUSTOM_CFG_OUTLINE = {
+  leftRoundedCorner: donotDebugger, //是否绘制左上角圆角
+  topHump: donotDebugger, //是否绘制上面的帽子（凸起）
+  rightNotch: donotDebugger, //是否绘制右边的凹槽
+  bottomNotch: donotDebugger, //是否绘制底部的凹槽
+  leftHump: donotDebugger, //是否绘制左边的凸起
+}
 
 var setNameJson = {
   "message0": "set FirstName to %1%2",

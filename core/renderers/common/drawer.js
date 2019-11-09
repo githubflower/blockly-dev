@@ -145,12 +145,17 @@ Blockly.blockRendering.Drawer.prototype.drawTop_ = function() {
     // 参考： \core\renderers\measurables\types.js
     if (Blockly.blockRendering.Types.isLeftRoundedCorner(elem)) {
       //zjie 去掉所有block左上角圆弧
-      /*this.outlinePath_ +=
-          this.constants_.OUTSIDE_CORNERS.topLeft;*/
-      this.outlinePath_ += ' h 8 '; //this.constants_.OUTSIDE_CORNERS.topLeft: m 0,8 a 8 8 0 0,1 8,-8 //zjie
-    } else if (Blockly.blockRendering.Types.isPreviousConnection(elem)) {
-      // this.outlinePath_ += elem.shape.pathLeft;
-      this.outlinePath_ += 6 + 3 + 6; // elem.shape.pathLeft: l 6,4  3,0  6,-4  //zjie
+      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner){
+        this.outlinePath_ += ' h 8 '; //this.constants_.OUTSIDE_CORNERS.topLeft: m 0,8 a 8 8 0 0,1 8,-8 //zjie
+      }else{
+        this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.topLeft;
+      }
+    } else if (Blockly.blockRendering.Types.isPreviousConnection(elem)) {// 是否是前置连接块 如果是 则说明底部要有凹槽
+      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.bottomNotch){
+        this.outlinePath_ += 6 + 3 + 6; // elem.shape.pathLeft: l 6,4  3,0  6,-4  //zjie
+      }else{
+        this.outlinePath_ += elem.shape.pathLeft;
+      }
     } else if (Blockly.blockRendering.Types.isHat(elem)) {
       this.outlinePath_ += this.constants_.START_HAT.path;
       //zjie 始终不会进来？
@@ -188,10 +193,17 @@ Blockly.blockRendering.Drawer.prototype.drawValueInput_ = function(row) {
   var pathDown = (typeof input.shape.pathDown == "function") ?
       input.shape.pathDown(input.height) :
       input.shape.pathDown;
-  this.outlinePath_ +=
-      Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
+  
+  //zjie 当有外部输入的时候，是否画右边的凹槽
+  if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner){
+    this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
       // pathDown +  //zjie
       Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
+  }else{
+    this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
+      pathDown + 
+      Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
+  }      
 };
 
 
@@ -205,7 +217,7 @@ Blockly.blockRendering.Drawer.prototype.drawStatementInput_ = function(row) {
   var input = row.getLastInput();
   // Where to start drawing the notch, which is on the right side in LTR.
   var x = input.xPos + input.notchOffset + input.shape.width;
-
+debugger
   var innerTopLeftCorner =
       input.shape.pathRight +
       Blockly.utils.svgPaths.lineOnAxis('h',
@@ -252,15 +264,20 @@ Blockly.blockRendering.Drawer.prototype.drawBottom_ = function() {
 
   for (var i = elems.length - 1, elem; (elem = elems[i]); i--) {
     if (Blockly.blockRendering.Types.isNextConnection(elem)) {
-      // this.outlinePath_ += elem.shape.pathRight;
-      this.outlinePath_ += (-6 + -3 + -6); // elem.shape.pathLeft:  l -6,4  -3,0  -6,-4   //zjie
+      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.bottomNotch){
+        this.outlinePath_ += (-6 + -3 + -6); // elem.shape.pathLeft:  l -6,4  -3,0  -6,-4   //zjie
+      }else{
+        this.outlinePath_ += elem.shape.pathRight;
+      }
     } else if (Blockly.blockRendering.Types.isLeftSquareCorner(elem)) {
       this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', bottomRow.xPos);
     } else if (Blockly.blockRendering.Types.isLeftRoundedCorner(elem)) {
-      // this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.bottomLeft;
-      print(this.constants_.OUTSIDE_CORNERS.bottomLeft);
-      // a 8 8 0 0,1 -8,-8 //zjie 
-      this.outlinePath_ += ' h -8 ';
+      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner){
+        // a 8 8 0 0,1 -8,-8 //zjie 
+        this.outlinePath_ += ' h -8 ';
+      }else{
+        this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.bottomLeft;
+      }
     } else if (Blockly.blockRendering.Types.isSpacer(elem)) {
       this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', elem.width * -1);
     }
@@ -284,11 +301,12 @@ Blockly.blockRendering.Drawer.prototype.drawLeft_ = function() {
         outputConnection.shape.pathUp;
 
     // Draw a line up to the bottom of the tab. //zjie 画左侧的puzzle tab
-    this.outlinePath_ +=
-        Blockly.utils.svgPaths.lineOnAxis('V', tabBottom);
-        // Blockly.utils.svgPaths.lineOnAxis('V', tabBottom) + pathUp;
+    if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftHump){
+      this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('V', tabBottom);
+    }else{
+      this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('V', tabBottom) + pathUp;
+    }
   }
-  //zjie
   // Close off the path.  This draws a vertical line up to the start of the
   // block's path, which may be either a rounded or a sharp corner.
   this.outlinePath_ += 'z';
