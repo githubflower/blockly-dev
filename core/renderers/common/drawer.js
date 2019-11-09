@@ -217,7 +217,6 @@ Blockly.blockRendering.Drawer.prototype.drawStatementInput_ = function(row) {
   var input = row.getLastInput();
   // Where to start drawing the notch, which is on the right side in LTR.
   var x = input.xPos + input.notchOffset + input.shape.width;
-debugger
   var innerTopLeftCorner =
       input.shape.pathRight +
       Blockly.utils.svgPaths.lineOnAxis('h',

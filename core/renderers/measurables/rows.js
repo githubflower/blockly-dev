@@ -310,7 +310,6 @@ Blockly.blockRendering.TopRow.prototype.measure = function() {
   }
   this.width = Math.max(this.minWidth, width);
   this.height = Math.max(this.minHeight, height) + ascenderHeight;
-  console.log(this.width, this.height);
   this.ascenderHeight = ascenderHeight;
   this.capline = this.ascenderHeight;
   this.widthWithConnectedBlocks = this.width;
