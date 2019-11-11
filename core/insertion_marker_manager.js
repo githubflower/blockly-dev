@@ -202,6 +202,7 @@ Blockly.InsertionMarkerManager.prototype.applyConnections = function() {
     this.hidePreview_();
     Blockly.Events.enable();
     // Connect two blocks together.
+    debugger
     this.localConnection_.connect(this.closestConnection_);
     if (this.topBlock_.rendered) {
       // Trigger a connection animation.

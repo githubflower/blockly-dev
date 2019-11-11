@@ -173,6 +173,7 @@ Blockly.geras.Drawer.prototype.positionStatementInputConnection_ = function(row)
     } else {
       connX += this.constants_.DARK_PATH_OFFSET;
     }
+    //zjie 调整连接内部代码块的位置 相当于google的UI中内部向下凸起的位置
     input.connection.setOffsetInBlock(connX,
         row.yPos + this.constants_.DARK_PATH_OFFSET);
   }

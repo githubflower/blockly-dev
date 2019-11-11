@@ -188,6 +188,8 @@ Blockly.RenderedConnection.prototype.moveBy = function(dx, dy) {
 Blockly.RenderedConnection.prototype.moveToOffset = function(blockTL) {
   this.moveTo(blockTL.x + this.offsetInBlock_.x,
       blockTL.y + this.offsetInBlock_.y);
+
+      // this.moveTo( this.offsetInBlock_.x, this.offsetInBlock_.y);  //zjie
 };
 
 /**
@@ -476,7 +478,7 @@ Blockly.RenderedConnection.prototype.connect_ = function(childConnection) {
         parentConnection.type == Blockly.PREVIOUS_STATEMENT) {
       // Child block may need to square off its corners if it is in a stack.
       // Rendering a child will render its parent.
-      childBlock.render();
+      childBlock.render();  //zjie
     } else {
       // Child block does not change shape.  Rendering the parent node will
       // move its connected children into position.

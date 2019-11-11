@@ -1706,6 +1706,7 @@ Blockly.BlockSvg.prototype.updateConnectionLocations_ = function() {
   }
 
   if (this.nextConnection) {
+    // blockTL.y += 30; //zjie
     this.nextConnection.moveToOffset(blockTL);
     if (this.nextConnection.isConnected()) {
       this.nextConnection.tighten_();

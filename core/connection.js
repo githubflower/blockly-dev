@@ -188,8 +188,10 @@ Blockly.Connection.prototype.connect_ = function(childConnection) {
 
   var event;
   if (Blockly.Events.isEnabled()) {
+    debugger
     event = new Blockly.Events.BlockMove(childBlock);
   }
+  print(Blockly.Events.isEnabled(),'event:' + event)
   // Establish the connections.
   Blockly.Connection.connectReciprocally_(parentConnection, childConnection);
   // Demote the inferior block so that one is a child of the superior one.
