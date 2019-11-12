@@ -186,6 +186,7 @@ Blockly.RenderedConnection.prototype.moveBy = function(dx, dy) {
  *     of the block, in workspace coordinates.
  */
 Blockly.RenderedConnection.prototype.moveToOffset = function(blockTL) {
+  console.log('blockTL.x: ' + blockTL.x + ' offsetInBlock_.x: ' + this.offsetInBlock_.x);
   this.moveTo(blockTL.x + this.offsetInBlock_.x,
       blockTL.y + this.offsetInBlock_.y);
 

@@ -572,7 +572,6 @@ Blockly.blockRendering.RenderInfo.prototype.alignStatementRow_ = function(row) {
 Blockly.blockRendering.RenderInfo.prototype.addRowSpacing_ = function() {
   var oldRows = this.rows;
   this.rows = [];
-
   for (var r = 0; r < oldRows.length; r++) {
     this.rows.push(oldRows[r]);
     if (r != oldRows.length - 1) {
@@ -589,6 +588,9 @@ Blockly.blockRendering.RenderInfo.prototype.addRowSpacing_ = function() {
  * @protected
  */
 Blockly.blockRendering.RenderInfo.prototype.makeSpacerRow_ = function(prev, next) {
+  if(this.block_.type === 'line'){
+    debugger;
+  }
   var height = this.getSpacerRowHeight_(prev, next);
   var width = this.getSpacerRowWidth_(prev, next);
   var spacer = new Blockly.blockRendering.SpacerRow(

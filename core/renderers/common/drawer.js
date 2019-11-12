@@ -150,9 +150,9 @@ Blockly.blockRendering.Drawer.prototype.drawTop_ = function() {
       }else{
         this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.topLeft;
       }
-    } else if (Blockly.blockRendering.Types.isPreviousConnection(elem)) {// 是否是前置连接块 如果是 则说明底部要有凹槽
-      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.bottomNotch){
-        this.outlinePath_ += 6 + 3 + 6; // elem.shape.pathLeft: l 6,4  3,0  6,-4  //zjie
+    } else if (Blockly.blockRendering.Types.isPreviousConnection(elem)) {// 是否是前置连接块 如果是 则说明顶部要有凹槽
+      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.topNotch){
+        this.outlinePath_ += this.constants_.NOTCH_WIDTH; // elem.shape.pathLeft: l 6,4  3,0  6,-4  //zjie  画一条直线代替原来的折线
       }else{
         this.outlinePath_ += elem.shape.pathLeft;
       }
@@ -262,8 +262,8 @@ Blockly.blockRendering.Drawer.prototype.drawBottom_ = function() {
 
   for (var i = elems.length - 1, elem; (elem = elems[i]); i--) {
     if (Blockly.blockRendering.Types.isNextConnection(elem)) {
-      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.bottomNotch){
-        this.outlinePath_ += (-6 + -3 + -6); // elem.shape.pathLeft:  l -6,4  -3,0  -6,-4   //zjie
+      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.bottomHump){
+        this.outlinePath_ += (this.constants_.NOTCH_WIDTH * -1); // elem.shape.pathLeft:  l -6,4  -3,0  -6,-4   //zjie
       }else{
         this.outlinePath_ += elem.shape.pathRight;
       }
@@ -271,7 +271,7 @@ Blockly.blockRendering.Drawer.prototype.drawBottom_ = function() {
       this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', bottomRow.xPos);
     } else if (Blockly.blockRendering.Types.isLeftRoundedCorner(elem)) {
       if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner){
-        // a 8 8 0 0,1 -8,-8 //zjie 
+        // a 8 8 0 0,1 -8,-8 //zjie 虽然是画椭圆的写法，但是长半径和短半径相同，实际画的就是一个正圆
         this.outlinePath_ += ' h -8 ';
       }else{
         this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.bottomLeft;
@@ -472,7 +472,6 @@ Blockly.blockRendering.Drawer.prototype.positionPreviousConnection_ = function()
  */
 Blockly.blockRendering.Drawer.prototype.positionNextConnection_ = function() {
   var bottomRow = this.info_.bottomRow;
-
   if (bottomRow.connection) {
     var connInfo = bottomRow.connection;
     var x = connInfo.xPos; // Already contains info about startX

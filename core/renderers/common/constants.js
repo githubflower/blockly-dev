@@ -60,6 +60,9 @@ Blockly.blockRendering.ConstantProvider = function() {
 
   this.EMPTY_BLOCK_SPACER_HEIGHT = 16;
 
+  //连线block的高度
+  this.LINE_BLOCK_HEIGHT = 54; //zjie
+
   /**
    * The minimum height of a dummy input row.
    * @type {number}

@@ -318,6 +318,9 @@ Blockly.geras.RenderInfo.prototype.getSpacerRowHeight_ = function(prev, next) {
   // If we have an empty block add a spacer to increase the height.
   if (Blockly.blockRendering.Types.isTopRow(prev) &&
       Blockly.blockRendering.Types.isBottomRow(next)) {
+    if(this.block_.type === 'line'){
+      return this.constants_.LINE_BLOCK_HEIGHT; //zjie
+    }
     return this.constants_.EMPTY_BLOCK_SPACER_HEIGHT;
   }
   // Top and bottom rows act as a spacer so we don't need any extra padding.
