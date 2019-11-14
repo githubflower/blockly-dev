@@ -32,7 +32,17 @@ block   上面的帽子（凸起）和下面的凹槽表示代码的连接，保
 11-11
 [master cdb2b3c] 调试看了一下connection连接然后更新上下block的代码，还未完全弄清楚这里面的事件，思考了连线的实现（最好是自定义1个连线的Block）
 
+11-12
+查看源码，将箭头作为承上启下的block进行绘制，将上下块连接的凹口居中放置，
 
+
+11-14
+理清以弹窗形式定义一个Number型变量的思路并开始编码，对需要确认的UI和交互记录了一点；
+blockly的思想是一切皆block，有点类似vue的一切皆组件的思想，具体思路：
+1.创建按钮block-可继承icon类或参考field_variable
+2.创建form-win表单类block-可参考dropdown或者mutator类；
+3.创建变量block
+事件部分参考blockly.js和gesture.js
 
 
 

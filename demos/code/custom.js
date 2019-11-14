@@ -83,8 +83,10 @@ Blockly.JavaScript['line'] = function(block) {
 Blockly.blockRendering.Drawer.prototype.drawOutline_ = function() {
   const isDrawLineBlock = this.block_.type === 'line';
   if(isDrawLineBlock){
-    this.drawTop_line();
-    this.drawBottom_line();
+    /*this.drawTop_line();
+    this.drawBottom_line();*/
+
+    this.drawLineWithArrow()
   }else{
     this.drawTop_();
     this.drawRight_();
@@ -202,10 +204,9 @@ Blockly.blockRendering.Drawer.prototype.drawBottom_ = function() {
     }
   }
 };
-
-Blockly.blockRendering.Drawer.prototype.drawTop_line = function(){
+//zjie 画带箭头的线
+Blockly.blockRendering.Drawer.prototype.drawLineWithArrow = function(){
   var topRow = this.info_.topRow;
-  debugger
   var elements = topRow.elements;
   var lineHeight = 50;
   var lineWidth = 2;
@@ -219,6 +220,7 @@ Blockly.blockRendering.Drawer.prototype.drawTop_line = function(){
   this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('v', lineHeight);    
   this.outlinePath_ += ` l ${arrowWidth / 2} -2 l ${(arrowWidth / 2 + lineWidth / 2) * -1} ${arrowHeight} l ${(arrowWidth / 2 + lineWidth / 2) * -1} ${arrowHeight * -1} l ${arrowWidth / 2} 2 v -50 z `;
 
+  this.positionNextConnection_();
   /*for (var i = 0, elem; (elem = elements[i]); i++) {
     // console.log('elem.types: ' + elem.type.toString(2)) //debugger
     // 参考： \core\renderers\measurables\types.js
@@ -245,10 +247,6 @@ Blockly.blockRendering.Drawer.prototype.drawTop_line = function(){
   }
   this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('v', topRow.height);*/
 }
-Blockly.blockRendering.Drawer.prototype.drawBottom_line = function(){
-  this.positionNextConnection_();
-}
-
 
 
 
