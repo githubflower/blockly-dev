@@ -9,12 +9,25 @@
   <script src="/storage.js"></script>
   <!-- <script src="../../blockly_compressed.js"></script> -->
   <script src="../../blockly_uncompressed.js"></script>
-  <script src="../../blocks_compressed.js"></script>
+  <!-- <script src="../../blocks_compressed.js"></script> -->
+  <script src="../../blocks/colour.js"></script>
+  <script src="../../blocks/lists.js"></script>
+  <script src="../../blocks/logic.js"></script>
+  <script src="../../blocks/loops.js"></script>
+  <script src="../../blocks/math.js"></script>
+  <script src="../../blocks/procedures.js"></script>
+  <script src="../../blocks/text.js"></script>
+  <script src="../../blocks/variables.js"></script>
+  <script src="../../blocks/variables_dynamic.js"></script>
+
   <script src="../../javascript_compressed.js"></script>
   <script src="../../python_compressed.js"></script>
   <script src="../../php_compressed.js"></script>
   <script src="../../lua_compressed.js"></script>
   <script src="../../dart_compressed.js"></script>
+  <script type="text/javascript" src="../../jquery-3.4.1.js"></script>
+  <script type="text/javascript" src="../../core/field_label_serializable_qkm.js"></script>
+  <script type="text/javascript" src="./test_block.js"></script>
   <script type="text/javascript" src="./custom.js"></script>
   <script src="code.js"></script>
 </head>
@@ -389,6 +402,9 @@
     <category name="category_test" colour="#00ffcc">
       <category name="sub_category_test" colour="#00ffcc">
         <block type="set_name"></block>
+        <block type="set_local"></block>
+        <block type="set_local2"></block>
+        <block type="block_var"></block>
       </category>
       <category name="line" colour="#ff00cc">
         <block type="line"></block>

@@ -4,3 +4,11 @@
 .blocklyPathLight{
     display: none;
 }
+
+#formDiv{
+	position: absolute;
+    top: 0;
+    left: 50%;
+    padding: 10px;
+    border: 1px solid #ff0000;
+}
