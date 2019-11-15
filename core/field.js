@@ -95,6 +95,7 @@ Blockly.Field = function(value, opt_validator, opt_config) {
   this.markerSvg_ = null;
 
   opt_config && this.configure_(opt_config);
+  this.visible_ = (this._opt_config && typeof this._opt_config.needShowThisField !== 'undefined') ? this._opt_config.needShowThisField : true;
   this.setValue(value);
   opt_validator && this.setValidator(opt_validator);
 };
@@ -220,6 +221,7 @@ Blockly.Field.prototype.SERIALIZABLE = false;
  * @protected
  */
 Blockly.Field.prototype.configure_ = function(config) {
+  this._opt_config = config;
   var tooltip = config['tooltip'];
   if (typeof tooltip == 'string') {
     tooltip = Blockly.utils.replaceMessageReferences(
@@ -445,6 +447,7 @@ Blockly.Field.prototype.isSerializable = function() {
  * @return {boolean} True if visible.
  */
 Blockly.Field.prototype.isVisible = function() {
+  console.log(this.visible_)
   return this.visible_;
 };
 
@@ -481,6 +484,7 @@ Blockly.Field.prototype.setVisible = function(visible) {
  *     or null to clear a previous validator.
  */
 Blockly.Field.prototype.setValidator = function(handler) {
+  debugger;
   this.validator_ = handler;
 };
 
@@ -557,6 +561,9 @@ Blockly.Field.prototype.updateColour = function() {
  * @protected
  */
 Blockly.Field.prototype.render_ = function() {
+  /*if(this._opt_config && this._opt_config.isHiddenField){
+    return;
+  }*/
   if (this.textContent_) {
     this.textContent_.nodeValue = this.getDisplayText_();
     this.updateSize_();

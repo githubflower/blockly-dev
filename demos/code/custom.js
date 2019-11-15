@@ -60,16 +60,41 @@ Blockly.JavaScript['set_name'] = function(block) {
       block.getFieldValue('VAR1'), Blockly.Variables.NAME_TYPE);
   return `${firstName} = ${argument0};\n${lastName} = ${argument1};\n`;
 };
+
+
+
+
+
 Blockly.JavaScript['block_var'] = Blockly.JavaScript['set_local'] = (block)=>{
-  var input = block.inputList.find((item)=>{return item.name === 'BLOCK_VAR_INPUT'});
+  var input = block.inputList.find((item)=>{
+    return item.name === 'BLOCK_VAR_INPUT'
+  });
   var customValueField = input.fieldRow.find(item => {
     return item.name === "CODE_VALUE";
   });
+
+  //assistValueField  用于生成XML以及将XML转为图形界面
+  var assistValueField = block.inputList.find(item => {
+    return item.name === "ASSIST_INPUT";
+  });
+  var assistType = assistValueField.fieldRow.find(item => {
+    return item.name === "ASSIST_TYPE";
+  });
+  var assistValue = assistValueField.fieldRow.find(item => {
+    return item.name === "ASSIST_VALUE";
+  });
+
   customValue = customValueField._getCustomValue();
 
   var var_name = Blockly.JavaScript.variableDB_.getName(block.getFieldValue('VAR_NAME'), Blockly.Variables.NAME_TYPE)
   return `${var_name} = ${customValue.inputValue}`;
 }
+
+
+
+
+
+
 
 var lineJson = {
   "previousStatement": true,
