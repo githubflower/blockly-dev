@@ -265,8 +265,7 @@ Blockly.Component.prototype.renderBefore = function(sibling) {
  *    be rendered.  If left out the node is appended to the parent element.
  * @private
  */
-Blockly.Component.prototype.render_ = function(
-    opt_parentElement, opt_beforeNode) {
+Blockly.Component.prototype.render_ = function(opt_parentElement, opt_beforeNode) {
   if (this.inDocument_) {
     throw Error(Blockly.Component.Error.ALREADY_RENDERED);
   }

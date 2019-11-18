@@ -484,7 +484,6 @@ Blockly.Field.prototype.setVisible = function(visible) {
  *     or null to clear a previous validator.
  */
 Blockly.Field.prototype.setValidator = function(handler) {
-  debugger;
   this.validator_ = handler;
 };
 

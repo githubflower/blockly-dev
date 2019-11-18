@@ -58,9 +58,9 @@ Blockly.Blocks['set_local'] = {
 Blockly.Blocks['block_var'] = {
   init: function() {
     this.appendDummyInput('BLOCK_VAR_INPUT')
-        .appendField("var")
+        .appendField("变量")
         .appendField(new Blockly.FieldVariable("item"), "VAR_NAME")
-        .appendField(new Blockly.FieldLabelSerializableQkm("设置"), "CODE_VALUE");
+        .appendField(new Blockly.FieldLabelSerializableQkm("赋值"), "CODE_VALUE");
     this.appendDummyInput('ASSIST_INPUT')
         .appendField(new Blockly.Field('', false, {
             needShowThisField: false

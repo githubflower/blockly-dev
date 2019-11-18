@@ -116,6 +116,7 @@ Blockly.blockRendering.Drawer.prototype.drawOutline_ = function() {
     if (row.hasJaggedEdge) { // 是否有锯齿 如果是收拢状态则有锯齿 默认无锯齿
       this.drawJaggedEdge_(row);
     } else if (row.hasStatement) { // 是否有块级代码输入 默认无
+      debugger;
       this.drawStatementInput_(row);
     } else if (row.hasExternalInput) { // 如果是INPUT_VALUE 块 则有外部输入
       this.drawValueInput_(row);

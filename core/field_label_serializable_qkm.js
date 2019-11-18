@@ -70,16 +70,13 @@ Blockly.utils.object.inherits(
   Blockly.FieldLabelSerializable
 );
 
-Blockly.FieldLabelSerializableQkm.prototype.CURSOR = 'text';
-
 //绑定点击事件
 Blockly.FieldLabelSerializableQkm.prototype.bindEvents_ = function() {
   var el = this.getClickTarget_();
-  // this.mouseDownWrapper_ = Blockly.bindEventWithChecks_(el, 'click', this, this.handleClick_);
   this.mouseDownWrapper_ = Blockly.bindEventWithChecks_(el, 'mousedown', this, this.handleMousedown, true);
-  this.mouseEnterHandler_ = Blockly.bindEventWithChecks_(el, 'mouseenter', this, this.handleMouseEnter_, true);
+/*  this.mouseEnterHandler_ = Blockly.bindEventWithChecks_(el, 'mouseenter', this, this.handleMouseEnter_, true);
   this.mouseLeaveHandler_ = Blockly.bindEventWithChecks_(el, 'mouseleave', this, this.handleMouseLeave_, true);
-  this.mouseOverHandler_ = Blockly.bindEventWithChecks_(el, 'mouseover', this, this.handleMouseOver_, true);
+  this.mouseOverHandler_ = Blockly.bindEventWithChecks_(el, 'mouseover', this, this.handleMouseOver_, true);*/
 };
 
 Blockly.FieldLabelSerializableQkm.prototype.handleMousedown = function(e){
@@ -94,7 +91,7 @@ Blockly.FieldLabelSerializableQkm.prototype.handleMousedown = function(e){
   console.log('---mousedown---');
   console.log('workspace.isDragging: ' + this.sourceBlock_.workspace.isDragging())
 }
-Blockly.FieldLabelSerializableQkm.prototype.handleClick_ = function(){
+/*Blockly.FieldLabelSerializableQkm.prototype.handleClick_ = function(){
   console.log('---handleClick_---');
 }
 Blockly.FieldLabelSerializableQkm.prototype.handleMouseEnter_ = function() {
@@ -103,14 +100,10 @@ Blockly.FieldLabelSerializableQkm.prototype.handleMouseEnter_ = function() {
 };
 Blockly.FieldLabelSerializableQkm.prototype.handleMouseLeave_ = function() {
   console.log('---handleMouseLeave_---'); //todo
-  /*if (this.getElement()) {
-    this.blur();
-    this.clearHighlighted();
-  }*/
 };
 Blockly.FieldLabelSerializableQkm.prototype.handleMouseOver_ = function() {
   console.log('---handleMouseOver_---');
-};
+};*/
 Blockly.FieldLabelSerializableQkm.prototype.getElement = function(){
   return this.getClickTarget_();
 }
@@ -121,6 +114,9 @@ Blockly.FieldLabelSerializableQkm.prototype.showEditor_ = function(){
 }
 
 Object.assign(Blockly.FieldLabelSerializableQkm.prototype, {
+  EDITABLE: true,
+  SERIALIZABLE: true,
+  CURSOR: 'default',
   createFormDiv: function(){
     var $formDiv = jQuery('#formDiv');
     if($formDiv[0]){
@@ -141,19 +137,70 @@ Object.assign(Blockly.FieldLabelSerializableQkm.prototype, {
     </div>`;
     jQuery('body').append(formDivHtml);
 
+    var defaultData = this.getDataFromCfg();
+    this.updateForm(defaultData);
     // field.sourceBlock_.getBoundingRectangle()  //Blockly.utils.Rect {top: 113, bottom: 143, left: 563, right: 699.2684326171875}
 
     this.bindEvent4FormDiv(this);
   },
+  getDataFromCfg: function(){
+    var block = this.sourceBlock_;
+    //assistValueField  用于生成XML以及将XML转为图形界面
+    var assistValueField = block.inputList.find(item => {
+      return item.name === "ASSIST_INPUT";
+    });
+    var assistType = assistValueField.fieldRow.find(item => {
+      return item.name === "ASSIST_TYPE";
+    });
+    var assistValue = assistValueField.fieldRow.find(item => {
+      return item.name === "ASSIST_VALUE";
+    });
+    return {
+      inputType: assistType.getValue(),
+      inputValue: assistValue.getValue()
+    }
+  },
+  updateForm: function(formData){
+    jQuery('select[name="inputType"]').val(formData.inputType);
+    jQuery('#formDivInput').val(formData.inputValue);
+  },
   bindEvent4FormDiv: function(field){
-    jQuery('#confirmBtn').on('click', field, function(e){
+    //确定
+    jQuery(document).on('click', '#confirmBtn', field, function(e){
       var field = e.data;
+      var inputType = jQuery('select[name="inputType"]').val();
+      var inputValue = jQuery('#formDivInput').val();
       field._setCustomValue({
-        inputType: jQuery('select[name="inputType"]').val(),
-        inputValue: jQuery('#formDivInput').val()
+        inputType: inputType,
+        inputValue: inputValue
       });
       jQuery('#formDiv').hide();
+
+      var block = field.sourceBlock_;
+ 
+      //assistValueField  用于生成XML以及将XML转为图形界面
+      var assistValueField = block.inputList.find(item => {
+        return item.name === "ASSIST_INPUT";
+      });
+      var assistType = assistValueField.fieldRow.find(item => {
+        return item.name === "ASSIST_TYPE";
+      });
+      var assistValue = assistValueField.fieldRow.find(item => {
+        return item.name === "ASSIST_VALUE";
+      });
+
+      assistType.setValue(inputType);
+      assistValue.setValue(inputValue);
     })
+
+    //取消
+    jQuery(document).on('click', '#cancelBtn', field, function(e){
+      jQuery('#formDiv').hide();
+    })
+  },
+  initView: function() {
+    this.createBorderRect_();
+    this.createTextElement_();
   }
 })
 

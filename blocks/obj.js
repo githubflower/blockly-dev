@@ -26,8 +26,8 @@
  */
 'use strict';
 
-goog.provide('Blockly.Blocks.lists');  // Deprecated
-goog.provide('Blockly.Constants.Lists');
+goog.provide('Blockly.Blocks.Obj');  // Deprecated
+goog.provide('Blockly.Constants.Obj');
 
 goog.require('Blockly');
 goog.require('Blockly.Blocks');
@@ -40,7 +40,7 @@ goog.require('Blockly.Mutator');
  * Unused constant for the common HSV hue for all blocks in this category.
  * @deprecated Use Blockly.Msg['LISTS_HUE']. (2018 April 5)
  */
-Blockly.Constants.Lists.HUE = 260;
+Blockly.Constants.Obj.HUE = 260;
 
 Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for creating an empty list
@@ -139,7 +139,7 @@ Blockly.Blocks['lists_create_with'] = {
     this.itemCount_ = 3;
     this.updateShape_();
     this.setOutput(true, 'Array');
-    this.setMutator(new Blockly.Mutator(['lists_create_with_item']));
+    this.setMutator(new Blockly.Mutator(['obj_create_with_item']));
     this.setTooltip(Blockly.Msg['LISTS_CREATE_WITH_TOOLTIP']);
   },
   /**
@@ -173,7 +173,7 @@ Blockly.Blocks['lists_create_with'] = {
     containerBlock.initSvg();
     var connection = containerBlock.getInput('STACK').connection;
     for (var i = 0; i < this.itemCount_; i++) {
-      var itemBlock = workspace.newBlock('lists_create_with_item');
+      var itemBlock = workspace.newBlock('obj_create_with_item');
       itemBlock.initSvg();
       connection.connect(itemBlock.previousConnection);
       connection = itemBlock.nextConnection;
@@ -269,7 +269,7 @@ Blockly.Blocks['lists_create_with_container'] = {
   }
 };
 
-Blockly.Blocks['lists_create_with_item'] = {
+Blockly.Blocks['obj_create_with_item'] = {
   /**
    * Mutator block for adding items.
    * @this {Blockly.Block}

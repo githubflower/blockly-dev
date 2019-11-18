@@ -12,3 +12,14 @@
     padding: 10px;
     border: 1px solid #ff0000;
 }
+.blocklyText{
+	color: #222222;
+	fill: #222222;
+}
+.blocklyPath{
+	fill: transparent;
+	stroke: #000000;
+}
+.blocklyNonEditableText>rect, .blocklyEditableText>rect{
+	stroke: #222222;
+}

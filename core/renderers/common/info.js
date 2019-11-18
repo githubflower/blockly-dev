@@ -588,9 +588,6 @@ Blockly.blockRendering.RenderInfo.prototype.addRowSpacing_ = function() {
  * @protected
  */
 Blockly.blockRendering.RenderInfo.prototype.makeSpacerRow_ = function(prev, next) {
-  if(this.block_.type === 'line'){
-    debugger;
-  }
   var height = this.getSpacerRowHeight_(prev, next);
   var width = this.getSpacerRowWidth_(prev, next);
   var spacer = new Blockly.blockRendering.SpacerRow(

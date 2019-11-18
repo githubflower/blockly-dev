@@ -1,5 +1,5 @@
 window.print = window.console.log; //方便调试
-const myDebugger = false;
+const myDebugger = true;
 
 const donotDebugger = !myDebugger;
 window.CUSTOM_CFG_OUTLINE = {
@@ -69,9 +69,9 @@ Blockly.JavaScript['block_var'] = Blockly.JavaScript['set_local'] = (block)=>{
   var input = block.inputList.find((item)=>{
     return item.name === 'BLOCK_VAR_INPUT'
   });
-  var customValueField = input.fieldRow.find(item => {
+  /*var customValueField = input.fieldRow.find(item => {
     return item.name === "CODE_VALUE";
-  });
+  });*/
 
   //assistValueField  用于生成XML以及将XML转为图形界面
   var assistValueField = block.inputList.find(item => {
@@ -83,11 +83,10 @@ Blockly.JavaScript['block_var'] = Blockly.JavaScript['set_local'] = (block)=>{
   var assistValue = assistValueField.fieldRow.find(item => {
     return item.name === "ASSIST_VALUE";
   });
-
-  customValue = customValueField._getCustomValue();
+  // customValue = customValueField._getCustomValue();
 
   var var_name = Blockly.JavaScript.variableDB_.getName(block.getFieldValue('VAR_NAME'), Blockly.Variables.NAME_TYPE)
-  return `${var_name} = ${customValue.inputValue}`;
+  return `${var_name} = ${assistValue.value_};\n`;
 }
 
 
@@ -171,7 +170,10 @@ Blockly.blockRendering.Drawer.prototype.drawTop_ = function() {
     if (Blockly.blockRendering.Types.isLeftRoundedCorner(elem)) {
       //zjie 去掉所有block左上角圆弧
       if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner){
-        this.outlinePath_ += ' h 8 '; //this.constants_.OUTSIDE_CORNERS.topLeft: m 0,8 a 8 8 0 0,1 8,-8 //zjie
+        if(!topRow.connection){
+          this.outlinePath_ += ' h 8 ';
+        }
+        // this.outlinePath_ += ' h 8 '; //this.constants_.OUTSIDE_CORNERS.topLeft: m 0,8 a 8 8 0 0,1 8,-8 //zjie
       }else{
         this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.topLeft;
       }
@@ -211,7 +213,7 @@ Blockly.blockRendering.Drawer.prototype.drawBottom_ = function() {
 
   for (var i = elems.length - 1, elem; (elem = elems[i]); i--) {
     if (Blockly.blockRendering.Types.isNextConnection(elem)) {
-      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.bottomHump){
+      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.bottomHump){  
         this.outlinePath_ += (this.constants_.NOTCH_WIDTH * -1); // elem.shape.pathLeft:  l -6,4  -3,0  -6,-4   //zjie
       }else{
         this.outlinePath_ += elem.shape.pathRight;
@@ -221,7 +223,11 @@ Blockly.blockRendering.Drawer.prototype.drawBottom_ = function() {
     } else if (Blockly.blockRendering.Types.isLeftRoundedCorner(elem)) {
       if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner){
         // a 8 8 0 0,1 -8,-8 //zjie 虽然是画椭圆的写法，但是长半径和短半径相同，实际画的就是一个正圆
-        this.outlinePath_ += ' h -8 ';
+        // this.outlinePath_ += ' h -8 ';
+        let radius = this.constants_.CORNER_RADIUS;
+        if(!bottomRow.connection){
+          this.outlinePath_ += `h -${radius} `;  
+        }
       }else{
         // this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.bottomLeft;
         let radius = this.constants_.CORNER_RADIUS;

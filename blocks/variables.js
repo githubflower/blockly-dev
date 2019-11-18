@@ -40,7 +40,6 @@ goog.require('Blockly.FieldVariable');
  * @deprecated Use Blockly.Msg['VARIABLES_HUE']. (2018 April 5)
  */
 Blockly.Constants.Variables.HUE = 330;
-
 Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for variable getter.
   {
