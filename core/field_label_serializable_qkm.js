@@ -118,13 +118,14 @@ Object.assign(Blockly.FieldLabelSerializableQkm.prototype, {
   SERIALIZABLE: true,
   CURSOR: 'default',
   createFormDiv: function(){
-    var $formDiv = jQuery('#formDiv');
+    /*var $formDiv = jQuery('#formDiv');
     if($formDiv[0]){
       $formDiv.show();
+      this.positionFormDiv();
       return;
     }
     var formDivHtml = 
-    `<div id="formDiv">
+    `<div id="formDiv" class="custom-extend-div">
       <label for="inputType">赋值方式</label>
       <select name="inputType">
           <option value="1" selected>自定义输入</option>
@@ -135,13 +136,39 @@ Object.assign(Blockly.FieldLabelSerializableQkm.prototype, {
       <input type="button" value="确定" id="confirmBtn">
       <input type="button" value="取消" id="cancelBtn">
     </div>`;
-    jQuery('body').append(formDivHtml);
+    jQuery('.injectionDiv').append(formDivHtml);
 
     var defaultData = this.getDataFromCfg();
     this.updateForm(defaultData);
-    // field.sourceBlock_.getBoundingRectangle()  //Blockly.utils.Rect {top: 113, bottom: 143, left: 563, right: 699.2684326171875}
+    this.positionFormDiv();
 
+    this.bindEvent4FormDiv(this);*/
+
+
+
+    this.editor_ = this.dropdownCreate_();
+    // this.renderEditor_();
+    Blockly.DropDownDiv.getContentDiv().appendChild(this.editor_);
+    Blockly.DropDownDiv.showPositionedByField(this, this.dropdownDispose_.bind(this));
     this.bindEvent4FormDiv(this);
+  },
+  dropdownCreate_: function(){
+    var formDivHtml = 
+    `<div id="formDiv" class="custom-extend-div">
+      <label for="inputType">赋值方式</label>
+      <select name="inputType">
+          <option value="1" selected>自定义输入</option>
+          <option value="2" >已存在的变量</option>
+      </select>
+      <input type="text" name="dataValue" id="formDivInput"/>
+      <br/>
+      <input type="button" value="确定" id="confirmBtn">
+      <input type="button" value="取消" id="cancelBtn">
+    </div>`;
+    return jQuery(formDivHtml)[0];
+  },
+  dropdownDispose_: function(){
+    //todo
   },
   getDataFromCfg: function(){
     var block = this.sourceBlock_;
@@ -163,6 +190,15 @@ Object.assign(Blockly.FieldLabelSerializableQkm.prototype, {
   updateForm: function(formData){
     jQuery('select[name="inputType"]').val(formData.inputType);
     jQuery('#formDivInput').val(formData.inputValue);
+
+    this.positionFormDiv();
+  },
+  positionFormDiv: function(){
+    var position = this.sourceBlock_.getBoundingRectangle()  //Blockly.utils.Rect {top: 113, bottom: 143, left: 563, right: 699.2684326171875}
+    jQuery('#formDiv').css({
+      top: position.top + this.sourceBlock_.height,
+      left: position.left + jQuery('.blocklyToolboxDiv').width()
+    })
   },
   bindEvent4FormDiv: function(field){
     //确定
@@ -191,11 +227,14 @@ Object.assign(Blockly.FieldLabelSerializableQkm.prototype, {
 
       assistType.setValue(inputType);
       assistValue.setValue(inputValue);
+
+      Blockly.DropDownDiv.hideIfOwner(field, true);
     })
 
     //取消
     jQuery(document).on('click', '#cancelBtn', field, function(e){
       jQuery('#formDiv').hide();
+      Blockly.DropDownDiv.hideIfOwner(field, true);
     })
   },
   initView: function() {

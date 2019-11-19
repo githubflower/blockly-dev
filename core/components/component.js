@@ -275,6 +275,7 @@ Blockly.Component.prototype.render_ = function(opt_parentElement, opt_beforeNode
   }
 
   if (opt_parentElement) {
+    debugger;
     opt_parentElement.insertBefore(this.element_, opt_beforeNode || null);
   } else {
     document.body.appendChild(this.element_);

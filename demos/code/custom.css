@@ -6,11 +6,10 @@
 }
 
 #formDiv{
-	position: absolute;
-    top: 0;
-    left: 50%;
+	/*position: absolute;*/
+    /*top: 0;*/
     padding: 10px;
-    border: 1px solid #ff0000;
+    /*border: 1px solid #000000;*/
 }
 .blocklyText{
 	color: #222222;

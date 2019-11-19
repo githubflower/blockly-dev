@@ -62,7 +62,7 @@ Blockly.Blocks['block_var'] = {
         .appendField(new Blockly.FieldVariable("item"), "VAR_NAME")
         .appendField(new Blockly.FieldLabelSerializableQkm("赋值"), "CODE_VALUE");
     this.appendDummyInput('ASSIST_INPUT')
-        .appendField(new Blockly.Field('', false, {
+        .appendField(new Blockly.Field('1', false, {
             needShowThisField: false
         }), 'ASSIST_TYPE')
         .appendField(new Blockly.Field('', false, {
