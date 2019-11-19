@@ -65,7 +65,7 @@ Blockly.JavaScript['set_name'] = function(block) {
 
 
 
-Blockly.JavaScript['block_var'] = Blockly.JavaScript['set_local'] = (block)=>{
+Blockly.JavaScript['block_var'] = (block)=>{
   var input = block.inputList.find((item)=>{
     return item.name === 'BLOCK_VAR_INPUT'
   });
@@ -87,6 +87,10 @@ Blockly.JavaScript['block_var'] = Blockly.JavaScript['set_local'] = (block)=>{
 
   var var_name = Blockly.JavaScript.variableDB_.getName(block.getFieldValue('VAR_NAME'), Blockly.Variables.NAME_TYPE)
   return `${var_name} = ${assistValue.value_};\n`;
+}
+
+Blockly.JavaScript['set_local'] = ()=>{
+  return 'todo: set_local';
 }
 
 
