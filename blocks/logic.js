@@ -459,6 +459,7 @@ Blockly.Constants.Logic.CONTROLS_IF_MUTATOR_MIXIN = {
    * @private
    */
   updateShape_: function() {
+    debugger;
     // Delete everything.
     if (this.getInput('ELSE')) {
       this.removeInput('ELSE');
@@ -497,6 +498,9 @@ Blockly.Constants.Logic.CONTROLS_IF_MUTATOR_MIXIN = {
     for (var i = 1; i <= this.elseifCount_; i++) {
       Blockly.Mutator.reconnect(valueConnections[i], this, 'IF' + i);
       Blockly.Mutator.reconnect(statementConnections[i], this, 'DO' + i);
+    }
+    if(elseStatementConnection){
+      debugger;
     }
     Blockly.Mutator.reconnect(elseStatementConnection, this, 'ELSE');
   }

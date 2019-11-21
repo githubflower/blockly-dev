@@ -16,7 +16,7 @@
 	fill: #222222;
 }
 .blocklyPath{
-	fill: transparent;
+	fill: #ffffff;
 	stroke: #000000;
 }
 .blocklyNonEditableText>rect, .blocklyEditableText>rect{

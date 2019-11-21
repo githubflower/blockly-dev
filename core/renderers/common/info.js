@@ -469,7 +469,7 @@ Blockly.blockRendering.RenderInfo.prototype.computeBounds_ = function() {
   var blockWidth = 0;
   var widestRowWithConnectedBlocks = 0;
   for (var i = 0, row; (row = this.rows[i]); i++) {
-    row.measure();
+    row.measure(); // 核心处理  如计算topRow、inputRow bottomRow的宽度、高度
     blockWidth = Math.max(blockWidth, row.width);
     if (row.hasStatement) {
       var statementInput = row.getLastInput();
@@ -680,6 +680,7 @@ Blockly.blockRendering.RenderInfo.prototype.recordElemPositions_ = function(
  * @protected
  */
 Blockly.blockRendering.RenderInfo.prototype.finalize_ = function() {
+  debugger
   // Performance note: this could be combined with the draw pass, if the time
   // that this takes is excessive.  But it shouldn't be, because it only
   // accesses and sets properties that already exist on the objects.

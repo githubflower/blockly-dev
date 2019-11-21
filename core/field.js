@@ -447,7 +447,6 @@ Blockly.Field.prototype.isSerializable = function() {
  * @return {boolean} True if visible.
  */
 Blockly.Field.prototype.isVisible = function() {
-  console.log(this.visible_)
   return this.visible_;
 };
 

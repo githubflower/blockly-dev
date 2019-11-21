@@ -116,7 +116,6 @@ Blockly.blockRendering.Drawer.prototype.drawOutline_ = function() {
     if (row.hasJaggedEdge) { // 是否有锯齿 如果是收拢状态则有锯齿 默认无锯齿
       this.drawJaggedEdge_(row);
     } else if (row.hasStatement) { // 是否有块级代码输入 默认无
-      debugger;
       this.drawStatementInput_(row);
     } else if (row.hasExternalInput) { // 如果是INPUT_VALUE 块 则有外部输入
       this.drawValueInput_(row);
@@ -145,21 +144,11 @@ Blockly.blockRendering.Drawer.prototype.drawTop_ = function() {
     // console.log('elem.types: ' + elem.type.toString(2)) //debugger
     // 参考： \core\renderers\measurables\types.js
     if (Blockly.blockRendering.Types.isLeftRoundedCorner(elem)) {
-      //zjie 去掉所有block左上角圆弧
-      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner){
-        this.outlinePath_ += ' h 8 '; //this.constants_.OUTSIDE_CORNERS.topLeft: m 0,8 a 8 8 0 0,1 8,-8 //zjie
-      }else{
-        this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.topLeft;
-      }
+      this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.topLeft;//zjie 去掉所有block左上角圆弧
     } else if (Blockly.blockRendering.Types.isPreviousConnection(elem)) {// 是否是前置连接块 如果是 则说明顶部要有凹槽
-      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.topNotch){
-        this.outlinePath_ += this.constants_.NOTCH_WIDTH; // elem.shape.pathLeft: l 6,4  3,0  6,-4  //zjie  画一条直线代替原来的折线
-      }else{
-        this.outlinePath_ += elem.shape.pathLeft;
-      }
+      this.outlinePath_ += elem.shape.pathLeft;// elem.shape.pathLeft: l 6,4  3,0  6,-4  //zjie  画一条直线代替原来的折线
     } else if (Blockly.blockRendering.Types.isHat(elem)) {
-      this.outlinePath_ += this.constants_.START_HAT.path;
-      //zjie 始终不会进来？
+      this.outlinePath_ += this.constants_.START_HAT.path;//zjie 始终不会进来？
     } else if (Blockly.blockRendering.Types.isSpacer(elem)) {
       this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', elem.width);
     }
