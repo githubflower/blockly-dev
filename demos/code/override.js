@@ -189,12 +189,14 @@ Blockly.blockRendering.Drawer.prototype.drawOutline_controls_if = function(){
   var sizeOfStatement = this.getStatementInputWH();
   var statementWidth = sizeOfStatement.width / 2 + sizeOfStatement.connectedBlockWidths;
   var statementHeight = sizeOfStatement.height;
+  
 
   // 将菱形的左边的点看做x轴的原点
   this.outlinePath_ += `m 0 0 m ${a} 0 l ${a} ${b} l -${a} ${b} l -${a} -${b} l ${a} -${b} `;//菱形
   this.outlinePath_ += `M ${2 * a} ${b} l ${Math.max(statementWidth  - a, shortLineWidth)} 0 l 0 ${b + statementHeight + 80} l -${Math.max(statementWidth , (a + shortLineWidth))} 0 `;// else分支的折线
   this.outlinePath_ += `l ${arrowHeight} -${arrowWidth} m -${arrowHeight} ${arrowWidth} l ${arrowHeight} ${arrowWidth} `; //绘制else分支回到主线的箭头
-  this.outlinePath_ += `M ${a} ${2 * b + 60} l ${flagRectWidth / 2} 0 l 0 ${flagRectWidth} l -${flagRectWidth} 0 l 0 -${flagRectWidth}  z `;
+ 
+  this.outlinePath_ += `M ${a} ${2 * b + this.constants_.STATEMENT_OFFSET_Y} l ${flagRectWidth / 2} 0 l 0 ${flagRectWidth} l -${flagRectWidth} 0 l 0 -${flagRectWidth}  z `;//绘制if分支的statement位置
   this.outlinePath_ += `M ${a} ${2 * b} v ${statementHeight + 100} `; //if主线
   this.outlinePath_ += `l -${arrowWidth} -${arrowHeight} m ${arrowWidth} ${arrowHeight} l ${arrowWidth} -${arrowHeight} `; // 绘制箭头
   this.outlinePath_ += ` z`; //todo
@@ -231,6 +233,17 @@ Blockly.blockRendering.Drawer.prototype.getStatementInputWH = function(){
 }
 
 Blockly.blockRendering.Drawer.prototype.drawStatementInput_controls_if = function(row) {
+  print(row.getLastInput().input.name)
+  var isExistElse = /else/i.test(row.getLastInput().input.name); //是否存在else分支
+  print(`----${isExistElse}`)
+  if(isExistElse){
+    const flagRectWidth = this.constants_.PRESET_BLOCK; //预置的block的边长
+  
+    var sizeOfStatement = this.getStatementInputWH();
+    var statementWidth = sizeOfStatement.width / 2 + sizeOfStatement.connectedBlockWidths;
+    var statementHeight = sizeOfStatement.height;
+    this.outlinePath_ += `M ${2 * this.constants_.DIAMOND_LONG + Math.max(statementWidth  - this.constants_.DIAMOND_LONG, this.constants_.LINE_ELSE_H)} ${2 * this.constants_.DIAMOND_SHORT + this.constants_.STATEMENT_OFFSET_Y} l ${flagRectWidth / 2} 0 l 0 ${flagRectWidth} l -${flagRectWidth} 0 l 0 -${flagRectWidth}  z `;//绘制else分支的statement位置
+  }
   this.positionStatementInputConnection_(row);
 };
 
@@ -263,22 +276,16 @@ Blockly.geras.Drawer.prototype.positionStatementInputConnection_ = function(row)
     }
     //zjie 调整连接内部代码块的位置 相当于google的UI中内部向下凸起的位置
     if(this.block_.type === 'controls_if'){
-      const a = this.constants_.DIAMOND_LONG; //菱形的长半轴
-      const b = this.constants_.DIAMOND_SHORT; //菱形的短半轴
       const shortLineWidth = this.constants_.LINE_ELSE_H; //连接菱形的else的最少短横线长度
-      const arrowWidth = this.constants_.ARROW_WIDTH;// 箭头的宽
-      const arrowHeight = this.constants_.ARROW_HEIGHT;//箭头的高
-      const flagRectWidth = this.constants_.PRESET_BLOCK; //预置的block的边长
-      
       var sizeOfStatement = this.getStatementInputWH();
       var statementWidth = sizeOfStatement.width / 2 + sizeOfStatement.connectedBlockWidths;
-      var statementHeight = sizeOfStatement.height;
       if(/else/i.test(input.input.name)){ //else statement
-        connX = Math.max(statementWidth + a, shortLineWidth + a * 2);
+        debugger;
+        connX = Math.max(statementWidth + this.constants_.DIAMOND_LONG, shortLineWidth + this.constants_.DIAMOND_LONG * 2);
       }else{
-        connX = a;
+        connX = this.constants_.DIAMOND_LONG;
       }
-      input.connection.setOffsetInBlock(connX, 2 * b + this.constants_.LINE_IF);
+      input.connection.setOffsetInBlock(connX, 2 * this.constants_.DIAMOND_SHORT + this.constants_.LINE_IF);
     }else{
       input.connection.setOffsetInBlock(connX, row.yPos + this.constants_.DARK_PATH_OFFSET);
     }
