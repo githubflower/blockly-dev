@@ -459,7 +459,6 @@ Blockly.Constants.Logic.CONTROLS_IF_MUTATOR_MIXIN = {
    * @private
    */
   updateShape_: function() {
-    debugger;
     // Delete everything.
     if (this.getInput('ELSE')) {
       this.removeInput('ELSE');
