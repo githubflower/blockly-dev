@@ -142,9 +142,10 @@ Blockly.blockRendering.ConstantProvider = function() {
   this.ARROW_WIDTH = 5; // 箭头的宽
   this.ARROW_HEIGHT = 8; //箭头的高
   this.PRESET_BLOCK = 6; //预置的block的边长
-  this.LINE_IF = 60; //if主线长度
-  this.STATEMENT_OFFSET_Y = 60;
+  this.STATEMENT_OFFSET_Y = 45;
   this.SPACE_BT_DO_ELSE = 20;
+  this.ELSE_BOCK_OFFSET_Y = -20;
+  this.EMPTY_CONTROL_IF_MIN_HEIGHT = 190;
 };
 
 /**

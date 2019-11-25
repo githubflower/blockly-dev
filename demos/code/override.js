@@ -22,7 +22,7 @@ Blockly.blockRendering.Drawer.prototype.positionPreviousConnection_ = function()
     var connX = (this.info_.RTL ? -x : x);
     // topRow.connection.connectionModel.setOffsetInBlock(connX, 0);  // google默认的位置
     if(this.block_.type === 'controls_if'){
-      topRow.connection.connectionModel.setOffsetInBlock(80, 0); //a
+      topRow.connection.connectionModel.setOffsetInBlock(this.constants_.DIAMOND_LONG, 0); //a
     }else{
       topRow.connection.connectionModel.setOffsetInBlock(topRow.width / 2 - topRow.connection.width / 2, 0); //居中
     }
@@ -160,25 +160,19 @@ Blockly.blockRendering.Drawer.prototype.drawOutline_controls_if = function(){
   const arrowWidth = this.constants_.ARROW_WIDTH;// 箭头的宽
   const arrowHeight = this.constants_.ARROW_HEIGHT;//箭头的高
   const flagRectWidth = this.constants_.PRESET_BLOCK; //预置的block的边长
-  const offset_y = 80;
   
-  var sizeOfStatement = this.getStatementInputWH();
-  var statementWidth = sizeOfStatement.width / 2 + sizeOfStatement.connectedBlockWidths;
-  var statementHeight = sizeOfStatement.height;
-
   // 将菱形的左边的点看做x轴的原点
   this.outlinePath_ += `m 0 0 m ${a} 0 l ${a} ${b} l -${a} ${b} l -${a} -${b} l ${a} -${b} `;//菱形
   console.log('**********************************************');
   console.log(this.info_.block_.svgGroup_, this.info_.block_.id, this.info_.testParams);
 
-  
   this.outlinePath_ += `M ${2 * a} ${b} l ${this.info_.getInnerWidth() - a} 0 `;//绘制else分支横线
-  this.outlinePath_ += `l 0 ${b + statementHeight + offset_y} l -${this.info_.getInnerWidth()} 0 `;// else分支的折线
+  this.outlinePath_ += `l 0 ${this.info_.height - b + this.constants_.ELSE_BOCK_OFFSET_Y } l -${this.info_.getInnerWidth()} 0 `;// else分支的折线
   this.outlinePath_ += `l ${arrowHeight} -${arrowWidth} m -${arrowHeight} ${arrowWidth} l ${arrowHeight} ${arrowWidth} `; //绘制else分支回到主线的箭头
  
   this.outlinePath_ += `M ${a} ${2 * b + this.constants_.STATEMENT_OFFSET_Y} l ${flagRectWidth / 2} 0 l 0 ${flagRectWidth} l -${flagRectWidth} 0 l 0 -${flagRectWidth}  z `;//绘制if分支的statement位置
-  this.outlinePath_ += `M ${a} ${2 * b} v ${statementHeight + 100} `; //if主线
-  this.outlinePath_ += `l -${arrowWidth} -${arrowHeight} m ${arrowWidth} ${arrowHeight} l ${arrowWidth} -${arrowHeight} `; // 绘制箭头
+  this.outlinePath_ += `M ${a} ${2 * b} v ${this.info_.height - 2 * b} `; //if主线
+  // this.outlinePath_ += `l -${arrowWidth} -${arrowHeight} m ${arrowWidth} ${arrowHeight} l ${arrowWidth} -${arrowHeight} `; // 绘制箭头
   this.outlinePath_ += ` z`; //todo
 
   this.positionPreviousConnection_();
@@ -246,7 +240,7 @@ Blockly.geras.Drawer.prototype.positionStatementInputConnection_ = function(row)
       }else{
         connX = this.constants_.DIAMOND_LONG;
       }
-      input.connection.setOffsetInBlock(connX, 2 * this.constants_.DIAMOND_SHORT + this.constants_.LINE_IF);
+      input.connection.setOffsetInBlock(connX, 2 * this.constants_.DIAMOND_SHORT + this.constants_.STATEMENT_OFFSET_Y);
     }else{
       input.connection.setOffsetInBlock(connX, row.yPos + this.constants_.DARK_PATH_OFFSET);
     }
@@ -282,30 +276,40 @@ Blockly.geras.RenderInfo.prototype.finalize_ = function() {
   var yCursor = 0;
   var statementWidth = 0;
 
+  var do_block_x = this.constants_.DIAMOND_LONG, 
+      do_block_width = 0,
+      do_block_height = 0,
+      else_block_x = 0,
+      else_block_width = 0,
+      else_block_height = 0,
+      other_rows_height = 0,
+      all_rows_height = 0;
   function getStatementInput(row){
     return row.elements.find(item => {
       return item instanceof Blockly.geras.StatementInput;
     })
   }
-  var do_block_x = this.constants_.DIAMOND_LONG, 
-      do_block_width = 0,
-      else_block_x = 0,
-      else_block_width = 0;
   for (var i = 0, row; (row = this.rows[i]); i++) {
     row.yPos = yCursor;
     row.xPos = this.startX;
-    yCursor += row.height;
+    // yCursor += row.height;
+    console.log('row.height: ' + row.height, row);
 
     if(this.block_.type === 'controls_if' && row.hasStatement){
       var statementInput = getStatementInput(row)
       if(/do/i.test(statementInput.input.name) && statementInput.connectedBlock){
         do_block_x = statementInput.connectedBlock.previousConnection.offsetInBlock_.x;
         do_block_width = statementInput.connectedBlock.width;
+        do_block_height += row.height;
       }else if(/else/i.test(statementInput.input.name) && statementInput.connectedBlock){
         else_block_x = statementInput.connectedBlock.previousConnection.offsetInBlock_.x;
         else_block_width = statementInput.connectedBlock.width;
+        else_block_height += row.height;
+      }else{
+        other_rows_height += row.height;
       }
     }
+    all_rows_height += row.height;
     widestRowWithConnectedBlocks = Math.max(widestRowWithConnectedBlocks, row.widthWithConnectedBlocks);
     // Add padding to the bottom row if block height is less than minimum
     var heightWithoutHat = yCursor - this.topRow.ascenderHeight;
@@ -318,13 +322,17 @@ Blockly.geras.RenderInfo.prototype.finalize_ = function() {
     }
     this.recordElemPositions_(row);
   }
-  // debugger
+  if(this.block_.type === 'controls_if'){
+    yCursor = other_rows_height + Math.max(do_block_height, else_block_height);
+  }else{
+    yCursor = all_rows_height;
+  }
   this.bottomRow.baseline = yCursor - this.bottomRow.descenderHeight;
 
   // The dark (lowlight) adds to the size of the block in both x and y.
   this.widthWithChildren = widestRowWithConnectedBlocks + this.startX + this.constants_.DARK_PATH_OFFSET;
   this.width += this.constants_.DARK_PATH_OFFSET;
-  var statementWidth = do_block_width + else_block_width;
+  statementWidth = do_block_width + else_block_width;
 
   
   // 目前if...else的block的绘制直接一步完成，没有T-R-B-L的概念，不太好 （自定义将菱形和else分支短横线放在topRow中实现会更好，这样将不需要另外处理block的size问题
@@ -347,17 +355,13 @@ Blockly.geras.RenderInfo.prototype.finalize_ = function() {
     this.widthWithChildren = this.width; //外部的容器在计算宽度时会参考this.widthWithChildren
   }
   this.height = yCursor + this.constants_.DARK_PATH_OFFSET;
-  this.testParams = {
-    do_block_x: do_block_x,
-    do_block_width: do_block_width,
-    else_block_x: else_block_x,
-    else_block_width: else_block_width,
-    width: this.width,
-    height: this.height
-  };
+
   if(this.block_.type === 'controls_if'){
-    this.height += ( this.constants_.DIAMOND_SHORT * 2 + this.constants_.LINE_IF );
+    debugger;
+    this.height += ( this.constants_.DIAMOND_SHORT * 2 + this.constants_.STATEMENT_OFFSET_Y);
+    this.height = Math.max(this.constants_.EMPTY_CONTROL_IF_MIN_HEIGHT, this.height) + 15; //15 为了让子block于父block戳开一段距离，不然会挤在一起很难看
   }
+  print('height: ', this.height, 'yCursor: ', yCursor);
   this.startY = this.topRow.capline;
 };
 
