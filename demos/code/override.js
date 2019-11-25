@@ -150,31 +150,6 @@ Blockly.blockRendering.Drawer.prototype.drawLineWithArrow = function(){
   this.outlinePath_ += ` l ${arrowWidth / 2} -2 l ${(arrowWidth / 2 + lineWidth / 2) * -1} ${arrowHeight} l ${(arrowWidth / 2 + lineWidth / 2) * -1} ${arrowHeight * -1} l ${arrowWidth / 2} 2 v -50 z `;
 
   this.positionNextConnection_();
-  /*for (var i = 0, elem; (elem = elements[i]); i++) {
-    // console.log('elem.types: ' + elem.type.toString(2)) //debugger
-    // 参考： \core\renderers\measurables\types.js
-    if (Blockly.blockRendering.Types.isLeftRoundedCorner(elem)) {
-      //zjie 去掉所有block左上角圆弧
-      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner){
-        this.outlinePath_ += ' h 8 '; //this.constants_.OUTSIDE_CORNERS.topLeft: m 0,8 a 8 8 0 0,1 8,-8 //zjie
-      }else{
-        this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.topLeft;
-      }
-    } else if (Blockly.blockRendering.Types.isPreviousConnection(elem)) {// 是否是前置连接块 如果是 则说明顶部要有凹槽
-      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.topNotch){
-        this.outlinePath_ += this.constants_.NOTCH_WIDTH; // elem.shape.pathLeft: l 6,4  3,0  6,-4  //zjie  画一条直线代替原来的折线
-      }else{
-        this.outlinePath_ += elem.shape.pathLeft;
-      }
-    } else if (Blockly.blockRendering.Types.isHat(elem)) {
-      this.outlinePath_ += this.constants_.START_HAT.path;
-      //zjie 始终不会进来？
-    } else if (Blockly.blockRendering.Types.isSpacer(elem)) {
-      this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', elem.width);
-    }
-    // No branch for a square corner, because it's a no-op.
-  }
-  this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('v', topRow.height);*/
 }
 
 Blockly.blockRendering.Drawer.prototype.drawOutline_controls_if = function(){
@@ -185,15 +160,20 @@ Blockly.blockRendering.Drawer.prototype.drawOutline_controls_if = function(){
   const arrowWidth = this.constants_.ARROW_WIDTH;// 箭头的宽
   const arrowHeight = this.constants_.ARROW_HEIGHT;//箭头的高
   const flagRectWidth = this.constants_.PRESET_BLOCK; //预置的block的边长
+  const offset_y = 80;
   
   var sizeOfStatement = this.getStatementInputWH();
   var statementWidth = sizeOfStatement.width / 2 + sizeOfStatement.connectedBlockWidths;
   var statementHeight = sizeOfStatement.height;
-  
 
   // 将菱形的左边的点看做x轴的原点
   this.outlinePath_ += `m 0 0 m ${a} 0 l ${a} ${b} l -${a} ${b} l -${a} -${b} l ${a} -${b} `;//菱形
-  this.outlinePath_ += `M ${2 * a} ${b} l ${Math.max(statementWidth  - a, shortLineWidth)} 0 l 0 ${b + statementHeight + 80} l -${Math.max(statementWidth , (a + shortLineWidth))} 0 `;// else分支的折线
+  console.log('**********************************************');
+  console.log(this.info_.block_.svgGroup_, this.info_.block_.id, this.info_.testParams);
+
+  
+  this.outlinePath_ += `M ${2 * a} ${b} l ${this.info_.getInnerWidth() - a} 0 `;//绘制else分支横线
+  this.outlinePath_ += `l 0 ${b + statementHeight + offset_y} l -${this.info_.getInnerWidth()} 0 `;// else分支的折线
   this.outlinePath_ += `l ${arrowHeight} -${arrowWidth} m -${arrowHeight} ${arrowWidth} l ${arrowHeight} ${arrowWidth} `; //绘制else分支回到主线的箭头
  
   this.outlinePath_ += `M ${a} ${2 * b + this.constants_.STATEMENT_OFFSET_Y} l ${flagRectWidth / 2} 0 l 0 ${flagRectWidth} l -${flagRectWidth} 0 l 0 -${flagRectWidth}  z `;//绘制if分支的statement位置
@@ -238,41 +218,18 @@ Blockly.blockRendering.Drawer.prototype.getStatementInputWH = function(){
 }
 
 Blockly.blockRendering.Drawer.prototype.drawStatementInput_controls_if = function(row) {
-  print(row.getLastInput().input.name)
   var isExistElse = /else/i.test(row.getLastInput().input.name); //是否存在else分支
   if(isExistElse){
     const flagRectWidth = this.constants_.PRESET_BLOCK; //预置的block的边长
-  
-    var sizeOfStatement = this.getStatementInputWH();
-    var statementWidth = sizeOfStatement.width / 2 + sizeOfStatement.connectedBlockWidths;
-    var statementHeight = sizeOfStatement.height;
-    this.outlinePath_ += `M ${2 * this.constants_.DIAMOND_LONG + Math.max(statementWidth  - this.constants_.DIAMOND_LONG, this.constants_.LINE_ELSE_H)} ${2 * this.constants_.DIAMOND_SHORT + this.constants_.STATEMENT_OFFSET_Y} l ${flagRectWidth / 2} 0 l 0 ${flagRectWidth} l -${flagRectWidth} 0 l 0 -${flagRectWidth}  z `;//绘制else分支的statement位置
+    this.outlinePath_ += `M ${this.constants_.DIAMOND_LONG + this.info_.getInnerWidth()} ${2 * this.constants_.DIAMOND_SHORT + this.constants_.STATEMENT_OFFSET_Y} l ${flagRectWidth / 2} 0 l 0 ${flagRectWidth} l -${flagRectWidth} 0 l 0 -${flagRectWidth}  z `;//绘制else分支的statement位置
   }
   this.positionStatementInputConnection_(row);
 };
 
-/*Blockly.blockRendering.Drawer.prototype.positionStatementInputConnection_ = function(row) {
-  var input = row.getLastInput();
-  if (input.connection) {
-    var connX = row.xPos + row.statementEdge + input.notchOffset;
-    if (this.info_.RTL) {
-      connX *= -1;
-    }
-    if(this.block_.type === 'controls_if'){
-      connX = 80;//a
-      var connY = 100 + 60; //2b
-      input.connection.setOffsetInBlock(connX, connY);
-      print('controls_if');
-    }else{
-      input.connection.setOffsetInBlock(connX, row.yPos);
-    }
-  }
-};*/
 Blockly.geras.Drawer.prototype.positionStatementInputConnection_ = function(row) {
   var input = row.getLastInput();
   if (input.connection) {
     var connX = row.xPos + row.statementEdge + input.notchOffset;
-    console.log(`connX:${connX}, row.yPos:${row.yPos} + -${this.constants_.DARK_PATH_OFFSET}`);
     if (this.info_.RTL) {
       connX *= -1;
     } else {
@@ -285,7 +242,7 @@ Blockly.geras.Drawer.prototype.positionStatementInputConnection_ = function(row)
       var statementWidth = sizeOfStatement.width / 2 + sizeOfStatement.connectedBlockWidths;
       if(/else/i.test(input.input.name)){ //else statement
         // debugger;
-        connX = Math.max(statementWidth + this.constants_.DIAMOND_LONG, shortLineWidth + this.constants_.DIAMOND_LONG * 2);
+        connX = this.constants_.DIAMOND_LONG + this.info_.getInnerWidth();
       }else{
         connX = this.constants_.DIAMOND_LONG;
       }
@@ -320,7 +277,7 @@ Blockly.geras.RenderInfo.prototype.finalize_ = function() {
   // Performance note: this could be combined with the draw pass, if the time
   // that this takes is excessive.  But it shouldn't be, because it only
   // accesses and sets properties that already exist on the objects.
-print(this.block_.type);
+  print(this.block_.type);
   var widestRowWithConnectedBlocks = 0;
   var yCursor = 0;
   var statementWidth = 0;
@@ -330,21 +287,23 @@ print(this.block_.type);
       return item instanceof Blockly.geras.StatementInput;
     })
   }
-  var do_block_left_width, 
-      do_block_width;
+  var do_block_x = this.constants_.DIAMOND_LONG, 
+      do_block_width = 0,
+      else_block_x = 0,
+      else_block_width = 0;
   for (var i = 0, row; (row = this.rows[i]); i++) {
     row.yPos = yCursor;
     row.xPos = this.startX;
     yCursor += row.height;
 
     if(this.block_.type === 'controls_if' && row.hasStatement){
-      let statementInput = getStatementInput(row)
+      var statementInput = getStatementInput(row)
       if(/do/i.test(statementInput.input.name) && statementInput.connectedBlock){
-        do_block_left_width = statementInput.connectedBlock.previousConnection.x_;
+        do_block_x = statementInput.connectedBlock.previousConnection.offsetInBlock_.x;
         do_block_width = statementInput.connectedBlock.width;
-        statementWidth += statementInput.connectedBlock.width;
-      }else{
-        statementWidth += row.widthWithConnectedBlocks
+      }else if(/else/i.test(statementInput.input.name) && statementInput.connectedBlock){
+        else_block_x = statementInput.connectedBlock.previousConnection.offsetInBlock_.x;
+        else_block_width = statementInput.connectedBlock.width;
       }
     }
     widestRowWithConnectedBlocks = Math.max(widestRowWithConnectedBlocks, row.widthWithConnectedBlocks);
@@ -363,29 +322,79 @@ print(this.block_.type);
   this.bottomRow.baseline = yCursor - this.bottomRow.descenderHeight;
 
   // The dark (lowlight) adds to the size of the block in both x and y.
-  this.widthWithChildren = widestRowWithConnectedBlocks +
-      this.startX + this.constants_.DARK_PATH_OFFSET;
+  this.widthWithChildren = widestRowWithConnectedBlocks + this.startX + this.constants_.DARK_PATH_OFFSET;
   this.width += this.constants_.DARK_PATH_OFFSET;
-  // this.statementWidth = statementWidth; // 自定义的（if分支上statement的宽度 + else分支上statement的宽度）
-  if(statementWidth){
-    this.width = Math.max(this.constants_.DIAMOND_LONG * 2 + this.constants_.LINE_ELSE_H, statementWidth, widestRowWithConnectedBlocks);
-    // 这里widthWithChildren实际上是不准确的，因为他包含了element中本身的宽度，而我们期望的仅仅是connectBlock的宽度（不处理影响也不大）
-    this.widthWithChildren = Math.max(this.constants_.DIAMOND_LONG * 2 + this.constants_.LINE_ELSE_H, statementWidth, widestRowWithConnectedBlocks);
-  }
-  debugger;
+  var statementWidth = do_block_width + else_block_width;
+
+  
   // 目前if...else的block的绘制直接一步完成，没有T-R-B-L的概念，不太好 （自定义将菱形和else分支短横线放在topRow中实现会更好，这样将不需要另外处理block的size问题
   // 否则就要像我这样处理，太麻烦了，而且还容易产生bug）
   // controls_if 模块的width和widthWithChildren应该是一样的，应该这样计算：   statement 即 connectedBlock
   // 分成左右2块   左边取Math.max(statement_if.previousConnection.x, this.constans_.DIAMOND_LONG)
   //              右边取Math.max(this.constans_.DIAMOND_LONG + this.constans_.LINE_ELSE_H, statement_if.width - x)
   //              else模块同理
-  function calWidth(left_width, do_block_width, statement_width){
-    var width;
-    width = Math.max(left_width, this.constants_.DIAMOND_LONG) + Math.max(this.constants_.DIAMOND_LONG + this.constants_.LINE_ELSE_H, );
+  function calWidth(do_block_x, do_block_width, else_block_x, else_block_width){
+    // var width = Math.max(do_block_x, this.constants_.DIAMOND_LONG) + Math.max(this.constants_.DIAMOND_LONG + this.constants_.LINE_ELSE_H, do_block_width - do_block_x + else_block_width + this.constants_.SPACE_BT_DO_ELSE);
+    var width = Math.max(do_block_x, this.constants_.DIAMOND_LONG) + (this.getInnerWidth()) + (else_block_width - else_block_x);
+    return width;
+  }
+  
+  if(this.block_.type === 'controls_if'){
+    this.width = Math.max( 
+      this.constants_.DIAMOND_LONG * 2 + this.constants_.LINE_ELSE_H, 
+      calWidth.call(this, do_block_x, do_block_width, else_block_x, else_block_width)
+    );
+    this.widthWithChildren = this.width; //外部的容器在计算宽度时会参考this.widthWithChildren
   }
   this.height = yCursor + this.constants_.DARK_PATH_OFFSET;
+  this.testParams = {
+    do_block_x: do_block_x,
+    do_block_width: do_block_width,
+    else_block_x: else_block_x,
+    else_block_width: else_block_width,
+    width: this.width,
+    height: this.height
+  };
   if(this.block_.type === 'controls_if'){
     this.height += ( this.constants_.DIAMOND_SHORT * 2 + this.constants_.LINE_IF );
   }
   this.startY = this.topRow.capline;
 };
+
+/**
+ * if主线和else主线之间的距离
+ * @return {[Number]}
+ */
+Blockly.geras.RenderInfo.prototype.getInnerWidth = function(){
+  const reg_do = /do/i,
+        reg_else = /else/i;
+  var do_block_x = 0, 
+      do_block_width = 0,
+      else_block_x = 0,
+      else_block_width = 0,
+      widestRowWithConnectedBlocks = 0,
+      widestRowWithConnectedBlocks_do = 0,
+      widestRowWithConnectedBlocks_else = 0;
+
+  function getStatementInput(row){
+    return row.elements.find(item => {
+      return item instanceof Blockly.geras.StatementInput;
+    })
+  }
+  for (var i = 0, row; (row = this.rows[i]); i++) {
+    if(this.block_.type === 'controls_if' && row.hasStatement){
+      var statementInput = getStatementInput(row)
+      if(reg_do.test(statementInput.input.name) && statementInput.connectedBlock){
+        do_block_x = statementInput.connectedBlock.previousConnection.offsetInBlock_.x; //statementInput.connectedBlock.previousConnection.x_;
+        do_block_width = statementInput.connectedBlock.width;
+        widestRowWithConnectedBlocks_do = Math.max(do_block_width, /*row.widthWithConnectedBlocks, */widestRowWithConnectedBlocks_do);
+      }else if(reg_else.test(statementInput.input.name) && statementInput.connectedBlock){
+        else_block_x = statementInput.connectedBlock.previousConnection.offsetInBlock_.x; //statementInput.connectedBlock.previousConnection.x_;
+        else_block_width = statementInput.connectedBlock.width;
+        widestRowWithConnectedBlocks_else = Math.max(else_block_width,/* row.widthWithConnectedBlocks,*/ widestRowWithConnectedBlocks_else);
+      }
+    }
+  }
+  var ret = Math.max( (widestRowWithConnectedBlocks_do - do_block_x + this.constants_.SPACE_BT_DO_ELSE + else_block_x), (this.constants_.DIAMOND_LONG + this.constants_.LINE_ELSE_H) );
+  return ret;
+}

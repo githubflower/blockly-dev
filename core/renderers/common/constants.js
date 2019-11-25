@@ -137,13 +137,14 @@ Blockly.blockRendering.ConstantProvider = function() {
 
   // custom controls_if block  
   this.DIAMOND_LONG = 80; //菱形的长半轴
-  this.DIAMOND_SHORT = 50; //菱形的短半轴
+  this.DIAMOND_SHORT = 35; //菱形的短半轴
   this.LINE_ELSE_H = 20; //连接菱形的else的最少短横线长度
   this.ARROW_WIDTH = 5; // 箭头的宽
   this.ARROW_HEIGHT = 8; //箭头的高
   this.PRESET_BLOCK = 6; //预置的block的边长
   this.LINE_IF = 60; //if主线长度
   this.STATEMENT_OFFSET_Y = 60;
+  this.SPACE_BT_DO_ELSE = 20;
 };
 
 /**
