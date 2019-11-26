@@ -163,8 +163,7 @@ Blockly.blockRendering.Drawer.prototype.drawOutline_controls_if = function(){
   
   // 将菱形的左边的点看做x轴的原点
   this.outlinePath_ += `m 0 0 m ${a} 0 l ${a} ${b} l -${a} ${b} l -${a} -${b} l ${a} -${b} `;//菱形
-  console.log('**********************************************');
-  console.log(this.info_.block_.svgGroup_, this.info_.block_.id, this.info_.testParams);
+  // console.log(this.info_.block_.svgGroup_, this.info_.block_.id, this.info_.testParams);
 
   this.outlinePath_ += `M ${2 * a} ${b} l ${this.info_.getInnerWidth() - a} 0 `;//绘制else分支横线
   this.outlinePath_ += `l 0 ${this.info_.height - b + this.constants_.ELSE_BOCK_OFFSET_Y } l -${this.info_.getInnerWidth()} 0 `;// else分支的折线
@@ -183,9 +182,10 @@ Blockly.blockRendering.Drawer.prototype.drawOutline_controls_if = function(){
     } else*/ if (row.hasStatement) { // 是否有块级代码输入 默认无
       // debugger
       this.drawStatementInput_controls_if(row);
-    } /*else if (row.hasExternalInput) { // 如果是INPUT_VALUE 块 则有外部输入
+    } else if (row.hasExternalInput) { // 如果是INPUT_VALUE 块 则有外部输入
       this.drawValueInput_(row);
-    } else {
+      // this.positionExternalValueConnection_(row);
+    } /*else {
       this.drawRightSideRow_(row);
     }*/
   }
@@ -271,7 +271,6 @@ Blockly.geras.RenderInfo.prototype.finalize_ = function() {
   // Performance note: this could be combined with the draw pass, if the time
   // that this takes is excessive.  But it shouldn't be, because it only
   // accesses and sets properties that already exist on the objects.
-  print(this.block_.type);
   var widestRowWithConnectedBlocks = 0;
   var yCursor = 0;
   var statementWidth = 0;
@@ -292,8 +291,7 @@ Blockly.geras.RenderInfo.prototype.finalize_ = function() {
   for (var i = 0, row; (row = this.rows[i]); i++) {
     row.yPos = yCursor;
     row.xPos = this.startX;
-    // yCursor += row.height;
-    console.log('row.height: ' + row.height, row);
+    yCursor += row.height;
 
     if(this.block_.type === 'controls_if' && row.hasStatement){
       var statementInput = getStatementInput(row)
@@ -309,7 +307,6 @@ Blockly.geras.RenderInfo.prototype.finalize_ = function() {
         other_rows_height += row.height;
       }
     }
-    all_rows_height += row.height;
     widestRowWithConnectedBlocks = Math.max(widestRowWithConnectedBlocks, row.widthWithConnectedBlocks);
     // Add padding to the bottom row if block height is less than minimum
     var heightWithoutHat = yCursor - this.topRow.ascenderHeight;
@@ -324,8 +321,6 @@ Blockly.geras.RenderInfo.prototype.finalize_ = function() {
   }
   if(this.block_.type === 'controls_if'){
     yCursor = other_rows_height + Math.max(do_block_height, else_block_height);
-  }else{
-    yCursor = all_rows_height;
   }
   this.bottomRow.baseline = yCursor - this.bottomRow.descenderHeight;
 
@@ -357,11 +352,9 @@ Blockly.geras.RenderInfo.prototype.finalize_ = function() {
   this.height = yCursor + this.constants_.DARK_PATH_OFFSET;
 
   if(this.block_.type === 'controls_if'){
-    debugger;
     this.height += ( this.constants_.DIAMOND_SHORT * 2 + this.constants_.STATEMENT_OFFSET_Y);
     this.height = Math.max(this.constants_.EMPTY_CONTROL_IF_MIN_HEIGHT, this.height) + 15; //15 为了让子block于父block戳开一段距离，不然会挤在一起很难看
   }
-  print('height: ', this.height, 'yCursor: ', yCursor);
   this.startY = this.topRow.capline;
 };
 
@@ -402,3 +395,96 @@ Blockly.geras.RenderInfo.prototype.getInnerWidth = function(){
   var ret = Math.max( (widestRowWithConnectedBlocks_do - do_block_x + this.constants_.SPACE_BT_DO_ELSE + else_block_x), (this.constants_.DIAMOND_LONG + this.constants_.LINE_ELSE_H) );
   return ret;
 }
+
+Blockly.geras.Drawer.prototype.positionExternalValueConnection_ = function(row) {
+  var input = row.getLastInput();
+  if (input.connection) {
+    var connX = row.xPos + row.width;
+    if(this.block_.type === 'controls_if'){
+      connX = row.xPos + this.constants_.DIAMOND_LONG
+    }
+    if (this.info_.RTL) {
+      connX *= -1;
+    }
+    if(this.block_.type === 'controls_if'){
+      input.connection.setOffsetInBlock(connX, /*row.yPos +*/ this.constants_.DIAMOND_SHORT - row.height / 2);
+    }else{
+      input.connection.setOffsetInBlock(connX, row.yPos);
+    }
+  }
+};
+
+//调整field的位置  覆盖 \core\renderers\common\drawer.js
+Blockly.blockRendering.Drawer.prototype.layoutField_ = function(fieldInfo) {
+  if (Blockly.blockRendering.Types.isField(fieldInfo)) {
+    var svgGroup = fieldInfo.field.getSvgRoot();
+  } else if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
+    var svgGroup = fieldInfo.icon.iconGroup_;
+  }
+
+  var yPos = fieldInfo.centerline - fieldInfo.height / 2;
+  var xPos = fieldInfo.xPos;
+  var scale = '';
+  if (this.info_.RTL) {
+    xPos = -(xPos + fieldInfo.width);
+    if (fieldInfo.flipRtl) {
+      xPos += fieldInfo.width;
+      scale = 'scale(-1 1)';
+    }
+  }
+  if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
+    svgGroup.setAttribute('display', 'block');
+    svgGroup.setAttribute('transform', 'translate(' + xPos + ',' + yPos + ')');
+    fieldInfo.icon.computeIconLocation();
+  } else {
+    if(fieldInfo.field.name === 'toggleIF0'){
+      //todo  20 “条件”按钮的相对偏移  需改为绝对偏移
+      svgGroup.setAttribute('transform', 'translate(' + (xPos - 20) + ',' + (yPos + 20) + ')' + scale);  
+    }else{
+      if(this.block_.type === 'controls_if' && fieldInfo.parentInput.name === '_TEMP_COLLAPSED_INPUT'){
+        print('====================================');
+        svgGroup.setAttribute('transform', 'translate(' + xPos + ',' + (yPos + 20) + ')' + scale);
+      }else{
+        svgGroup.setAttribute('transform', 'translate(' + xPos + ',' + yPos + ')' + scale);
+      }
+    }
+  }
+
+  if (this.info_.isInsertionMarker) {
+    // Fields and icons are invisible on insertion marker.  They still have to
+    // be rendered so that the block can be sized correctly.
+    svgGroup.setAttribute('display', 'none');
+  }
+};
+
+//重写绘制“可输入”的形状 主要是为了自定义controls_if模块的样式
+Blockly.blockRendering.Drawer.prototype.drawValueInput_ = function(row) {
+  this.positionExternalValueConnection_(row);
+  // 暂时不画这个标记输入的框框
+  /*var y = 10; // 这里inputRectHeight、inputRectWidth都是指实际输入框的一半
+  var x = y * this.constants_.DIAMOND_LONG / this.constants_.DIAMOND_SHORT;
+  if(this.block_.type === 'controls_if'){
+    this.outlinePath_ += (` M ${x} ${this.constants_.DIAMOND_SHORT - y} l ${2 * (this.constants_.DIAMOND_LONG - x)} 0 l 0 ${2 * y}`);
+    this.outlinePath_ += (` l -${2 * (this.constants_.DIAMOND_LONG - x)} 0 l 0 -${2 * y} z`);
+  } */ 
+  if(this.block_.type === 'controls_if'){
+    this.outlinePath_ += (` M ${this.constants_.DIAMOND_LONG} ${this.constants_.DIAMOND_SHORT / 2} v 35 z`);
+  }else{
+    var input = row.getLastInput();
+
+    var pathDown = (typeof input.shape.pathDown == "function") ?
+        input.shape.pathDown(input.height) :
+        input.shape.pathDown;
+    
+    //zjie 当有外部输入的时候，是否画右边的凹槽
+    if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner){
+      this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
+        // pathDown +  //zjie
+        Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
+    }else{
+      this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
+        pathDown + 
+        Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
+    }  
+  }
+};

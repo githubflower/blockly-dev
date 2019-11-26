@@ -22,3 +22,9 @@
 .blocklyNonEditableText>rect, .blocklyEditableText>rect{
 	stroke: #222222;
 }
+.blocklyEditableText:hover>rect{
+	stroke: #5ba55b;
+}
+.blocklyEditableText > rect, .blocklyEditableText > text{
+	cursor: default;
+}

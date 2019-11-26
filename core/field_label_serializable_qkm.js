@@ -42,7 +42,8 @@ goog.require("Blockly.utils.object");
  *
  */
 Blockly.FieldLabelSerializableQkm = function(opt_value, opt_class, opt_config) {
-  Blockly.FieldLabelSerializable.superClass_.constructor.call(
+  this.SERIALIZABLE = true;
+  Blockly.FieldLabelSerializableQkm.superClass_.constructor.call(
     this,
     opt_value,
     opt_class,
@@ -62,7 +63,7 @@ Blockly.FieldLabelSerializableQkm = function(opt_value, opt_class, opt_config) {
 };
 Blockly.FieldLabelSerializableQkm.fromJson = function(options) {
   var text = Blockly.utils.replaceMessageReferences(options['text']);
-  return new Blockly.FieldLabelSerializable(text, undefined, options);
+  return new Blockly.FieldLabelSerializableQkm(text, undefined, options);
 };
 
 Blockly.utils.object.inherits(

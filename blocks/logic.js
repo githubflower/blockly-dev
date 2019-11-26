@@ -33,6 +33,7 @@ goog.require('Blockly');
 goog.require('Blockly.Blocks');
 goog.require('Blockly.FieldDropdown');
 goog.require('Blockly.FieldLabel');
+goog.require('Blockly.FieldBtn');
 goog.require('Blockly.Mutator');
 
 
@@ -65,8 +66,14 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for if/elseif/else condition.
   {
     "type": "controls_if",
-    "message0": "%{BKY_CONTROLS_IF_MSG_IF} %1",
+    "message0": "%{BKY_CONTROLS_IF_MSG_IF} %1%2",
     "args0": [
+      {
+        "type": "field_btn",
+        "eventType": "toggleIF0",
+        "name": "toggleIF0",
+        "text": "条件"
+      },
       {
         "type": "input_value",
         "name": "IF0",

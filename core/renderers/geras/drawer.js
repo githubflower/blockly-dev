@@ -183,6 +183,7 @@ Blockly.geras.Drawer.prototype.positionStatementInputConnection_ = function(row)
  * @override
  */
 Blockly.geras.Drawer.prototype.positionExternalValueConnection_ = function(row) {
+  debugger;
   var input = row.getLastInput();
   if (input.connection) {
     var connX = row.xPos + row.width +
