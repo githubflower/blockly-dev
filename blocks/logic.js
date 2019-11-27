@@ -70,8 +70,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
     "args0": [
       {
         "type": "field_btn",
-        "eventType": "toggleIF0",
-        "name": "toggleIF0",
+        "eventType": "toggleIF",
+        "name": "IF0",
         "text": "条件"
       },
       {
@@ -480,6 +480,10 @@ Blockly.Constants.Logic.CONTROLS_IF_MUTATOR_MIXIN = {
     for (i = 1; i <= this.elseifCount_; i++) {
       this.appendValueInput('IF' + i)
           .setCheck('Boolean')
+          .appendField(new Blockly.FieldBtn("条件" + i, null, {
+            type: 'field_btn',
+            eventType: 'toggleIF'
+          }), 'IF' + i)
           .appendField(Blockly.Msg['CONTROLS_IF_MSG_ELSEIF']);
       this.appendStatementInput('DO' + i)
           .appendField(Blockly.Msg['CONTROLS_IF_MSG_THEN']);

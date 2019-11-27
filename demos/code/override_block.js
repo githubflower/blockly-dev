@@ -4,18 +4,21 @@
  */
 Blockly.Block.prototype.doSthWithFieldBtnClick = function(btn){
   if(this.type === 'controls_if'){
-    if(btn.eventType === 'toggleIF0'){
-      print('this.sourceBlock_.inputList[0].connection.hidden_: ' + btn.sourceBlock_.inputList[0].connection.hidden_)
-      var bool = btn.sourceBlock_.inputList[0].connection.hidden_;
-      var connection = btn.sourceBlock_.inputList[0].connection;
-      var targetBlock;
-      var inputSvgGroup_;
+    if(btn.eventType === 'toggleIF'){
+      debugger;
+      var input = btn.sourceBlock_.inputList.find(item => {
+        return item.name === btn.name;
+      }); 
+      print('connection.hidden_: ' + btn.name + '---' + input.connection.hidden_)
+      var connection = input.connection;
       if(connection){
-        targetBlock = btn.sourceBlock_.inputList[0].connection.targetBlock();
+        var bool = input.connection.hidden_;
+        var targetBlock = connection.targetBlock();
         if(targetBlock){
-          inputSvgGroup_ = targetBlock.svgGroup_;
-          jQuery(inputSvgGroup_)[bool ? 'show' : 'hide']();
-          btn.sourceBlock_.inputList[0].connection.setHidden(!bool);
+          // jQuery(targetBlock.svgGroup_)[bool ? 'show' : 'hide']();
+          targetBlock.svgGroup_.setAttribute('display', bool ? 'block' : 'none');
+
+          input.connection.setHidden(!bool);
         }
       }
     }
