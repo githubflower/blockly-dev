@@ -479,7 +479,9 @@ Blockly.RenderedConnection.prototype.connect_ = function(childConnection) {
         parentConnection.type == Blockly.PREVIOUS_STATEMENT) {
       // Child block may need to square off its corners if it is in a stack.
       // Rendering a child will render its parent.
-      childBlock.render();  //zjie
+      if(window.QKM._DRAGGER_STATUS){
+        childBlock.render();  //zjie
+      }
     } else {
       // Child block does not change shape.  Rendering the parent node will
       // move its connected children into position.

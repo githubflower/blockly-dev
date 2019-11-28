@@ -148,7 +148,7 @@ Blockly.BlockDragger.initIconData_ = function(block) {
  */
 Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY,
     healStack) {
-  window.QKM._DRAGGER_STATUS = 'start';
+  Blockly._DRAGGER_END_FLAG = false;
   if (!Blockly.Events.getGroup()) {
     Blockly.Events.setGroup(true);
   }
@@ -220,7 +220,7 @@ Blockly.BlockDragger.prototype.dragBlock = function(e, currentDragDeltaXY) {
  * @package
  */
 Blockly.BlockDragger.prototype.endBlockDrag = function(e, currentDragDeltaXY) {
-  window.QKM._DRAGGER_STATUS = 'end';
+  Blockly._DRAGGER_END_FLAG = true;
   // Make sure internal state is fresh.
   this.dragBlock(e, currentDragDeltaXY);
   this.dragIconData_ = [];

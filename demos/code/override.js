@@ -1,3 +1,6 @@
+//存放一些自定义参数
+window.QKM = {};
+
 Blockly.blockRendering.Drawer.prototype.drawOutline_controls_if_else = function() {
   // this.outlinePath_ 需要分为if---elseif---else 3个部分进行绘制
   const a = this.constants_.DIAMOND_LONG; //菱形的长半轴
@@ -339,7 +342,6 @@ Object.assign(Blockly.geras.Drawer.prototype, {
         if (index > 0) { //else statement
           connX = getAllWidthLeft(index, doElseBranchInfo.branchs) + doElseBranchInfo.branchs[index].width_left;
         } else if (matchInfo[0].toLowerCase() === 'else') {
-          debugger
           connX = getAllWidthLeft(doElseBranchInfo.branchs.length - 1, doElseBranchInfo.branchs) + doElseBranchInfo.branchs[doElseBranchInfo.branchs.length - 1].width_left;
         } else {
           connX = doElseBranchInfo.branchs[0].width_left;
