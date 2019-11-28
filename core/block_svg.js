@@ -1662,7 +1662,6 @@ Blockly.BlockSvg.prototype.positionNearConnection = function(sourceConnection,
 Blockly.BlockSvg.prototype.render = function(opt_bubble) {
   Blockly.utils.dom.startTextWidthCache();
   this.rendered = true;
-  print('block_svg 1665: QKM._DRAGGER_STATUS: ' + window.QKM._DRAGGER_STATUS);
   if(window.QKM._DRAGGER_STATUS === 'end' || typeof window.QKM._DRAGGER_STATUS === 'undefined'){
     (this.workspace).getRenderer().render(this)
   }

@@ -326,7 +326,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       if (index === 1) {
         return ary[0].width;
       }
-      return ary[index - 1].width + getAllWidthLeft(index - 1, ary);
+      return ary[index - 1].width + getAllWidthLeft.call(this, index - 1, ary);
     }
 
     if (input.connection) {
@@ -340,9 +340,9 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       if (this.block_.type === 'controls_if') {
         const shortLineWidth = this.constants_.LINE_ELSE_H; //连接菱形的else的最少短横线长度
         if (index > 0) { //else statement
-          connX = getAllWidthLeft(index, doElseBranchInfo.branchs) + doElseBranchInfo.branchs[index].width_left;
+          connX = getAllWidthLeft.call(this,index, doElseBranchInfo.branchs) + doElseBranchInfo.branchs[index].width_left;
         } else if (matchInfo[0].toLowerCase() === 'else') {
-          connX = getAllWidthLeft(doElseBranchInfo.branchs.length - 1, doElseBranchInfo.branchs) + doElseBranchInfo.branchs[doElseBranchInfo.branchs.length - 1].width_left;
+          connX = getAllWidthLeft.call(this,doElseBranchInfo.branchs.length - 1, doElseBranchInfo.branchs) + doElseBranchInfo.branchs[doElseBranchInfo.branchs.length - 1].width_left;
         } else {
           connX = doElseBranchInfo.branchs[0].width_left;
         }
@@ -728,8 +728,8 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
           temmObj.block_width = connectedBlock ? connectedBlock.width : 0;
           temmObj.max_block_width = Math.max(temmObj.max_block_width, temmObj.block_width);
           temmObj.width_left = Math.max(temmObj.block_x, key.toLowerCase() === 'else' ? 0 : this.constants_.DIAMOND_LONG); //主线左边的宽度 (这里的block_x可能和最长的那个block的x偏移对不上 TODO)
-          temmObj.width_right = Math.max(temmObj.max_block_width - temmObj.block_x, key.toLowerCase() === 'else' ? 0 : (this.constants_.DIAMOND_LONG + this.constants_.LINE_ELSE_H));
-          temmObj.width = temmObj.width_left + temmObj.width_right;
+          temmObj.width_right = Math.max(temmObj.max_block_width - temmObj.block_x, key.toLowerCase() === 'else' ? 0 : (this.constants_.DIAMOND_LONG + this.constants_.LINE_ELSE_H)) + this.constants_.GAP_H;
+          temmObj.width = temmObj.width_left + temmObj.width_right; //15 设置一点间隙 美观一点
           temmObj.height += row.height;
         }
       } else {
@@ -737,7 +737,7 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       }
     }
     //( this.constants_.DIAMOND_SHORT * 2 + this.constants_.STATEMENT_OFFSET_Y)
-    var maxHeight = getMaxHeight(doElseBranchInfo) + otherRowHeight /*+ this.constants_.STATEMENT_OFFSET_Y*/ ; //这些block里面高度最大的那个block的高度
+    var maxHeight = getMaxHeight(doElseBranchInfo) + otherRowHeight + this.constants_.STATEMENT_OFFSET_Y ; //这些block里面高度最大的那个block的高度
     return {
       branchs: branchs,
       maxHeight: maxHeight,
