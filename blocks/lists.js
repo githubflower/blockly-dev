@@ -133,7 +133,6 @@ Blockly.Blocks['lists_create_with'] = {
    * @this {Blockly.Block}
    */
   init: function() {
-    debugger
     this.setHelpUrl(Blockly.Msg['LISTS_CREATE_WITH_HELPURL']);
     this.setStyle('list_blocks');
     this.itemCount_ = 3;

@@ -44,5 +44,15 @@ blockly的思想是一切皆block，有点类似vue的一切皆组件的思想�
 3.创建变量block
 事件部分参考blockly.js和gesture.js
 
+11-28
+重新设计if-elseif-else模块的绘制和size计算
+目前if...else的block的绘制直接一步完成，没有T-R-B-L的概念，不太好 （自定义将菱形和else分支短横线放在topRow中实现会更好，这样将不需要另外处理block的size问题
+controls_if 模块的width和widthWithChildren应该是一样的，应该这样计算：   statement 即 connectedBlock
+分成左右2块   左边取Math.max(statement_if.previousConnection.x, this.constans_.DIAMOND_LONG)
+             右边取Math.max(this.constans_.DIAMOND_LONG + this.constans_.LINE_ELSE_H, statement_if.width - x)
+             else模块同理
+
+
+
 
 
