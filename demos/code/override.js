@@ -43,6 +43,25 @@ Blockly.blockRendering.Drawer.prototype.drawOutline_controls_if_else = function(
 
 
 Object.assign(Blockly.blockRendering.Drawer.prototype, {
+  drawOutline_: function() {
+    switch (this.block_.type) {
+      case 'line':
+        this.drawLineWithArrow();
+        break;
+      case 'controls_if':
+        // this.drawOutline_controls_if_else();
+        this.drawOutline_controls_if();
+        break;
+      case 'controls_repeat_ext':
+        this.drawOutline_loop();
+        break;
+      default:
+        this.drawTop_();
+        this.drawRight_();
+        this.drawBottom_();
+        this.drawLeft_();
+    }
+  },
   drawOutline_controls_if: function() {
     // this.outlinePath_ 需要分为if---elseif---else 3个部分进行绘制
     var doElseBranchInfo = this.info_.getDoElseBranchInfo();
@@ -83,21 +102,14 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
 
     this.positionNextConnection_(doElseBranchInfo);
   },
-  drawOutline_: function() {
-    switch (this.block_.type) {
-      case 'line':
-        this.drawLineWithArrow();
-        break;
-      case 'controls_if':
-        // this.drawOutline_controls_if_else();
-        this.drawOutline_controls_if();
-        break;
-      default:
-        this.drawTop_();
-        this.drawRight_();
-        this.drawBottom_();
-        this.drawLeft_();
-    }
+  drawOutline_loop(){
+    var loopInfo = this.info_.getLoopInfo();
+    this.moveToStartPoint(loopInfo);
+    this.drawDiamond(loopInfo);
+    this.outlinePath_ += ` m 0 ${2 * this.constants_.DIAMOND_SHORT} v ${loopInfo.height} l -${loopInfo.width_left} 0 l 0 -${loopInfo.height + this.constants_.DIAMOND_SHORT} l ${loopInfo.width_left - this.constants_.DIAMOND_LONG} 0 `;
+    this.drawArrowRight();
+    this.outlinePath_ += ` m ${this.constants_.DIAMOND_LONG * 2} 0 h ${this.constants_.GAP_H} v ${loopInfo.height + this.constants_.DIAMOND_SHORT + this.constants_.GAP_V} h -${loopInfo.width_right + 1} v ${this.constants_.LOOP_NEXTCONNECTION_OFFSET} `;
+    this.drawArrowDown();
   },
   positionPreviousConnection_: function() {
     var topRow = this.info_.topRow;
@@ -325,7 +337,10 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
   drawArrowDown(){
     const long = 8;
     const short = 4;
-    this.outlinePath_ += ` m 0 -10 l ${short} -${long} m -${2 * short} 0 l ${short} ${long} m 0 10 `;
+    this.outlinePath_ += ` l ${short} -${long} m -${2 * short} 0 l ${short} ${long}`;
+  },
+  drawArrowRight(){
+    this.outlinePath_ += ` l -${this.constants_.ARROW_LONG} -${this.constants_.ARROW_SHORT} m 0 ${2 * this.constants_.ARROW_SHORT} l ${this.constants_.ARROW_LONG} -${this.constants_.ARROW_SHORT} `;
   },
 
   drawStatementInput_controls_if: function(row) {
@@ -639,11 +654,6 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       else_block_height = 0,
       other_rows_height = 0;
 
-    function getStatementInput(row) {
-      return row.elements.find(item => {
-        return item instanceof Blockly.geras.StatementInput;
-      })
-    }
     for (var i = 0, row;
       (row = this.rows[i]); i++) {
       row.yPos = yCursor;
@@ -653,7 +663,7 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       }
 
       if (this.block_.type === 'controls_if' && row.hasStatement) {
-        var statementInput = getStatementInput(row)
+        var statementInput = this.getStatementInput(row)
         if (/do/i.test(statementInput.input.name) && statementInput.connectedBlock) {
           do_block_height += row.height;
         } else if (/else/i.test(statementInput.input.name) && statementInput.connectedBlock) {
@@ -702,7 +712,14 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       this.height += (this.constants_.DIAMOND_SHORT * 2 + this.constants_.STATEMENT_OFFSET_Y);
       this.height = this.height + this.constants_.GAP_V; //15 为了让子block于父block戳开一段距离，不然会挤在一起很难看
     }
+    this.setLoopBlockHeight();
     this.startY = this.topRow.capline;
+  },
+  //设置循环模块的高度
+  setLoopBlockHeight(){
+    if(this.block_.type === 'controls_repeat_ext'){
+      this.height += (this.constants_.DIAMOND_SHORT * 2 + this.constants_.STATEMENT_OFFSET_Y + this.constants_.LOOP_NEXTCONNECTION_OFFSET);
+    }
   },
   /**
    * if主线和else主线之间的距离
@@ -719,15 +736,11 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       widestRowWithConnectedBlocks_do = 0,
       widestRowWithConnectedBlocks_else = 0;
 
-    function getStatementInput(row) {
-      return row.elements.find(item => {
-        return item instanceof Blockly.geras.StatementInput;
-      })
-    }
+    
     for (var i = 0, row;
       (row = this.rows[i]); i++) {
       if (this.block_.type === 'controls_if' && row.hasStatement) {
-        var statementInput = getStatementInput(row)
+        var statementInput = this.getStatementInput(row)
         if (reg_do.test(statementInput.input.name) && statementInput.connectedBlock) {
           do_block_x = statementInput.connectedBlock.previousConnection.offsetInBlock_.x; //statementInput.connectedBlock.previousConnection.x_;
           do_block_width = statementInput.connectedBlock.width;
@@ -743,6 +756,12 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     return ret;
   },
 
+  getStatementInput(row) {
+    return row.elements.find(item => {
+      return item instanceof Blockly.geras.StatementInput;
+    })
+  },
+
   /**
    * @return {Object}
    * 获取DO0 DO1 DO2 ... ELSE等各个branch（逻辑分支）的大小
@@ -752,11 +771,7 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     const branchs = [];
     const reg = /(do)?(else)?\d*/i;
 
-    function getStatementInput(row) {
-      return row.elements.find(item => {
-        return item instanceof Blockly.geras.StatementInput;
-      })
-    }
+    
 
     function getMaxHeight(obj) {
       var max = 0;
@@ -769,7 +784,7 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     for (var i = 0, row;
       (row = this.rows[i]); i++) {
       if (this.block_.type === 'controls_if' && row.hasStatement) {
-        var statementInput = getStatementInput(row)
+        var statementInput = this.getStatementInput(row)
         let key = reg.exec(statementInput.input.name)[0];
         if (key) {
           if (!doElseBranchInfo[key]) {
@@ -800,5 +815,29 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       otherRowHeight: otherRowHeight
     };
   },
+  /**
+   * 获取循环块的相关数据
+   * @return {[type]}
+   */
+  getLoopInfo(){
+    var loopInfo = {};
+    for (var i = 0, row; (row = this.rows[i]); i++) {
+      if (row.hasStatement) {
+        var statementInput = this.getStatementInput(row);
 
+        let connectedBlock = statementInput.connectedBlock;
+        Object.assign(loopInfo, {
+          block_x: connectedBlock ? connectedBlock.previousConnection.offsetInBlock_.x : 0,
+          block_width: connectedBlock ? connectedBlock.width : 0,
+          max_block_width: 0,
+          height: row.height + this.constants_.STATEMENT_OFFSET_Y * 2
+        })
+        loopInfo.max_block_width = Math.max(loopInfo.max_block_width, loopInfo.block_width);
+        loopInfo.width_left = Math.max(loopInfo.block_x, this.constants_.DIAMOND_LONG) + this.constants_.GAP_H;
+        loopInfo.width_right = Math.max(loopInfo.max_block_width - loopInfo.block_x, this.constants_.DIAMOND_LONG) + this.constants_.GAP_H;
+        loopInfo.width = loopInfo.width_left + loopInfo.width_right;
+      }
+    }
+    return loopInfo;
+  }
 })

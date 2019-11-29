@@ -148,6 +148,9 @@ Blockly.blockRendering.ConstantProvider = function() {
   this.EMPTY_CONTROL_IF_MIN_HEIGHT = 190;
   this.GAP_H = 15; //横向间隙
   this.GAP_V = 15; //纵向间隙
+  this.ARROW_LONG = 8;
+  this.ARROW_SHORT = 4;
+  this.LOOP_NEXTCONNECTION_OFFSET = 30;
 };
 
 /**

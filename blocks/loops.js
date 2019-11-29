@@ -35,6 +35,7 @@ goog.require('Blockly.FieldDropdown');
 goog.require('Blockly.FieldLabel');
 goog.require('Blockly.FieldNumber');
 goog.require('Blockly.FieldVariable');
+goog.require('Blockly.FieldBtn');
 
 
 /**
@@ -47,12 +48,20 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for repeat n times (external number).
   {
     "type": "controls_repeat_ext",
-    "message0": "%{BKY_CONTROLS_REPEAT_TITLE}",
-    "args0": [{
-      "type": "input_value",
-      "name": "TIMES",
-      "check": "Number"
-    }],
+    "message0": "%{BKY_CONTROLS_REPEAT_TITLE}%2",
+    "args0": [
+      {
+        "type": "field_btn",
+        "eventType": "toggleIF",
+        "name": "IF0",
+        "text": "条件"
+      },
+      {
+        "type": "input_value",
+        "name": "TIMES",
+        "check": "Number"
+      }
+    ],
     "message1": "%{BKY_CONTROLS_REPEAT_INPUT_DO} %1",
     "args1": [{
       "type": "input_statement",
