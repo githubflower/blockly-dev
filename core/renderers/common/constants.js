@@ -151,6 +151,9 @@ Blockly.blockRendering.ConstantProvider = function() {
   this.ARROW_LONG = 8;
   this.ARROW_SHORT = 4;
   this.LOOP_NEXTCONNECTION_OFFSET = 30;
+
+  this.LOOP_FIELD_OFFSET_X = 35;
+  this.LOOP_FIELD_OFFSET_Y = 17;
 };
 
 /**

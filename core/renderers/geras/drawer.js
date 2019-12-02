@@ -155,6 +155,10 @@ Blockly.geras.Drawer.prototype.positionInlineInputConnection_ = function(input) 
     if (this.info_.RTL) {
       connX *= -1;
     }
+        if(this.block_.type == 'controls_repeat_ext'){
+debugger
+      yPos += 17;
+    }
     input.connection.setOffsetInBlock(
         connX, yPos + input.connectionOffsetY +
         this.constants_.DARK_PATH_OFFSET);

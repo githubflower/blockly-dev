@@ -43,6 +43,30 @@ Blockly.blockRendering.Drawer.prototype.drawOutline_controls_if_else = function(
 
 
 Object.assign(Blockly.blockRendering.Drawer.prototype, {
+  drawInlineInput_(input) {
+    var width = input.width;
+    var height = input.height;
+    var yPos = input.centerline - height / 2;
+// debugger
+
+    var connectionTop = input.connectionOffsetY;
+    var connectionBottom = input.connectionHeight + connectionTop;
+    var connectionRight = input.xPos + input.connectionWidth;
+    if (this.block_.type == 'controls_repeat_ext') {
+      connectionRight += this.constants_.LOOP_FIELD_OFFSET_X;
+      yPos += this.constants_.LOOP_FIELD_OFFSET_Y;
+    }
+    this.inlinePath_ += Blockly.utils.svgPaths.moveTo(connectionRight, yPos) +
+        Blockly.utils.svgPaths.lineOnAxis('v', connectionTop) +
+        // input.shape.pathDown +
+        'v 15 ' +
+        Blockly.utils.svgPaths.lineOnAxis('v', height - connectionBottom) +
+        Blockly.utils.svgPaths.lineOnAxis('h', width - input.connectionWidth) +
+        Blockly.utils.svgPaths.lineOnAxis('v', -height) +
+        'z';
+
+    this.positionInlineInputConnection_(input);
+  },
   drawOutline_: function() {
     switch (this.block_.type) {
       case 'line':
@@ -81,12 +105,12 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
       }
     });
     // branchs = [] 说明是收拢状态
-    if(!doElseBranchInfo.branchs.length){
+    if (!doElseBranchInfo.branchs.length) {
       this.moveToStartPoint();
       this.drawDiamond();
-    }else{
+    } else {
       if (!hasElseBranch) {
-        this.outlinePath_ += ` v ${doElseBranchInfo.maxHeight + this.constants_.DIAMOND_SHORT} `;
+        this.outlinePath_ += `m 0 0 v ${doElseBranchInfo.maxHeight + this.constants_.DIAMOND_SHORT} `;
       }
     }
 
@@ -102,14 +126,25 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
 
     this.positionNextConnection_(doElseBranchInfo);
   },
-  drawOutline_loop(){
+  drawOutline_loop() {
     var loopInfo = this.info_.getLoopInfo();
     this.moveToStartPoint(loopInfo);
     this.drawDiamond(loopInfo);
+    //菱形左侧
     this.outlinePath_ += ` m 0 ${2 * this.constants_.DIAMOND_SHORT} v ${loopInfo.height} l -${loopInfo.width_left} 0 l 0 -${loopInfo.height + this.constants_.DIAMOND_SHORT} l ${loopInfo.width_left - this.constants_.DIAMOND_LONG} 0 `;
     this.drawArrowRight();
+    //菱形右侧
+    // this.outlinePath_ += ` m ${this.constants_.DIAMOND_LONG} ${this.constants_.DIAMOND_SHORT} l ${this.constants_.DIAMOND_LONG} -${this.constants_.DIAMOND_SHORT} `;
+    // this.outlinePath_ += ` h ${this.constants_.GAP_H} v ${loopInfo.height + this.constants_.DIAMOND_SHORT + this.constants_.GAP_V} h -${loopInfo.width_right + 1} v ${this.constants_.LOOP_NEXTCONNECTION_OFFSET} z `;
     this.outlinePath_ += ` m ${this.constants_.DIAMOND_LONG * 2} 0 h ${this.constants_.GAP_H} v ${loopInfo.height + this.constants_.DIAMOND_SHORT + this.constants_.GAP_V} h -${loopInfo.width_right + 1} v ${this.constants_.LOOP_NEXTCONNECTION_OFFSET} `;
     this.drawArrowDown();
+
+    //使整个区域闭合
+    // this.outlinePath_ += ` z m 0 -${loopInfo.height + this.constants_.GAP_V + this.constants_.LOOP_NEXTCONNECTION_OFFSET} z`;
+
+    this.positionPreviousConnection_();
+    this.positionNextConnection_();
+
   },
   positionPreviousConnection_: function() {
     var topRow = this.info_.topRow;
@@ -121,6 +156,8 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
       // topRow.connection.connectionModel.setOffsetInBlock(connX, 0);  // google默认的位置
       if (this.block_.type === 'controls_if') {
         topRow.connection.connectionModel.setOffsetInBlock(this.constants_.DIAMOND_LONG, 0); //a
+      }else if(this.block_.type === 'controls_repeat_ext'){
+        topRow.connection.connectionModel.setOffsetInBlock(this.constants_.DIAMOND_LONG + this.constants_.GAP_H, 0);
       } else {
         topRow.connection.connectionModel.setOffsetInBlock(topRow.width / 2 - topRow.connection.width / 2, 0); //居中
       }
@@ -271,7 +308,7 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     this.drawLineV(item, doElseBranchInfo);
     this.drawLineBottomH(item, doElseBranchInfo);
 
-    this.outlinePath_ += 'z';
+    // this.outlinePath_ += 'z';
   },
   drawConnectionFlag(item) {
     var reg = /else/i;
@@ -284,9 +321,9 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     this.outlinePath_ += ` m 0 -${y} `
   },
   moveToStartPoint: function(item) {
-    if(!item){
-      this.outlinePath_ += `M ${this.constants_.DIAMOND_LONG} 0 `;  
-    }else{
+    if (!item) {
+      this.outlinePath_ += `M ${this.constants_.DIAMOND_LONG} 0 `;
+    } else {
       this.outlinePath_ += `M ${item.width_left} 0 `;
     }
   },
@@ -316,8 +353,8 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     var regInfo = reg.exec(item.type);
     // DO1...DOn...ELSE   (排除DO0)
     if (!regInfo[1] || regInfo[3] > 0) {
-      this.outlinePath_ += `l -${item.width_left} 0 m ${item.width_left} 0 `;
-    }else{
+      this.outlinePath_ += `m 0 0 l -${item.width_left} 0 m ${item.width_left} 0 `;
+    } else {
       this.drawArrowLeft();
       // this.drawArrowDown();
     }
@@ -329,17 +366,18 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
   drawLineV: function(item, doElseBranchInfo) {
     this.outlinePath_ += `m 0 ${item.type === 'ELSE' ? 0 : (2 * this.constants_.DIAMOND_SHORT)} v ${doElseBranchInfo.maxHeight + (item.type === 'ELSE' ? this.constants_.DIAMOND_SHORT : 0)}`;
   },
-  drawArrowLeft(){
+  drawArrowLeft() {
     const w = 8;
     const h = 4;
-    this.outlinePath_ += ` l ${w} -${h} m 0 ${2 * h} l -${w} -${h} `;
+    this.outlinePath_ += `m 0 0 l ${w} -${h} m 0 ${2 * h} l -${w} -${h} m 0 0 `;
+    // this.outlinePath_ += ` l ${w} -${h} l -${w} ${h} l ${w} ${h} l -${w} -${h} `; //为了不让区域闭合，每次手动回到画线的起点
   },
-  drawArrowDown(){
+  drawArrowDown() {
     const long = 8;
     const short = 4;
-    this.outlinePath_ += ` l ${short} -${long} m -${2 * short} 0 l ${short} ${long}`;
+    this.outlinePath_ += ` l ${short} -${long} m -${2 * short} 0 l ${short} ${long} `;
   },
-  drawArrowRight(){
+  drawArrowRight() {
     this.outlinePath_ += ` l -${this.constants_.ARROW_LONG} -${this.constants_.ARROW_SHORT} m 0 ${2 * this.constants_.ARROW_SHORT} l ${this.constants_.ARROW_LONG} -${this.constants_.ARROW_SHORT} `;
   },
 
@@ -421,13 +459,18 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       var connInfo = bottomRow.connection;
       var x = connInfo.xPos; // Already contains info about startX
       var connX = (this.info_.RTL ? -x : x);
-      switch(this.block_.type){
+      switch (this.block_.type) {
         case 'controls_if':
-          if(doElseBranchInfo && doElseBranchInfo.branchs.length){
+          if (doElseBranchInfo && doElseBranchInfo.branchs.length) {
             // 这里需要手动调整高度10  ？  具体原因待确认
-            connInfo.connectionModel.setOffsetInBlock(doElseBranchInfo.branchs[0].width_left, doElseBranchInfo.maxHeight + doElseBranchInfo.otherRowHeight + this.constants_.GAP_V + 10 );
-            
+            connInfo.connectionModel.setOffsetInBlock(doElseBranchInfo.branchs[0].width_left, doElseBranchInfo.maxHeight + doElseBranchInfo.otherRowHeight + this.constants_.GAP_V + 10);
+
           }
+          break;
+        case 'controls_repeat_ext':
+          var loopInfo = this.info_.getLoopInfo();
+          debugger
+          connInfo.connectionModel.setOffsetInBlock(this.constants_.DIAMOND_LONG + this.constants_.GAP_H, loopInfo.height + 2 * this.constants_.DIAMOND_SHORT + this.constants_.GAP_V + this.constants_.LOOP_NEXTCONNECTION_OFFSET);
           break;
         case 'line':
           connInfo.connectionModel.setOffsetInBlock(0, (connInfo.centerline - connInfo.height / 2));
@@ -525,17 +568,95 @@ Object.assign(Blockly.geras.Drawer.prototype, {
 
   //调整field的位置  覆盖 \core\renderers\common\drawer.js
   layoutField_: function(fieldInfo) {
-    switch(this.block_.type){
+    switch (this.block_.type) {
       case 'controls_if':
         this.positionFieldsOfControlsIf(fieldInfo);
+        break;
+      case 'controls_repeat_ext':
+        this.positionFieldsOfLoop(fieldInfo);
         break;
       default:
         this.drawDefaultLayoutField_(fieldInfo);
     }
   },
 
+  /**
+   * [getLayoutFieldInfo description]
+   * @param  {[type]} fieldInfo [description]
+   * @param  {[Object]} params    [xPos, yPos, scale]
+   * @return {[Object]}           [description]
+   */
+  getLayoutFieldInfo(fieldInfo, params) {
+    params.xPos += this.constants_.LOOP_FIELD_OFFSET_X;
+    params.yPos += this.constants_.LOOP_FIELD_OFFSET_Y;
+    return {
+      xPos: params.xPos,
+      yPos: params.yPos,
+      scale: params.scale
+    }
+  },
+
+  positionInlineInputConnection_(input) {
+    var yPos = input.centerline - input.height / 2;
+    // Move the connection.
+    if (input.connection) {
+      // xPos already contains info about startX
+      var connX = input.xPos + input.connectionWidth + this.constants_.DARK_PATH_OFFSET;
+      if (this.block_.type == 'controls_repeat_ext') {
+        connX += this.constants_.LOOP_FIELD_OFFSET_X; //todo
+        yPos += this.constants_.LOOP_FIELD_OFFSET_Y;
+      }
+      if (this.info_.RTL) {
+        connX *= -1;
+      }
+      input.connection.setOffsetInBlock( connX, yPos + input.connectionOffsetY + this.constants_.DARK_PATH_OFFSET);
+    }
+  },
+
+  /**
+   * [positionFieldsOfLoop 设置循环条件的field位置]
+   * @param  {[type]} fieldInfo [description]
+   * @return {[type]}           [description]
+   */
+  positionFieldsOfLoop(fieldInfo) {
+    if (Blockly.blockRendering.Types.isField(fieldInfo)) {
+      var svgGroup = fieldInfo.field.getSvgRoot();
+    } else if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
+      var svgGroup = fieldInfo.icon.iconGroup_;
+    }
+
+    var yPos = fieldInfo.centerline - fieldInfo.height / 2;
+    var xPos = fieldInfo.xPos;
+    var scale = '';
+    if (this.info_.RTL) {
+      xPos = -(xPos + fieldInfo.width);
+      if (fieldInfo.flipRtl) {
+        xPos += fieldInfo.width;
+        scale = 'scale(-1 1)';
+      }
+    }
+    if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
+      svgGroup.setAttribute('display', 'block');
+      svgGroup.setAttribute('transform', 'translate(' + xPos + ',' + yPos + ')');
+      fieldInfo.icon.computeIconLocation();
+    } else {
+      var info = this.getLayoutFieldInfo(fieldInfo, {
+        xPos,
+        yPos,
+        scale
+      });
+      svgGroup.setAttribute('transform', 'translate(' + info.xPos + ',' + info.yPos + ')' + info.scale);
+    }
+
+    if (this.info_.isInsertionMarker) {
+      // Fields and icons are invisible on insertion marker.  They still have to
+      // be rendered so that the block can be sized correctly.
+      svgGroup.setAttribute('display', 'none');
+    }
+  },
+
   //默认的layoutField_方法
-  drawDefaultLayoutField_(fieldInfo){
+  drawDefaultLayoutField_(fieldInfo) {
     if (Blockly.blockRendering.Types.isField(fieldInfo)) {
       var svgGroup = fieldInfo.field.getSvgRoot();
     } else if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
@@ -567,7 +688,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     }
   },
 
-  positionFieldsOfControlsIf(fieldInfo){
+  positionFieldsOfControlsIf(fieldInfo) {
     if (Blockly.blockRendering.Types.isField(fieldInfo)) {
       var svgGroup = fieldInfo.field.getSvgRoot();
     } else if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
@@ -594,19 +715,19 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       var regInfo = reg.exec(fieldInfo.parentInput.name);
       var type = regInfo[1] || regInfo[2] || regInfo[3],
         index = parseInt(regInfo[4], 10);
-        type = type && type.toLowerCase();
-      switch(type){
+      type = type && type.toLowerCase();
+      switch (type) {
         case 'if':
-          if(index > 0){
-            if(fieldInfo.field.type === 'field_btn'){
+          if (index > 0) {
+            if (fieldInfo.field.type === 'field_btn') {
               xPos = this.getAllWidthLeft(index, doElseBranchInfo.branchs) + doElseBranchInfo.branchs[index].width_left - 50;
               yPos = this.constants_.DIAMOND_SHORT - fieldInfo.height / 2;
-            }else{
-              xPos = this.getAllWidthLeft(index, doElseBranchInfo.branchs) - fieldInfo.width /*+ doElseBranchInfo.branchs[index].width_left - 50*/;
+            } else {
+              xPos = this.getAllWidthLeft(index, doElseBranchInfo.branchs) - fieldInfo.width /*+ doElseBranchInfo.branchs[index].width_left - 50*/ ;
               yPos = this.constants_.DIAMOND_SHORT - fieldInfo.height - 10
             }
-          }else{
-            xPos = xPos - 20;//todo  20 “条件”按钮的相对偏移  需改为绝对偏移
+          } else {
+            xPos = xPos - 20; //todo  20 “条件”按钮的相对偏移  需改为绝对偏移
             yPos = yPos + 20;
           }
           break;
@@ -615,10 +736,10 @@ Object.assign(Blockly.geras.Drawer.prototype, {
           yPos = this.constants_.DIAMOND_SHORT * 2 + (this.constants_.STATEMENT_OFFSET_Y / 2);
           break;
         case 'else':
-          xPos = this.getAllWidthLeft(doElseBranchInfo.branchs.length - 1, doElseBranchInfo.branchs) ;
+          xPos = this.getAllWidthLeft(doElseBranchInfo.branchs.length - 1, doElseBranchInfo.branchs);
           break;
         default:
-          if (fieldInfo.parentInput.name === '_TEMP_COLLAPSED_INPUT'){
+          if (fieldInfo.parentInput.name === '_TEMP_COLLAPSED_INPUT') {
             //多个block收拢之后block的描述
             yPos += 20;
           }
@@ -716,8 +837,8 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     this.startY = this.topRow.capline;
   },
   //设置循环模块的高度
-  setLoopBlockHeight(){
-    if(this.block_.type === 'controls_repeat_ext'){
+  setLoopBlockHeight() {
+    if (this.block_.type === 'controls_repeat_ext') {
       this.height += (this.constants_.DIAMOND_SHORT * 2 + this.constants_.STATEMENT_OFFSET_Y + this.constants_.LOOP_NEXTCONNECTION_OFFSET);
     }
   },
@@ -736,7 +857,7 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       widestRowWithConnectedBlocks_do = 0,
       widestRowWithConnectedBlocks_else = 0;
 
-    
+
     for (var i = 0, row;
       (row = this.rows[i]); i++) {
       if (this.block_.type === 'controls_if' && row.hasStatement) {
@@ -771,7 +892,7 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     const branchs = [];
     const reg = /(do)?(else)?\d*/i;
 
-    
+
 
     function getMaxHeight(obj) {
       var max = 0;
@@ -819,9 +940,10 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
    * 获取循环块的相关数据
    * @return {[type]}
    */
-  getLoopInfo(){
+  getLoopInfo() {
     var loopInfo = {};
-    for (var i = 0, row; (row = this.rows[i]); i++) {
+    for (var i = 0, row;
+      (row = this.rows[i]); i++) {
       if (row.hasStatement) {
         var statementInput = this.getStatementInput(row);
 
