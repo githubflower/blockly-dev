@@ -131,18 +131,26 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     this.moveToStartPoint(loopInfo);
     this.drawDiamond(loopInfo);
     //菱形左侧
-    this.outlinePath_ += ` m 0 ${2 * this.constants_.DIAMOND_SHORT} v ${loopInfo.height} l -${loopInfo.width_left} 0 l 0 -${loopInfo.height + this.constants_.DIAMOND_SHORT} l ${loopInfo.width_left - this.constants_.DIAMOND_LONG} 0 `;
+    this.outlinePath_ += ` m 0 ${2 * this.constants_.DIAMOND_SHORT} v ${loopInfo.height} m 0 0 l -${loopInfo.width_left} 0 m 0 0 l 0 -${loopInfo.height + this.constants_.DIAMOND_SHORT} m 0 0 l ${loopInfo.width_left - this.constants_.DIAMOND_LONG} 0 `;
     this.drawArrowRight();
     //菱形右侧
     // this.outlinePath_ += ` m ${this.constants_.DIAMOND_LONG} ${this.constants_.DIAMOND_SHORT} l ${this.constants_.DIAMOND_LONG} -${this.constants_.DIAMOND_SHORT} `;
     // this.outlinePath_ += ` h ${this.constants_.GAP_H} v ${loopInfo.height + this.constants_.DIAMOND_SHORT + this.constants_.GAP_V} h -${loopInfo.width_right + 1} v ${this.constants_.LOOP_NEXTCONNECTION_OFFSET} z `;
-    this.outlinePath_ += ` m ${this.constants_.DIAMOND_LONG * 2} 0 h ${this.constants_.GAP_H} v ${loopInfo.height + this.constants_.DIAMOND_SHORT + this.constants_.GAP_V} h -${loopInfo.width_right + 1} v ${this.constants_.LOOP_NEXTCONNECTION_OFFSET} `;
+    this.outlinePath_ += ` m ${this.constants_.DIAMOND_LONG * 2} 0 h ${this.constants_.GAP_H} m 0 0 v ${loopInfo.height + this.constants_.DIAMOND_SHORT + this.constants_.GAP_V} m 0 0 h -${loopInfo.width_right + 1} m 0 0 v ${this.constants_.LOOP_NEXTCONNECTION_OFFSET} `;
     this.drawArrowDown();
 
     //使整个区域闭合
     // this.outlinePath_ += ` z m 0 -${loopInfo.height + this.constants_.GAP_V + this.constants_.LOOP_NEXTCONNECTION_OFFSET} z`;
 
     this.positionPreviousConnection_();
+    for (var r = 1; r < this.info_.rows.length - 1; r++) {
+      var row = this.info_.rows[r];
+      if (row.hasStatement) { // 是否有块级代码输入 默认无
+        this.drawStatementInput_loop(row);
+      } else if (row.hasExternalInput) { // 如果是INPUT_VALUE 块 则有外部输入
+        this.drawValueInput_(row);
+      }
+    }
     this.positionNextConnection_();
 
   },
@@ -375,15 +383,18 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
   drawArrowDown() {
     const long = 8;
     const short = 4;
-    this.outlinePath_ += ` l ${short} -${long} m -${2 * short} 0 l ${short} ${long} `;
+    this.outlinePath_ += ` m 0 0 l ${short} -${long} m -${2 * short} 0 l ${short} ${long} `;
   },
   drawArrowRight() {
-    this.outlinePath_ += ` l -${this.constants_.ARROW_LONG} -${this.constants_.ARROW_SHORT} m 0 ${2 * this.constants_.ARROW_SHORT} l ${this.constants_.ARROW_LONG} -${this.constants_.ARROW_SHORT} `;
+    this.outlinePath_ += ` m 0 0 l -${this.constants_.ARROW_LONG} -${this.constants_.ARROW_SHORT} m 0 ${2 * this.constants_.ARROW_SHORT} l ${this.constants_.ARROW_LONG} -${this.constants_.ARROW_SHORT} `;
   },
 
   drawStatementInput_controls_if: function(row) {
     var doElseBranchInfo = this.info_.getDoElseBranchInfo();
     this.positionStatementInputConnection_(row, doElseBranchInfo);
+  },
+  drawStatementInput_loop(row){
+    //todo
   }
 
 })

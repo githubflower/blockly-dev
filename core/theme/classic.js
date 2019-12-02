@@ -37,10 +37,10 @@ Blockly.Themes.Classic.defaultBlockStyles = {
     "colourPrimary": "260"
   },
   "logic_blocks": {
-    "colourPrimary": "210"
+    "colourPrimary": "#0c9cb7"
   },
   "loop_blocks": {
-    "colourPrimary": "120"
+    "colourPrimary": "#f2631f"
   },
   "math_blocks": {
     "colourPrimary": "230"
@@ -52,7 +52,7 @@ Blockly.Themes.Classic.defaultBlockStyles = {
     "colourPrimary": "160"
   },
   "variable_blocks": {
-    "colourPrimary": "330"
+    "colourPrimary": "#95ca34"
   },
   "variable_dynamic_blocks": {
     "colourPrimary": "310"
