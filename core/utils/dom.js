@@ -81,9 +81,10 @@ Blockly.utils.dom.cacheReference_ = 0;
  * @param {string} name Element's tag name.
  * @param {!Object} attrs Dictionary of attribute names and values.
  * @param {Element} parent Optional parent on which to append the element.
+ * @param  {[boolean]} unshiftFlag [是否插入到parent的第一个子节点前面]
  * @return {!SVGElement} Newly created SVG element.
  */
-Blockly.utils.dom.createSvgElement = function(name, attrs, parent) {
+Blockly.utils.dom.createSvgElement = function(name, attrs, parent, unshiftFlag) {
   var e = /** @type {!SVGElement} */
       (document.createElementNS(Blockly.utils.dom.SVG_NS, name));
   for (var key in attrs) {
@@ -96,7 +97,11 @@ Blockly.utils.dom.createSvgElement = function(name, attrs, parent) {
     e.runtimeStyle = e.currentStyle = e.style;
   }
   if (parent) {
-    parent.appendChild(e);
+    if(unshiftFlag && parent.firstChild){
+      parent.insertBefore(e, parent.firstChild);
+    }else{
+      parent.appendChild(e);
+    }
   }
   return e;
 };

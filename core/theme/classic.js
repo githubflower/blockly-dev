@@ -46,7 +46,8 @@ Blockly.Themes.Classic.defaultBlockStyles = {
     "colourPrimary": "230"
   },
   "procedure_blocks": {
-    "colourPrimary": "290"
+    "colourPrimary": "#926fff"
+    // "colourPrimary": "#17a1ff"
   },
   "text_blocks": {
     "colourPrimary": "160"
@@ -55,7 +56,7 @@ Blockly.Themes.Classic.defaultBlockStyles = {
     "colourPrimary": "#95ca34"
   },
   "variable_dynamic_blocks": {
-    "colourPrimary": "310"
+    "colourPrimary": "#564895"
   },
   "hat_blocks": {
     "colourPrimary": "330",

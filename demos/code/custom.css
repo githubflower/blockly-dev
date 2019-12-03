@@ -12,23 +12,43 @@
     /*border: 1px solid #000000;*/
 }
 .blocklyText{
-	color: #222222;
-	fill: #222222;
+	/*color: #222222;*/
+	/*fill: #222222;*/
+	color: #FFFFFF;
+	fill: #FFFFFF;
 }
 .blocklyPath{
 	/*fill: #ffffff;*/
 	/*fill: transparent;*/
 	stroke: #666666;
+	transition: all 0.3s;
+}
+.blocklyPath:hover{
+	stroke-dasharray: 5 0 !important;
+	stroke-width: 3px !important;
+	stroke-dashoffset: 5 !important;
+	stroke: #06D6A0 !important;
 }
 .blocklyNonEditableText>rect, .blocklyEditableText>rect{
 	stroke: #222222;
+    fill: #000000; 
+    fill-opacity: .6;
 }
 .blocklyEditableText:hover>rect{
-	stroke: #5ba55b;
+	stroke: #06D6A0;
+	stroke-width: 5px;
+	cursor: pointer;
 }
 .blocklyEditableText > rect, .blocklyEditableText > text{
-	cursor: default;
+	cursor: pointer;
+}
+.blocklyEditableText > text{
+	fill: #ffffff;
 }
 .blocklySelected>.blocklyPath{
 	stroke: #409EFF
+}
+
+.blocklyMainBackground{
+	fill: #282c34 !important;
 }

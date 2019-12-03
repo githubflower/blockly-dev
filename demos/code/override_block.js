@@ -5,7 +5,6 @@
 Blockly.Block.prototype.doSthWithFieldBtnClick = function(btn){
   if(this.type === 'controls_if'){
     if(btn.eventType === 'toggleIF'){
-      debugger;
       var input = btn.sourceBlock_.inputList.find(item => {
         return item.name === btn.name;
       }); 
