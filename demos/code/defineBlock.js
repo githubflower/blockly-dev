@@ -51,6 +51,73 @@ Blockly.Blocks['line'] = {
   }
 };
 
+var threadJson = {
+  message0: 'test %1',
+  args0: [
+    {
+      "type": "input_statement",
+      "name": "thread"
+    }
+  ],
+};
+Blockly.Blocks.thread = {
+  init: function() {
+    this.jsonInit(threadJson);
+    // Assign 'this' to a variable for use in the tooltip closure below.
+    var thisBlock = this;
+    this.setTooltip(function() {
+      return 'a thread block that contains any blocks but thread block.'
+    });
+  }
+}
+
+Blockly.Blocks.thread2 = {
+  init: function() {
+    var nameField = new Blockly.FieldTextInput('',
+        Blockly.Procedures.rename);
+    nameField.setSpellcheck(false);
+    this.appendDummyInput()
+        .appendField(Blockly.Msg['PROCEDURES_DEFRETURN_TITLE'])
+        .appendField(nameField, 'NAME')
+        .appendField('', 'PARAMS');
+ /*   this.appendValueInput('RETURN')
+        .setAlign(Blockly.ALIGN_RIGHT)
+        .appendField(Blockly.Msg['PROCEDURES_DEFRETURN_RETURN']);*/
+  
+    this.setStyle('procedure_blocks');
+    this.setTooltip(Blockly.Msg['PROCEDURES_DEFRETURN_TOOLTIP']);
+    this.setHelpUrl(Blockly.Msg['PROCEDURES_DEFRETURN_HELPURL']);
+    this.arguments_ = [];
+    this.argumentVarModels_ = [];
+    this.setStatements_(true);
+    this.statementConnection_ = null;
+  },
+  setStatements_: Blockly.Blocks['procedures_defnoreturn'].setStatements_,
+  updateParams_: Blockly.Blocks['procedures_defnoreturn'].updateParams_,
+  // mutationToDom: Blockly.Blocks['procedures_defnoreturn'].mutationToDom,
+  // domToMutation: Blockly.Blocks['procedures_defnoreturn'].domToMutation,
+  decompose: Blockly.Blocks['procedures_defnoreturn'].decompose,
+  compose: Blockly.Blocks['procedures_defnoreturn'].compose,
+  /**
+   * Return the signature of this procedure definition.
+   * @return {!Array} Tuple containing three elements:
+   *     - the name of the defined procedure,
+   *     - a list of all its arguments,
+   *     - that it DOES have a return value.
+   * @this {Blockly.Block}
+   */
+  getProcedureDef: function() {
+    return [this.getFieldValue('NAME'), this.arguments_, true];
+  },
+  getVars: Blockly.Blocks['procedures_defnoreturn'].getVars,
+  getVarModels: Blockly.Blocks['procedures_defnoreturn'].getVarModels,
+  renameVarById: Blockly.Blocks['procedures_defnoreturn'].renameVarById,
+  updateVarName: Blockly.Blocks['procedures_defnoreturn'].updateVarName,
+  displayRenamedVar_: Blockly.Blocks['procedures_defnoreturn'].displayRenamedVar_,
+  customContextMenu: Blockly.Blocks['procedures_defnoreturn'].customContextMenu,
+  callType_: 'procedures_callreturn'
+}
+
 
 
 
@@ -132,6 +199,5 @@ Blockly.Blocks['block_var'] = {
 
     this.setTooltip("define object");
     this.setHelpUrl("test_url");
-
   }
 };

@@ -100,7 +100,8 @@ Blockly.blockRendering.Drawer.prototype.recordSizeOnBlock_ = function() {
  * @protected
  */
 Blockly.blockRendering.Drawer.prototype.hideHiddenIcons_ = function() {
-  for (var i = 0, iconInfo; (iconInfo = this.info_.hiddenIcons[i]); i++) {
+  for (var i = 0, iconInfo;
+    (iconInfo = this.info_.hiddenIcons[i]); i++) {
     iconInfo.icon.iconGroup_.setAttribute('display', 'none');
   }
 };
@@ -139,16 +140,17 @@ Blockly.blockRendering.Drawer.prototype.drawTop_ = function() {
 
   this.positionPreviousConnection_();
   this.outlinePath_ +=
-      Blockly.utils.svgPaths.moveBy(topRow.xPos, this.info_.startY);
-  for (var i = 0, elem; (elem = elements[i]); i++) {
+    Blockly.utils.svgPaths.moveBy(topRow.xPos, this.info_.startY);
+  for (var i = 0, elem;
+    (elem = elements[i]); i++) {
     // console.log('elem.types: ' + elem.type.toString(2)) //debugger
     // 参考： \core\renderers\measurables\types.js
     if (Blockly.blockRendering.Types.isLeftRoundedCorner(elem)) {
-      this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.topLeft;//zjie 去掉所有block左上角圆弧
-    } else if (Blockly.blockRendering.Types.isPreviousConnection(elem)) {// 是否是前置连接块 如果是 则说明顶部要有凹槽
-      this.outlinePath_ += elem.shape.pathLeft;// elem.shape.pathLeft: l 6,4  3,0  6,-4  //zjie  画一条直线代替原来的折线
+      this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.topLeft; //zjie 去掉所有block左上角圆弧
+    } else if (Blockly.blockRendering.Types.isPreviousConnection(elem)) { // 是否是前置连接块 如果是 则说明顶部要有凹槽
+      this.outlinePath_ += elem.shape.pathLeft; // elem.shape.pathLeft: l 6,4  3,0  6,-4  //zjie  画一条直线代替原来的折线
     } else if (Blockly.blockRendering.Types.isHat(elem)) {
-      this.outlinePath_ += this.constants_.START_HAT.path;//zjie 始终不会进来？
+      this.outlinePath_ += this.constants_.START_HAT.path; //zjie 始终不会进来？
     } else if (Blockly.blockRendering.Types.isSpacer(elem)) {
       this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', elem.width);
     }
@@ -164,9 +166,9 @@ Blockly.blockRendering.Drawer.prototype.drawTop_ = function() {
  */
 Blockly.blockRendering.Drawer.prototype.drawJaggedEdge_ = function(row) {
   var remainder =
-      row.height - this.constants_.JAGGED_TEETH.height;
+    row.height - this.constants_.JAGGED_TEETH.height;
   this.outlinePath_ += this.constants_.JAGGED_TEETH.path +
-      Blockly.utils.svgPaths.lineOnAxis('v', remainder);
+    Blockly.utils.svgPaths.lineOnAxis('v', remainder);
 };
 
 /**
@@ -181,19 +183,19 @@ Blockly.blockRendering.Drawer.prototype.drawValueInput_ = function(row) {
   this.positionExternalValueConnection_(row);
 
   var pathDown = (typeof input.shape.pathDown == "function") ?
-      input.shape.pathDown(input.height) :
-      input.shape.pathDown;
-  
+    input.shape.pathDown(input.height) :
+    input.shape.pathDown;
+
   //zjie 当有外部输入的时候，是否画右边的凹槽
-  if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner){
+  if (window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner) {
     this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
       // pathDown +  //zjie
       Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
-  }else{
+  } else {
     this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
-      pathDown + 
+      pathDown +
       Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
-  }      
+  }
 };
 
 
@@ -208,19 +210,27 @@ Blockly.blockRendering.Drawer.prototype.drawStatementInput_ = function(row) {
   // Where to start drawing the notch, which is on the right side in LTR.
   var x = input.xPos + input.notchOffset + input.shape.width;
   var innerTopLeftCorner =
-      input.shape.pathRight +
-      Blockly.utils.svgPaths.lineOnAxis('h',
-          -(input.notchOffset - this.constants_.INSIDE_CORNERS.width)) +
-      this.constants_.INSIDE_CORNERS.pathTop;
+    input.shape.pathRight +
+    Blockly.utils.svgPaths.lineOnAxis('h', -(input.notchOffset - this.constants_.INSIDE_CORNERS.width)) +
+    this.constants_.INSIDE_CORNERS.pathTop;
 
-  var innerHeight =
-      row.height - (2 * this.constants_.INSIDE_CORNERS.height);
-
-  this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', x) +
+  var innerHeight = row.height - (2 * this.constants_.INSIDE_CORNERS.height);
+  
+  if (this.block_.type === 'threads_def') {
+    debugger;
+    x = this.info_.width;
+    this.outlinePath_ = ` m 0 0 H ${x} `;
+    this.outlinePath_ += /*Blockly.utils.svgPaths.lineOnAxis('H', x) +*/
+      Blockly.utils.svgPaths.lineOnAxis('v', innerHeight) +
+      // this.constants_.INSIDE_CORNERS.pathBottom +
+      Blockly.utils.svgPaths.lineOnAxis('H', row.xPos + row.width);
+  } else {
+    this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', x) +
       innerTopLeftCorner +
       Blockly.utils.svgPaths.lineOnAxis('v', innerHeight) +
       this.constants_.INSIDE_CORNERS.pathBottom +
       Blockly.utils.svgPaths.lineOnAxis('H', row.xPos + row.width);
+  }
   this.positionStatementInputConnection_(row);
 };
 
@@ -233,7 +243,7 @@ Blockly.blockRendering.Drawer.prototype.drawStatementInput_ = function(row) {
  */
 Blockly.blockRendering.Drawer.prototype.drawRightSideRow_ = function(row) {
   this.outlinePath_ +=
-      Blockly.utils.svgPaths.lineOnAxis('V', row.yPos + row.height);
+    Blockly.utils.svgPaths.lineOnAxis('V', row.yPos + row.height);
 };
 
 
@@ -250,20 +260,21 @@ Blockly.blockRendering.Drawer.prototype.drawBottom_ = function() {
   this.outlinePath_ +=
     Blockly.utils.svgPaths.lineOnAxis('V', bottomRow.baseline);
 
-  for (var i = elems.length - 1, elem; (elem = elems[i]); i--) {
+  for (var i = elems.length - 1, elem;
+    (elem = elems[i]); i--) {
     if (Blockly.blockRendering.Types.isNextConnection(elem)) {
-      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.bottomHump){
+      if (window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.bottomHump) {
         this.outlinePath_ += (this.constants_.NOTCH_WIDTH * -1); // elem.shape.pathLeft:  l -6,4  -3,0  -6,-4   //zjie
-      }else{
+      } else {
         this.outlinePath_ += elem.shape.pathRight;
       }
     } else if (Blockly.blockRendering.Types.isLeftSquareCorner(elem)) {
       this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', bottomRow.xPos);
     } else if (Blockly.blockRendering.Types.isLeftRoundedCorner(elem)) {
-      if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner){
+      if (window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner) {
         // a 8 8 0 0,1 -8,-8 //zjie 虽然是画椭圆的写法，但是长半径和短半径相同，实际画的就是一个正圆
         this.outlinePath_ += ' h -8 ';
-      }else{
+      } else {
         this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.bottomLeft;
       }
     } else if (Blockly.blockRendering.Types.isSpacer(elem)) {
@@ -283,15 +294,15 @@ Blockly.blockRendering.Drawer.prototype.drawLeft_ = function() {
 
   if (outputConnection) {
     var tabBottom = outputConnection.connectionOffsetY +
-        outputConnection.height;
+      outputConnection.height;
     var pathUp = (typeof outputConnection.shape.pathUp == "function") ?
-        outputConnection.shape.pathUp(outputConnection.height) :
-        outputConnection.shape.pathUp;
+      outputConnection.shape.pathUp(outputConnection.height) :
+      outputConnection.shape.pathUp;
 
     // Draw a line up to the bottom of the tab. //zjie 画左侧的puzzle tab
-    if(window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftHump){
+    if (window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftHump) {
       this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('V', tabBottom);
-    }else{
+    } else {
       this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('V', tabBottom) + pathUp;
     }
   }
@@ -306,16 +317,19 @@ Blockly.blockRendering.Drawer.prototype.drawLeft_ = function() {
  * @protected
  */
 Blockly.blockRendering.Drawer.prototype.drawInternals_ = function() {
-  for (var i = 0, row; (row = this.info_.rows[i]); i++) {
-    for (var j = 0, elem; (elem = row.elements[j]); j++) {
+  for (var i = 0, row;
+    (row = this.info_.rows[i]); i++) {
+    for (var j = 0, elem;
+      (elem = row.elements[j]); j++) {
       if (Blockly.blockRendering.Types.isInlineInput(elem)) {
         this.drawInlineInput_(
-            /** @type {!Blockly.blockRendering.InlineInput} */ (elem));
+          /** @type {!Blockly.blockRendering.InlineInput} */
+          (elem));
       } else if (Blockly.blockRendering.Types.isIcon(elem) ||
-          Blockly.blockRendering.Types.isField(elem)) {
+        Blockly.blockRendering.Types.isField(elem)) {
         this.layoutField_(
-            /** @type {!Blockly.blockRendering.Field|!Blockly.blockRendering.Icon} */
-            (elem));
+          /** @type {!Blockly.blockRendering.Field|!Blockly.blockRendering.Icon} */
+          (elem));
       }
     }
   }
@@ -350,7 +364,7 @@ Blockly.blockRendering.Drawer.prototype.layoutField_ = function(fieldInfo) {
     fieldInfo.icon.computeIconLocation();
   } else {
     svgGroup.setAttribute(
-        'transform', 'translate(' + xPos + ',' + yPos + ')' + scale);
+      'transform', 'translate(' + xPos + ',' + yPos + ')' + scale);
   }
 
   if (this.info_.isInsertionMarker) {
@@ -376,12 +390,12 @@ Blockly.blockRendering.Drawer.prototype.drawInlineInput_ = function(input) {
   var connectionRight = input.xPos + input.connectionWidth;
 
   this.inlinePath_ += Blockly.utils.svgPaths.moveTo(connectionRight, yPos) +
-      Blockly.utils.svgPaths.lineOnAxis('v', connectionTop) +
-      input.shape.pathDown +
-      Blockly.utils.svgPaths.lineOnAxis('v', height - connectionBottom) +
-      Blockly.utils.svgPaths.lineOnAxis('h', width - input.connectionWidth) +
-      Blockly.utils.svgPaths.lineOnAxis('v', -height) +
-      'z';
+    Blockly.utils.svgPaths.lineOnAxis('v', connectionTop) +
+    input.shape.pathDown +
+    Blockly.utils.svgPaths.lineOnAxis('v', height - connectionBottom) +
+    Blockly.utils.svgPaths.lineOnAxis('h', width - input.connectionWidth) +
+    Blockly.utils.svgPaths.lineOnAxis('v', -height) +
+    'z';
 
   this.positionInlineInputConnection_(input);
 };
@@ -467,7 +481,7 @@ Blockly.blockRendering.Drawer.prototype.positionNextConnection_ = function() {
     var x = connInfo.xPos; // Already contains info about startX
     var connX = (this.info_.RTL ? -x : x);
     connInfo.connectionModel.setOffsetInBlock(
-        connX, (connInfo.centerline - connInfo.height / 2));
+      connX, (connInfo.centerline - connInfo.height / 2));
   }
 };
 
@@ -480,6 +494,6 @@ Blockly.blockRendering.Drawer.prototype.positionOutputConnection_ = function() {
     var x = this.info_.startX;
     var connX = this.info_.RTL ? -x : x;
     this.block_.outputConnection.setOffsetInBlock(connX,
-        this.info_.outputConnection.connectionOffsetY);
+      this.info_.outputConnection.connectionOffsetY);
   }
 };

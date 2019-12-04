@@ -276,7 +276,7 @@ Blockly.VARIABLE_DYNAMIC_CATEGORY_NAME = 'VARIABLE_DYNAMIC';
  * @const {string}
  */
 Blockly.PROCEDURE_CATEGORY_NAME = 'PROCEDURE';
-
+Blockly.THREAD_CATEGORY_NAME = 'THREAD';
 /**
  * String for use in the dropdown created in field_variable.
  * This string indicates that this option in the dropdown is 'Rename

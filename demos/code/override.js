@@ -73,6 +73,9 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
       case 'line':
         this.drawLineWithArrow();
         break;
+      case 'thread':
+        this.drawThreadBlock();
+        break;
       case 'controls_if':
         // this.drawOutline_controls_if_else();
         this.drawOutline_controls_if();
@@ -328,6 +331,11 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
 */
     this.outlinePath_ += ` v ${lineHeight} m 0 0 l -${this.constants_.ARROW_SHORT} -${this.constants_.ARROW_LONG} m ${2 * this.constants_.ARROW_SHORT} 0 l -${this.constants_.ARROW_SHORT} ${this.constants_.ARROW_LONG} z`;
     this.positionNextConnection_();
+  },
+  drawThreadBlock(){
+    var minW = 100,
+      minH = 200;
+    this.outlinePath_ += `m 0 0 h ${minW} v ${minH} h -${minW} v -${minH} z`;
   },
   drawIf: function(item, doElseBranchInfo) {
     this.moveToStartPoint(item);
@@ -611,7 +619,6 @@ Object.assign(Blockly.geras.Drawer.prototype, {
         width: row.width,
         height: row.height
       }));
-      debugger
       /*var lineColor = jQuery('.blocklyMainBackground').css('fill');
       var defaultAttrs = {
         width: '3',
@@ -891,6 +898,11 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       if (this.block_.type !== 'controls_if') {
         yCursor += row.height;
       }
+      if(this.block_.type === 'threads_def' && row.hasStatement){
+        var statementInput = this.getStatementInput(row)
+        debugger;
+        this.width = 300
+      }
 
       if (this.block_.type === 'controls_if' && row.hasStatement) {
         var statementInput = this.getStatementInput(row)
@@ -918,10 +930,13 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       yCursor = other_rows_height + Math.max(do_block_height, else_block_height);
     }
     this.bottomRow.baseline = yCursor - this.bottomRow.descenderHeight;
-
     // The dark (lowlight) adds to the size of the block in both x and y.
     this.widthWithChildren = widestRowWithConnectedBlocks + this.startX + this.constants_.DARK_PATH_OFFSET;
     this.width += this.constants_.DARK_PATH_OFFSET;
+    if(this.block_.type === 'threads_def'){
+      debugger;
+      this.width = Math.max(this.widthWithChildren, this.width);
+    }
 
     function getAllBranchWidth() {
       var doElseBranchInfo = this.getDoElseBranchInfo();

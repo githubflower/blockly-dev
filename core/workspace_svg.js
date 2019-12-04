@@ -128,6 +128,10 @@ Blockly.WorkspaceSvg = function(options,
     this.registerToolboxCategoryCallback(Blockly.PROCEDURE_CATEGORY_NAME,
         Blockly.Procedures.flyoutCategory);
   }
+  if (Blockly.Threads && Blockly.Threads.flyoutCategory) {
+    this.registerToolboxCategoryCallback(Blockly.THREAD_CATEGORY_NAME,
+        Blockly.Threads.flyoutCategory);
+  }
 
   /**
    * The block renderer used for rendering blocks on this workspace.

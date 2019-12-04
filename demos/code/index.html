@@ -19,6 +19,7 @@
   <script src="../../blocks/loops.js"></script>
   <script src="../../blocks/math.js"></script>
   <script src="../../blocks/procedures.js"></script>
+  <script src="../../blocks/threads.js"></script>
   <script src="../../blocks/text.js"></script>
   <script src="../../blocks/variables.js"></script>
   <script src="../../blocks/variables_dynamic.js"></script>
@@ -406,15 +407,18 @@
     <category name="%{BKY_CATVARIABLES}" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
     <category name="%{BKY_CATFUNCTIONS}" colour="%{BKY_PROCEDURES_HUE}" custom="PROCEDURE"></category>
     <seq></seq>
-    <category name="category_test" colour="#00ffcc">
-      <category name="sub_category_test" colour="#00ffcc">
+    <category name="Thread" colour="#2abeda" custom="THREAD"></category>
+    <category name="CustomBlock" colour="#0c9cb7">
+      <category name="todo" colour="#f2631f">
         <block type="set_name"></block>
         <block type="set_local"></block>
         <block type="set_local2"></block>
         <block type="block_var"></block>
       </category>
-      <category name="line" colour="#ff00cc">
+      <category name="base" colour="#2abeda">
         <block type="line"></block>
+        <block type="thread"></block>
+        <block type="thread2"></block>
       </category>
     </category>
   </xml>
