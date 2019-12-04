@@ -292,7 +292,9 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
           // this.outlinePath_ += ' h -8 ';
           let radius = this.constants_.CORNER_RADIUS;
           if (!bottomRow.connection) {
-            this.outlinePath_ += `h -${radius} `;
+            if(this.block_.type !== 'threads_def'){
+              this.outlinePath_ += `h -${radius} `;
+            }
           }
         } else {
           // this.outlinePath_ += this.constants_.OUTSIDE_CORNERS.bottomLeft;
@@ -308,7 +310,11 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
           this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', (bottomRow.width / 2 - bottomRow.connection.width / 2) * -1);
         } else {
           // this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', (bottomRow.width / 2) * -1);
-          this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', elem.width * -1);
+          if(this.block_.type === 'threads_def'){
+            this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', this.info_.width * -1);
+          }else{
+            this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', elem.width * -1);
+          }
         }
       }
     }
@@ -521,6 +527,9 @@ Object.assign(Blockly.geras.Drawer.prototype, {
               (this.block_.RTL ? ' scale(-1 1)' : '')
           },
           this.block_.getSvgRoot());*/
+      } else if (this.block_.type === 'threads_def'){
+        debugger;
+        input.connection.setOffsetInBlock(this.info_.width / 2, row.yPos + this.constants_.DARK_PATH_OFFSET);
       } else {
         input.connection.setOffsetInBlock(connX, row.yPos + this.constants_.DARK_PATH_OFFSET);
       }
@@ -898,11 +907,7 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       if (this.block_.type !== 'controls_if') {
         yCursor += row.height;
       }
-      if(this.block_.type === 'threads_def' && row.hasStatement){
-        var statementInput = this.getStatementInput(row)
-        debugger;
-        this.width = 300
-      }
+ 
 
       if (this.block_.type === 'controls_if' && row.hasStatement) {
         var statementInput = this.getStatementInput(row)
@@ -934,7 +939,6 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     this.widthWithChildren = widestRowWithConnectedBlocks + this.startX + this.constants_.DARK_PATH_OFFSET;
     this.width += this.constants_.DARK_PATH_OFFSET;
     if(this.block_.type === 'threads_def'){
-      debugger;
       this.width = Math.max(this.widthWithChildren, this.width);
     }
 

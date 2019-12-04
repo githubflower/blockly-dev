@@ -223,7 +223,7 @@ Blockly.blockRendering.Drawer.prototype.drawStatementInput_ = function(row) {
     this.outlinePath_ += /*Blockly.utils.svgPaths.lineOnAxis('H', x) +*/
       Blockly.utils.svgPaths.lineOnAxis('v', innerHeight) +
       // this.constants_.INSIDE_CORNERS.pathBottom +
-      Blockly.utils.svgPaths.lineOnAxis('H', row.xPos + row.width);
+      Blockly.utils.svgPaths.lineOnAxis('H', x);
   } else {
     this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', x) +
       innerTopLeftCorner +
