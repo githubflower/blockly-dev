@@ -201,7 +201,8 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
       var connX = (this.info_.RTL ? -x : x);
       // topRow.connection.connectionModel.setOffsetInBlock(connX, 0);  // google默认的位置
       if (this.block_.type === 'controls_if') {
-        topRow.connection.connectionModel.setOffsetInBlock(this.constants_.DIAMOND_LONG, 0); //a
+        var ifBlockInfo = this.info_.getDoElseBranchInfo();
+        topRow.connection.connectionModel.setOffsetInBlock(ifBlockInfo.branchs[0].width_left, 0); //a
       }else if(this.block_.type === 'controls_repeat_ext'){
         var loopInfo = this.info_.getLoopInfo();
         topRow.connection.connectionModel.setOffsetInBlock(/*this.constants_.DIAMOND_LONG + this.constants_.GAP_H*/loopInfo.width_left, 0);
@@ -899,7 +900,9 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       do_block_height = 0,
       else_block_height = 0,
       other_rows_height = 0;
-
+if(this.block_.type === 'threads_def'){
+    debugger
+}
     for (var i = 0, row;
       (row = this.rows[i]); i++) {
       row.yPos = yCursor;
@@ -918,6 +921,10 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
         } else {
           other_rows_height += row.height;
         }
+      }
+      if(row.widthWithConnectedBlocks > widestRowWithConnectedBlocks){
+        this.widestChildBlock = row;
+       
       }
       widestRowWithConnectedBlocks = Math.max(widestRowWithConnectedBlocks, row.widthWithConnectedBlocks);
       // Add padding to the bottom row if block height is less than minimum
@@ -939,6 +946,8 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     this.widthWithChildren = widestRowWithConnectedBlocks + this.startX + this.constants_.DARK_PATH_OFFSET;
     this.width += this.constants_.DARK_PATH_OFFSET;
     if(this.block_.type === 'threads_def'){
+      window.aath = this;
+      debugger;
       this.width = Math.max(this.widthWithChildren, this.width);
     }
 
@@ -952,8 +961,10 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     }
 
     if (this.block_.type === 'controls_if') {
+      window.aaif = this;
       this.width = getAllBranchWidth.call(this);
       this.widthWithChildren = this.width; //外部的容器在计算宽度时会参考this.widthWithChildren
+      debugger
     }
     this.height = yCursor + this.constants_.DARK_PATH_OFFSET;
 

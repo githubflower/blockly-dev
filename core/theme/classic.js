@@ -49,6 +49,13 @@ Blockly.Themes.Classic.defaultBlockStyles = {
     "colourPrimary": "#926fff"
     // "colourPrimary": "#17a1ff"
   },
+  "THREAD": {
+    "colourPrimary": "#282c34"
+  },
+
+  "Thread": {
+    "colourPrimary": "#ff0000"
+  },
   "text_blocks": {
     "colourPrimary": "160"
   },
