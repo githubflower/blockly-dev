@@ -45,3 +45,15 @@ Blockly.JavaScript['block_var'] = (block)=>{
 Blockly.JavaScript['set_local'] = ()=>{
   return 'todo: set_local';
 }
+
+Blockly.JavaScript['threads_def'] = ()=>{
+  return 'todo: threads_def';
+}
+
+Blockly.JavaScript['threads_start'] = ()=>{
+  return 'todo: threads_start';
+}
+
+Blockly.JavaScript['threads_end'] = ()=>{
+  return 'todo: threads_end';
+}

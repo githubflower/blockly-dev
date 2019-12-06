@@ -459,7 +459,8 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
       connX = loopInfo.width_left;
       input.connection.setOffsetInBlock(connX, this.constants_.DARK_PATH_OFFSET + 2 * this.constants_.DIAMOND_SHORT + this.constants_.STATEMENT_OFFSET_Y);
 
-      this.outlinePath_ += `M ${loopInfo.width_left} ${2 * this.constants_.DIAMOND_SHORT + loopInfo.height / 2 - 5} `;
+      // this.outlinePath_ += `M ${loopInfo.width_left} ${2 * this.constants_.DIAMOND_SHORT + loopInfo.height / 2 - 5} `;
+      this.outlinePath_ += `M ${loopInfo.width_left} ${2 * this.constants_.DIAMOND_SHORT +  this.constants_.STATEMENT_OFFSET_Y - 5} `;
       this.outlinePath_ += ` a 5 5 0 1 1 0 10 `;
       this.outlinePath_ += ` a 5 5 0 1 1 0 -10 z `;
     }else {
@@ -529,12 +530,35 @@ Object.assign(Blockly.geras.Drawer.prototype, {
           },
           this.block_.getSvgRoot());*/
       } else if (this.block_.type === 'threads_def'){
-        debugger;
-        input.connection.setOffsetInBlock(this.info_.width / 2, row.yPos + this.constants_.DARK_PATH_OFFSET);
+        this.positionStatementInputConnection_threads_def(input, row);
       } else {
         input.connection.setOffsetInBlock(connX, row.yPos + this.constants_.DARK_PATH_OFFSET);
       }
     }
+  },
+  positionStatementInputConnection_threads_def(input, row){
+    // 找出statementInput中所有主线block的connection最大x方向偏移
+    // this.block_.
+    var maxOffsetX = this.getMaxOffsetX();
+    input.connection.setOffsetInBlock(maxOffsetX || this.info_.width / 2, row.yPos + this.constants_.DARK_PATH_OFFSET);
+    // input.connection.setOffsetInBlock(this.info_.width / 2, row.yPos + this.constants_.DARK_PATH_OFFSET);
+  },
+  getMaxOffsetX(){
+    var childBlocks = this.block_.childBlocks_;
+    var curBlock;
+    var maxOffsetX = 0;
+    if(childBlocks && childBlocks.length){
+      curBlock = childBlocks[0];
+      while(curBlock){
+        maxOffsetX = Math.max(maxOffsetX, curBlock.previousConnection.offsetInBlock_.x);
+        if(curBlock.nextConnection){
+          curBlock = curBlock.nextConnection.targetBlock()
+        }else{
+          curBlock = null;
+        }
+      }
+    }
+    return maxOffsetX + 5;
   },
   //只有在controls_if模块才有这个doElseBranchInfo
   positionNextConnection_: function(doElseBranchInfo) {
