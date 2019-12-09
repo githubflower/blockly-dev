@@ -2,6 +2,22 @@
 window.QKM = {};
 
 Object.assign(Blockly.blockRendering.Drawer.prototype, {
+  drawSomeRect(){
+    switch(this.block_.type){
+      case 'controls_for':
+        this.drawConditionLayerRect({
+          x: this.info_.getLoopInfo().width_left,
+          y: 20,
+          width: this.info_.width_google  ,
+          height: 30,
+          class: 'maskRect',
+          fill: '#ff4b2c',
+        }, this.block_, true);
+        break;
+      default:
+        // do nothing
+    }
+  },
   drawInlineInput_(input) {
     var width = input.width;
     var height = input.height;
@@ -157,13 +173,12 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
       y: this.constants_.DIAMOND_SHORT * 2 + loopInfo.height +   1
     }, this.block_);
     this.positionPreviousConnection_();
-    debugger
+    
     for (var r = 1; r < this.info_.rows.length - 1; r++) {
       var row = this.info_.rows[r];
       if (row.hasStatement) { // 是否有块级代码输入 默认无
         this.drawStatementInput_loop(row);
       } else if (row.hasExternalInput) { // 如果是INPUT_VALUE 块 则有外部输入
-        debugger
         this.drawValueInput_(row);
       }
     }
@@ -187,6 +202,27 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
       });
     }else{
       target.maskRect = Blockly.utils.dom.createSvgElement('rect', Object.assign(defaultAttrs, attrs), target.svgGroup_, unshiftFlag);
+    }
+  },
+  //todo 1209
+  drawConditionLayerRect(attrs, target, asFirstChild){
+    //不能放在第一个元素的位置（因为放在后面的元素渲染时优先级更高，会覆盖前面的内容），需要插入到path元素之后，也就是第3个元素之后
+    debugger
+    var defaultAttrs = {
+      width: this.info_.width_google,
+      height: 50,
+      class: 'maskRect',
+      fill: '#ff0000',
+      // stroke: lineColor
+    };
+    if(target.layerRect){
+      Object.keys(attrs).forEach(key => {
+        target.layerRect.setAttribute(key, attrs[key]);
+      });
+    }else{
+      // target.layerRect = Blockly.utils.dom.createSvgElement('rect', Object.assign(defaultAttrs, attrs), target.svgGroup_, asFirstChild);
+      target.layerRect = Blockly.utils.dom.createSvgElement('rect', Object.assign(defaultAttrs, attrs));
+      Blockly.utils.dom.insertAfter(target.layerRect, target.svgGroup_.children[2]); //前3个元素都是path
     }
   },
   positionPreviousConnection_: function() {
@@ -475,6 +511,22 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
 
 
 Object.assign(Blockly.geras.Drawer.prototype, {
+  draw() {
+    this.hideHiddenIcons_();
+    this.drawOutline_();
+    this.drawInternals_();
+    this.drawSomeRect();
+    this.block_.pathObject.setPaths(this.outlinePath_ + '\n' + this.inlinePath_,
+        this.highlighter_.getPath());
+    if (this.info_.RTL) {
+      this.block_.pathObject.flipRTL();
+    }
+    if (Blockly.blockRendering.useDebugger) {
+      this.block_.renderingDebugger.drawDebug(this.block_, this.info_);
+    }
+    this.recordSizeOnBlock_();
+  },
+
   // 设置connection的位置
   positionStatementInputConnection_: function(row, doElseBranchInfo) {
     var input = row.getLastInput();
@@ -794,7 +846,6 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     var yPos = input.centerline - input.height / 2;
     // Move the connection.
     if (input.connection) {
-      debugger
       // xPos already contains info about startX
       var connX = input.xPos + input.connectionWidth + this.constants_.DARK_PATH_OFFSET;
       if (this.block_.type == 'controls_repeat_ext' ||
@@ -1038,6 +1089,7 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     // The dark (lowlight) adds to the size of the block in both x and y.
     this.widthWithChildren = widestRowWithConnectedBlocks + this.startX + this.constants_.DARK_PATH_OFFSET;
     this.width += this.constants_.DARK_PATH_OFFSET;
+    this.width_google = this.width;//按照google的计算框架计算出的block的宽度
     if(this.block_.type === 'threads_def' ||
         this.block_.type === 'procedures_defnoreturn' ||
         this.block_.type === 'procedures_defreturn' ){
@@ -1054,7 +1106,6 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     }
 
     if (this.block_.type === 'controls_if') {
-      window.aaif = this;
       this.width = getAllBranchWidth.call(this);
       this.widthWithChildren = this.width; //外部的容器在计算宽度时会参考this.widthWithChildren
     }
