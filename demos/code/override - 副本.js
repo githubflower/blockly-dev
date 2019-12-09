@@ -1,6 +1,47 @@
 //存放一些自定义参数
 window.QKM = {};
 
+Blockly.blockRendering.Drawer.prototype.drawOutline_controls_if_else = function() {
+  // this.outlinePath_ 需要分为if---elseif---else 3个部分进行绘制
+  const a = this.constants_.DIAMOND_LONG; //菱形的长半轴
+  const b = this.constants_.DIAMOND_SHORT; //菱形的短半轴
+  const shortLineWidth = this.constants_.LINE_ELSE_H; //连接菱形的else的最少短横线长度
+  const arrowWidth = this.constants_.ARROW_WIDTH; // 箭头的宽
+  const arrowHeight = this.constants_.ARROW_HEIGHT; //箭头的高
+  const flagRectWidth = this.constants_.PRESET_BLOCK; //预置的block的边长
+
+  // 将菱形的左边的点看做x轴的原点
+  this.outlinePath_ += `m 0 0 m ${a} 0 l ${a} ${b} l -${a} ${b} l -${a} -${b} l ${a} -${b} `; //菱形
+  // console.log(this.info_.block_.svgGroup_, this.info_.block_.id, this.info_.testParams);
+
+  this.outlinePath_ += `M ${2 * a} ${b} l ${this.info_.getInnerWidth() - a} 0 `; //绘制else分支横线
+  this.outlinePath_ += `l 0 ${this.info_.height - b + this.constants_.ELSE_BOCK_OFFSET_Y } l -${this.info_.getInnerWidth()} 0 `; // else分支的折线
+  this.outlinePath_ += `l ${arrowHeight} -${arrowWidth} m -${arrowHeight} ${arrowWidth} l ${arrowHeight} ${arrowWidth} `; //绘制else分支回到主线的箭头
+
+  this.outlinePath_ += `M ${a} ${2 * b + this.constants_.STATEMENT_OFFSET_Y} l ${flagRectWidth / 2} 0 l 0 ${flagRectWidth} l -${flagRectWidth} 0 l 0 -${flagRectWidth}  z `; //绘制if分支的statement位置
+  this.outlinePath_ += `M ${a} ${2 * b} v ${this.info_.height - 2 * b} `; //if主线
+  // this.outlinePath_ += `l -${arrowWidth} -${arrowHeight} m ${arrowWidth} ${arrowHeight} l ${arrowWidth} -${arrowHeight} `; // 绘制箭头
+  this.outlinePath_ += ` z`; //todo
+
+  this.positionPreviousConnection_();
+  for (var r = 1; r < this.info_.rows.length - 1; r++) {
+    var row = this.info_.rows[r];
+    /*if (row.hasJaggedEdge) { // 是否有锯齿 如果是收拢状态则有锯齿 默认无锯齿
+      this.drawJaggedEdge_(row);
+    } else*/
+    if (row.hasStatement) { // 是否有块级代码输入 默认无
+      this.drawStatementInput_controls_if(row);
+    } else if (row.hasExternalInput) { // 如果是INPUT_VALUE 块 则有外部输入
+      this.drawValueInput_(row);
+      // this.positionExternalValueConnection_(row);
+    }
+    /*else {
+         this.drawRightSideRow_(row);
+       }*/
+  }
+}
+
+
 Object.assign(Blockly.blockRendering.Drawer.prototype, {
   drawInlineInput_(input) {
     var width = input.width;
@@ -10,14 +51,10 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     var connectionBottom = input.connectionHeight + connectionTop;
     var connectionRight = input.xPos + input.connectionWidth;
     if (this.block_.type === 'controls_repeat_ext' ||
-      this.block_.type === 'controls_whileUntil' ) {
+      this.block_.type === 'controls_whileUntil' ||
+      this.block_.type === 'controls_for') {
       var loopInfo = this.info_.getLoopInfo();
       connectionRight = loopInfo.width_left - this.constants_.DIAMOND_LONG + this.constants_.LOOP_FIELD_OFFSET_X;
-      yPos += this.constants_.LOOP_FIELD_OFFSET_Y;
-    }
-    if(this.block_.type === 'controls_for'){
-      var loopInfo = this.info_.getLoopInfo();
-      connectionRight += loopInfo.width_left;//loopInfo.width_left - this.constants_.DIAMOND_LONG + this.constants_.LOOP_FIELD_OFFSET_X;
       yPos += this.constants_.LOOP_FIELD_OFFSET_Y;
     }
     this.inlinePath_ += Blockly.utils.svgPaths.moveTo(connectionRight, yPos) +
@@ -670,7 +707,6 @@ Object.assign(Blockly.geras.Drawer.prototype, {
           Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
       }
     }
-    this.positionExternalValueConnection_(row);
   },
 
   drawValueInput_controls_if(row){
@@ -682,7 +718,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       this.outlinePath_ += (` l -${2 * (this.constants_.DIAMOND_LONG - x)} 0 l 0 -${2 * y} z`);
     } */
     var doElseBranchInfo = this.info_.getDoElseBranchInfo();
-    // this.positionExternalValueConnection_(row, doElseBranchInfo);
+    this.positionExternalValueConnection_(row, doElseBranchInfo);
     function getExternalValueInput(row) {
       return row.elements.find(item => {
         return item instanceof Blockly.blockRendering.ExternalValueInput;
@@ -735,9 +771,11 @@ Object.assign(Blockly.geras.Drawer.prototype, {
    * @return {[type]} [description]
    */
   drawValueInput_controls_whileUntil(row){
+    this.positionExternalValueConnection_(row);
     return;
   },
   drawValueInput_controls_for(row){
+    this.positionExternalValueConnection_(row);
     return;
   },
   //调整field的位置  覆盖 \core\renderers\common\drawer.js
