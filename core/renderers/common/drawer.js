@@ -213,24 +213,13 @@ Blockly.blockRendering.Drawer.prototype.drawStatementInput_ = function(row) {
     input.shape.pathRight +
     Blockly.utils.svgPaths.lineOnAxis('h', -(input.notchOffset - this.constants_.INSIDE_CORNERS.width)) +
     this.constants_.INSIDE_CORNERS.pathTop;
-
   var innerHeight = row.height - (2 * this.constants_.INSIDE_CORNERS.height);
-  
-  if (this.block_.type === 'threads_def') {
-    debugger;
-    x = this.info_.width;
-    this.outlinePath_ = ` m 0 0 H ${x} `;
-    this.outlinePath_ += /*Blockly.utils.svgPaths.lineOnAxis('H', x) +*/
-      Blockly.utils.svgPaths.lineOnAxis('v', innerHeight) +
-      // this.constants_.INSIDE_CORNERS.pathBottom +
-      Blockly.utils.svgPaths.lineOnAxis('H', x);
-  } else {
-    this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', x) +
-      innerTopLeftCorner +
-      Blockly.utils.svgPaths.lineOnAxis('v', innerHeight) +
-      this.constants_.INSIDE_CORNERS.pathBottom +
-      Blockly.utils.svgPaths.lineOnAxis('H', row.xPos + row.width);
-  }
+  this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', x) +
+    innerTopLeftCorner +
+    Blockly.utils.svgPaths.lineOnAxis('v', innerHeight) +
+    this.constants_.INSIDE_CORNERS.pathBottom +
+    Blockly.utils.svgPaths.lineOnAxis('H', row.xPos + row.width);
+
   this.positionStatementInputConnection_(row);
 };
 

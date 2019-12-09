@@ -42,7 +42,7 @@ Blockly.Blocks['threads_def'] = {
         Blockly.Threads.rename);
     nameField.setSpellcheck(false);
     this.appendDummyInput()
-        .appendField(Blockly.Msg['PROCEDURES_DEFNORETURN_TITLE'])
+        .appendField('threadName')
         .appendField(nameField, 'NAME')
         .appendField('', 'PARAMS');
    

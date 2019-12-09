@@ -47,8 +47,6 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     var width = input.width;
     var height = input.height;
     var yPos = input.centerline - height / 2;
-// debugger
-
     var connectionTop = input.connectionOffsetY;
     var connectionBottom = input.connectionHeight + connectionTop;
     var connectionRight = input.xPos + input.connectionWidth;
@@ -67,6 +65,35 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
         'z';
 
     this.positionInlineInputConnection_(input);
+  },
+  drawStatementInput_(row) {
+    var input = row.getLastInput();
+    // Where to start drawing the notch, which is on the right side in LTR.
+    var x = input.xPos + input.notchOffset + input.shape.width;
+    var innerTopLeftCorner =
+      input.shape.pathRight +
+      Blockly.utils.svgPaths.lineOnAxis('h', -(input.notchOffset - this.constants_.INSIDE_CORNERS.width)) +
+      this.constants_.INSIDE_CORNERS.pathTop;
+
+    var innerHeight = row.height - (2 * this.constants_.INSIDE_CORNERS.height);
+    
+    if (this.block_.type === 'threads_def' ||
+        this.block_.type === 'procedures_defnoreturn' ||
+        this.block_.type === 'procedures_defreturn' ) {
+      x = this.info_.width;
+      this.outlinePath_ = ` m 0 0 H ${x} `;
+      this.outlinePath_ += /*Blockly.utils.svgPaths.lineOnAxis('H', x) +*/
+        Blockly.utils.svgPaths.lineOnAxis('v', innerHeight) +
+        // this.constants_.INSIDE_CORNERS.pathBottom +
+        Blockly.utils.svgPaths.lineOnAxis('H', x);
+    } else {
+      this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', x) +
+        innerTopLeftCorner +
+        Blockly.utils.svgPaths.lineOnAxis('v', innerHeight) +
+        this.constants_.INSIDE_CORNERS.pathBottom +
+        Blockly.utils.svgPaths.lineOnAxis('H', row.xPos + row.width);
+    }
+    this.positionStatementInputConnection_(row);
   },
   drawOutline_: function() {
     switch (this.block_.type) {
@@ -293,7 +320,9 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
           // this.outlinePath_ += ' h -8 ';
           let radius = this.constants_.CORNER_RADIUS;
           if (!bottomRow.connection) {
-            if(this.block_.type !== 'threads_def'){
+            if(this.block_.type !== 'threads_def' &&
+              this.block_.type !== 'procedures_defnoreturn' &&
+              this.block_.type !== 'procedures_defreturn' ){
               this.outlinePath_ += `h -${radius} `;
             }
           }
@@ -311,7 +340,9 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
           this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', (bottomRow.width / 2 - bottomRow.connection.width / 2) * -1);
         } else {
           // this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', (bottomRow.width / 2) * -1);
-          if(this.block_.type === 'threads_def'){
+          if(this.block_.type === 'threads_def' ||
+              this.block_.type === 'procedures_defnoreturn' ||
+              this.block_.type === 'procedures_defreturn' ){
             this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', this.info_.width * -1);
           }else{
             this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('h', elem.width * -1);
@@ -529,7 +560,9 @@ Object.assign(Blockly.geras.Drawer.prototype, {
               (this.block_.RTL ? ' scale(-1 1)' : '')
           },
           this.block_.getSvgRoot());*/
-      } else if (this.block_.type === 'threads_def'){
+      } else if (this.block_.type === 'threads_def' ||
+        this.block_.type === 'procedures_defnoreturn' ||
+        this.block_.type === 'procedures_defreturn' ){
         this.positionStatementInputConnection_threads_def(input, row);
       } else {
         input.connection.setOffsetInBlock(connX, row.yPos + this.constants_.DARK_PATH_OFFSET);
@@ -924,9 +957,7 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       do_block_height = 0,
       else_block_height = 0,
       other_rows_height = 0;
-if(this.block_.type === 'threads_def'){
-    debugger
-}
+
     for (var i = 0, row;
       (row = this.rows[i]); i++) {
       row.yPos = yCursor;
@@ -969,9 +1000,9 @@ if(this.block_.type === 'threads_def'){
     // The dark (lowlight) adds to the size of the block in both x and y.
     this.widthWithChildren = widestRowWithConnectedBlocks + this.startX + this.constants_.DARK_PATH_OFFSET;
     this.width += this.constants_.DARK_PATH_OFFSET;
-    if(this.block_.type === 'threads_def'){
-      window.aath = this;
-      debugger;
+    if(this.block_.type === 'threads_def' ||
+        this.block_.type === 'procedures_defnoreturn' ||
+        this.block_.type === 'procedures_defreturn' ){
       this.width = Math.max(this.widthWithChildren, this.width);
     }
 
@@ -988,7 +1019,6 @@ if(this.block_.type === 'threads_def'){
       window.aaif = this;
       this.width = getAllBranchWidth.call(this);
       this.widthWithChildren = this.width; //外部的容器在计算宽度时会参考this.widthWithChildren
-      debugger
     }
     this.height = yCursor + this.constants_.DARK_PATH_OFFSET;
 
