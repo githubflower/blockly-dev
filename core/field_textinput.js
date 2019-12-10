@@ -58,7 +58,6 @@ Blockly.FieldTextInput = function(opt_value, opt_validator, opt_config) {
    * @protected
    */
   this.spellcheck_ = true;
-
   if (opt_value == null) {
     opt_value = '';
   }

@@ -1185,6 +1185,7 @@ Blockly.Block.prototype.setPreviousStatement = function(newBoolean, opt_check) {
  */
 Blockly.Block.prototype.setNextStatement = function(newBoolean, opt_check) {
   if (newBoolean) {
+    Blockly.utils.dom.addClass(this.svgGroup_, 'conn-up-down');
     if (opt_check === undefined) {
       opt_check = null;
     }
@@ -1193,6 +1194,7 @@ Blockly.Block.prototype.setNextStatement = function(newBoolean, opt_check) {
     }
     this.nextConnection.setCheck(opt_check);
   } else {
+    Blockly.utils.dom.removeClass(this.svgGroup_, 'conn-up-down');
     if (this.nextConnection) {
       if (this.nextConnection.isConnected()) {
         throw Error('Must disconnect next statement before removing ' +

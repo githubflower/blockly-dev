@@ -6,11 +6,11 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     switch(this.block_.type){
       case 'controls_for':
         this.drawConditionLayerRect({
-          x: this.info_.getLoopInfo().width_left,
+          x: this.info_.getLoopInfo().width_left || 0,
           y: 20,
           width: this.info_.width_google  ,
           height: 30,
-          class: 'maskRect',
+          class: 'conditionLayerRect',
           fill: '#ff4b2c',
         }, this.block_, true);
         break;
@@ -36,14 +36,17 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
       connectionRight += loopInfo.width_left;//loopInfo.width_left - this.constants_.DIAMOND_LONG + this.constants_.LOOP_FIELD_OFFSET_X;
       yPos += this.constants_.LOOP_FIELD_OFFSET_Y;
     }
-    this.inlinePath_ += Blockly.utils.svgPaths.moveTo(connectionRight, yPos) +
-        Blockly.utils.svgPaths.lineOnAxis('v', connectionTop) +
-        // input.shape.pathDown +
-        'v 15 ' +
-        Blockly.utils.svgPaths.lineOnAxis('v', height - connectionBottom) +
-        Blockly.utils.svgPaths.lineOnAxis('h', width - input.connectionWidth) +
-        Blockly.utils.svgPaths.lineOnAxis('v', -height) +
-        'z';
+    if(this.block_.type !== 'controls_for'){
+
+      this.inlinePath_ += Blockly.utils.svgPaths.moveTo(connectionRight, yPos) +
+          Blockly.utils.svgPaths.lineOnAxis('v', connectionTop) +
+          // input.shape.pathDown +
+          'v 15 ' +
+          Blockly.utils.svgPaths.lineOnAxis('v', height - connectionBottom) +
+          Blockly.utils.svgPaths.lineOnAxis('h', width - input.connectionWidth) +
+          Blockly.utils.svgPaths.lineOnAxis('v', -height) +
+          'z';
+    }
 
     this.positionInlineInputConnection_(input);
   },
@@ -119,6 +122,7 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     } 
   },
   drawOutline_controls_if: function() {
+    this.outlinePath_ += 'm 0 0 ';
     // this.outlinePath_ 需要分为if---elseif---else 3个部分进行绘制
     var doElseBranchInfo = this.info_.getDoElseBranchInfo();
     var hasElseBranch = false;
@@ -137,7 +141,7 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
       }
     });
     // branchs = [] 说明是收拢状态
-    if (!doElseBranchInfo.branchs.length) {
+    if (this.block_.isCollapsed()) {
       this.moveToStartPoint();
       this.drawDiamond();
     } else {
@@ -169,8 +173,8 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     this.outlinePath_ += ` m ${this.constants_.DIAMOND_LONG * 2} 0 h ${loopInfo.width_right - this.constants_.DIAMOND_LONG} m 0 0 v ${loopInfo.height + this.constants_.DIAMOND_SHORT + this.constants_.GAP_V} m 0 0 h -${loopInfo.width_right + 1} m 0 0 v ${this.constants_.LOOP_NEXTCONNECTION_OFFSET} `;
     this.drawArrowDown();
     this.drawMaskRect({
-      x: loopInfo.width_left - 1,
-      y: this.constants_.DIAMOND_SHORT * 2 + loopInfo.height +   1
+      x: (loopInfo.width_left - 1) || 0,
+      y: this.constants_.DIAMOND_SHORT * 2 + (loopInfo.height || 0) +   1
     }, this.block_);
     this.positionPreviousConnection_();
     
@@ -207,7 +211,6 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
   //todo 1209
   drawConditionLayerRect(attrs, target, asFirstChild){
     //不能放在第一个元素的位置（因为放在后面的元素渲染时优先级更高，会覆盖前面的内容），需要插入到path元素之后，也就是第3个元素之后
-    debugger
     var defaultAttrs = {
       width: this.info_.width_google,
       height: 50,
@@ -235,7 +238,7 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
       // topRow.connection.connectionModel.setOffsetInBlock(connX, 0);  // google默认的位置
       if (this.block_.type === 'controls_if') {
         var ifBlockInfo = this.info_.getDoElseBranchInfo();
-        topRow.connection.connectionModel.setOffsetInBlock(ifBlockInfo.branchs[0].width_left, 0); //a
+        topRow.connection.connectionModel.setOffsetInBlock(ifBlockInfo.branchs[0] && ifBlockInfo.branchs[0].width_left || this.constants_.DIAMOND_LONG, 0); //a
       }else if(this.block_.type === 'controls_repeat_ext' ||
       this.block_.type === 'controls_whileUntil' ||
       this.block_.type === 'controls_for'){
@@ -1214,6 +1217,13 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     }
     //( this.constants_.DIAMOND_SHORT * 2 + this.constants_.STATEMENT_OFFSET_Y)
     var maxHeight = getMaxHeight(doElseBranchInfo) + otherRowHeight + this.constants_.STATEMENT_OFFSET_Y; //这些block里面高度最大的那个block的高度
+    // 解决block收拢时没有分之信息会报错的问题
+    if(branchs.length === 0){
+      branchs.push({
+        width_left: this.constants_.DIAMOND_LONG,
+        width_right: this.constants_.DIAMOND_LONG + this.constants_.GAP_H
+      })
+    }
     return {
       branchs: branchs,
       maxHeight: maxHeight,
@@ -1225,7 +1235,13 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
    * @return {[type]}
    */
   getLoopInfo() {
-    var loopInfo = {};
+    var loopInfo = {
+      max_block_width: 0,
+      width_left: this.constants_.DIAMOND_LONG + this.constants_.GAP_H,
+      width_right: this.constants_.DIAMOND_LONG + this.constants_.GAP_H,
+      width: 0,
+      height: 2* this.constants_.DIAMOND_SHORT
+    };
     for (var i = 0, row;
       (row = this.rows[i]); i++) {
       if (row.hasStatement) {

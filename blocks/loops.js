@@ -129,30 +129,41 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for 'for' loop.
   {
     "type": "controls_for",
-    "message0": "%{BKY_CONTROLS_FOR_TITLE}",
+    "message0": "%5%{BKY_CONTROLS_FOR_TITLE}",
     "args0": [
+     
       {
         "type": "field_variable",
         "name": "VAR",
-        "variable": null
+        "variable": null,
+        "addWrap": "loop"
       },
       {
         "type": "input_value",
         "name": "FROM",
         "check": "Number",
-        "align": "RIGHT"
+        "align": "RIGHT",
+        "addWrap": "loop"
       },
       {
         "type": "input_value",
         "name": "TO",
         "check": "Number",
-        "align": "RIGHT"
+        "align": "RIGHT",
+        "addWrap": "loop"
       },
       {
         "type": "input_value",
         "name": "BY",
         "check": "Number",
-        "align": "RIGHT"
+        "align": "RIGHT",
+        "addWrap": "loop"
+      },
+      {
+        "type": "field_btn",
+        "eventType": "toggleInput",
+        "name": "toggleInput",
+        "text": "条件"
       }
     ],
     "message1": "%{BKY_CONTROLS_REPEAT_INPUT_DO} %1",
