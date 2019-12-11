@@ -1221,7 +1221,8 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     if(branchs.length === 0){
       branchs.push({
         width_left: this.constants_.DIAMOND_LONG,
-        width_right: this.constants_.DIAMOND_LONG + this.constants_.GAP_H
+        width_right: this.constants_.DIAMOND_LONG + this.constants_.GAP_H,
+        height: 2 * this.constants_.DIAMOND_SHORT
       })
     }
     return {

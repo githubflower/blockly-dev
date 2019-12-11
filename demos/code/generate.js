@@ -57,3 +57,15 @@ Blockly.JavaScript['threads_start'] = ()=>{
 Blockly.JavaScript['threads_end'] = ()=>{
   return 'todo: threads_end';
 }
+
+Blockly.JavaScript['lists_create_obj'] = function(block) {
+  // Create a list with any number of elements of any type.
+  var elements = new Array(block.itemCount_);
+  for (var i = 0; i < block.itemCount_; i++) {
+    elements[i] = block.getFieldValue('item_key' + i) + ':' + Blockly.JavaScript.valueToCode(block, 'item_value' + i,
+        Blockly.JavaScript.ORDER_COMMA) || 'null';
+  }
+
+  var code = '{' + elements.join(', ') + '}';
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};

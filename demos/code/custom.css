@@ -20,8 +20,12 @@
 .blocklyPath{
 	/*fill: #ffffff;*/
 	/*fill: transparent;*/
-	stroke: #666666;
+	/*stroke: #666666;*/
 	transition: all 0.3s;
+}
+.conn-up-down > .blocklyPath{
+	stroke: #f2631f;
+	/*stroke: #d1f30d;*/
 }
 .blocklyPath:hover{
 	stroke-dasharray: 5 0 !important;
@@ -51,4 +55,7 @@
 
 .blocklyMainBackground{
 	fill: #282c34 !important;
+}
+.blocklyFlyoutBackground{
+	fill: #0c9cb770 !important;	
 }
