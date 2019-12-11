@@ -1326,9 +1326,9 @@ Blockly.WorkspaceSvg.prototype.deleteVariableById = function(id) {
  * @package
  */
 Blockly.WorkspaceSvg.prototype.createVariable = function(name,
-    opt_type, opt_id) {
+    opt_type, opt_id, _initValue) {
   var newVar = Blockly.WorkspaceSvg.superClass_.createVariable.call(
-      this, name, opt_type, opt_id);
+      this, name, opt_type, opt_id, _initValue);
   this.refreshToolboxSelection();
   return newVar;
 };

@@ -171,7 +171,7 @@ Blockly.VariableMap.prototype.renameVariableWithConflict_ = function(variable,
  * @return {Blockly.VariableModel} The newly created variable.
  */
 Blockly.VariableMap.prototype.createVariable = function(name,
-    opt_type, opt_id) {
+    opt_type, opt_id, _initValue) {
   var variable = this.getVariable(name, opt_type);
   if (variable) {
     if (opt_id && variable.getId() != opt_id) {
@@ -187,7 +187,7 @@ Blockly.VariableMap.prototype.createVariable = function(name,
   }
   var id = opt_id || Blockly.utils.genUid();
   var type = opt_type || '';
-  variable = new Blockly.VariableModel(this.workspace, name, type, id);
+  variable = new Blockly.VariableModel(this.workspace, name, type, id, _initValue);
 
   var variables = this.variableMap_[type] || [];
   variables.push(variable);

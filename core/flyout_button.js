@@ -250,16 +250,113 @@ Blockly.FlyoutButton.prototype.onMouseUp_ = function(e) {
   if (gesture) {
     gesture.cancel();
   }
+  this.showEditor();
 
-  if (this.isLabel_ && this.callbackKey_) {
+  /*if (this.isLabel_ && this.callbackKey_) {
     console.warn('Labels should not have callbacks. Label text: ' + this.text_);
   } else if (!this.isLabel_ && !(this.callbackKey_ &&
       this.targetWorkspace_.getButtonCallback(this.callbackKey_))) {
     console.warn('Buttons should have callbacks. Button text: ' + this.text_);
   } else if (!this.isLabel_) {
     this.targetWorkspace_.getButtonCallback(this.callbackKey_)(this);
-  }
+  }*/
 };
+
+Blockly.FlyoutButton.prototype.showEditor = function(){
+  this.createFormDiv();
+}
+Object.assign(Blockly.FlyoutButton.prototype, {
+  getSvgRoot(){
+    return this.svgGroup_;
+  },
+  createFormDiv(){
+    this.editor_ = this.dropdownCreate_();
+    Blockly.DropDownDiv.getContentDiv().appendChild(this.editor_);
+    Blockly.DropDownDiv.setBoundsElement(this.svgGroup_);
+    var position = this.svgGroup_.getBoundingClientRect();
+    Blockly.DropDownDiv.show(this.svgGroup_, false, position.x, position.y + 30, 0, 0, this.dropdownDispose_.bind(this));
+    // this.renderEditor_();
+    
+  },
+  dropdownCreate_: function(){
+    var formDivHtml = 
+    `<div id="formDiv" class="custom-extend-div">
+      <label for="varKey">变量名称</label>
+      <input type="text" name="varKey" id="varKey"/>
+      <label for="varVal">变量值</label>
+      <input type="text" name="varVal" id="varVal"/>
+      <br/>
+      <input type="button" value="确定" id="confirmBtn">
+      <input type="button" value="取消" id="cancelBtn">
+    </div>`;
+
+    this.bindEvent4FormDiv(this);
+    return jQuery(formDivHtml)[0];
+  },
+  updateForm(){
+    jQuery('#varKey').val('');
+    jQuery('#varVal').val('');
+  },
+  dropdownDispose_(){
+    jQuery(document).off('click', '#confirmBtn');
+    jQuery(document).off('click', '#cancelBtn');
+  },
+  bindEvent4FormDiv: function(field){
+    //确定
+    jQuery(document).on('click', '#confirmBtn', field, function(e){
+      var btn = e.data;
+      var varKey = jQuery('#varKey').val();
+      var varVal = jQuery('#varVal').val();
+      
+      field.checkVarAndCreate(varKey, field.getTargetWorkspace(), ()=>{}, null, varVal);
+      jQuery('#formDiv').hide();
+      Blockly.DropDownDiv.hideIfOwner(field, true);
+      field.dropdownDispose_();
+    })
+
+    //取消
+    jQuery(document).on('click', '#cancelBtn', field, function(e){
+      jQuery('#formDiv').hide();
+      Blockly.DropDownDiv.hideIfOwner(field, true);
+      field.dropdownDispose_();
+    })
+  },
+  checkVarAndCreate(text, workspace, opt_callback, varType, _initValue){
+    debugger;
+    var type = varType || '';
+    if (text) {
+      var existing =
+          Blockly.Variables.nameUsedWithAnyType_(text, workspace);
+      if (existing) {
+        var lowerCase = text.toLowerCase();
+        if (existing.type == type) {
+          var msg = Blockly.Msg['VARIABLE_ALREADY_EXISTS'].replace(
+              '%1', lowerCase);
+        } else {
+          var msg =
+              Blockly.Msg['VARIABLE_ALREADY_EXISTS_FOR_ANOTHER_TYPE'];
+          msg = msg.replace('%1', lowerCase).replace('%2', existing.type);
+        }
+        Blockly.alert(msg,
+            function() {
+              // promptAndCheckWithAlert(text);  // Recurse
+            });
+      } else {
+        // No conflict
+        workspace.createVariable(text, type, null, _initValue);
+        if (opt_callback) {
+          opt_callback(text);
+        }
+      }
+    } else {
+      // User canceled prompt.
+      if (opt_callback) {
+        opt_callback(null);
+      }
+    }
+  },
+  dropdownDispose_(){}
+})
 
 /**
  * CSS for buttons and labels.  See css.js for use.

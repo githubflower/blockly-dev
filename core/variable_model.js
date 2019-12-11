@@ -42,11 +42,12 @@ goog.require('Blockly.utils');
  * @see {Blockly.FieldVariable}
  * @constructor
  */
-Blockly.VariableModel = function(workspace, name, opt_type, opt_id) {
+Blockly.VariableModel = function(workspace, name, opt_type, opt_id, _initValue) {
   /**
    * The workspace the variable is in.
    * @type {!Blockly.Workspace}
    */
+  this._initValue = _initValue;
   this.workspace = workspace;
 
   /**

@@ -518,8 +518,8 @@ Blockly.Workspace.prototype.renameVariableById = function(id, newName) {
  *     a UUID.
  * @return {Blockly.VariableModel} The newly created variable.
  */
-Blockly.Workspace.prototype.createVariable = function(name, opt_type, opt_id) {
-  return this.variableMap_.createVariable(name, opt_type, opt_id);
+Blockly.Workspace.prototype.createVariable = function(name, opt_type, opt_id, _initValue) {
+  return this.variableMap_.createVariable(name, opt_type, opt_id, _initValue);
 };
 
 /**
