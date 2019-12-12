@@ -308,21 +308,30 @@ Object.assign(Blockly.FlyoutButton.prototype, {
       var varKey = jQuery('#varKey').val();
       var varVal = jQuery('#varVal').val();
       
-      field.checkVarAndCreate(varKey, field.getTargetWorkspace(), ()=>{}, null, varVal);
+      field.dropdownDispose_();
+      field.checkVarAndCreate(varKey, varVal, field.getTargetWorkspace(), (text, varVal)=>{
+        var firstBlock = new Blockly.BlockSvg(field.getTargetWorkspace(), 'variables_set_hidden', null, false/*是否显示这个block*/);
+        // var firstBlock = new Blockly.BlockSvg(field.getTargetWorkspace(), 'math_number', null, false/*是否显示这个block*/);
+        debugger;
+        var varId = field.targetWorkspace_.variableMap_.getVariable(varKey).id_;
+        firstBlock.getInput('VAR_NAME').fieldRow[0].setValue(varId);
+        firstBlock.getInput('VAR_VALUE').fieldRow[0].setValue(varVal);
+       
+
+      }, null, varVal);
       jQuery('#formDiv').hide();
       Blockly.DropDownDiv.hideIfOwner(field, true);
-      field.dropdownDispose_();
     })
 
     //取消
     jQuery(document).on('click', '#cancelBtn', field, function(e){
+      field.dropdownDispose_();
       jQuery('#formDiv').hide();
       Blockly.DropDownDiv.hideIfOwner(field, true);
-      field.dropdownDispose_();
     })
   },
-  checkVarAndCreate(text, workspace, opt_callback, varType, _initValue){
-    debugger;
+  //创建变量并给变量赋值
+  checkVarAndCreate(text, varVal, workspace, success_callback, varType, _initValue){
     var type = varType || '';
     if (text) {
       var existing =
@@ -344,18 +353,17 @@ Object.assign(Blockly.FlyoutButton.prototype, {
       } else {
         // No conflict
         workspace.createVariable(text, type, null, _initValue);
-        if (opt_callback) {
-          opt_callback(text);
+        if (success_callback) {
+          success_callback.call(this, text, varVal);
         }
       }
     } else {
       // User canceled prompt.
-      if (opt_callback) {
-        opt_callback(null);
-      }
+      /*if (success_callback) {
+        success_callback(null);
+      }*/
     }
-  },
-  dropdownDispose_(){}
+  }
 })
 
 /**

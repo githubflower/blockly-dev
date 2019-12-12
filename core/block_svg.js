@@ -53,13 +53,20 @@ goog.require('Blockly.Warning');
  * @extends {Blockly.Block}
  * @constructor
  */
-Blockly.BlockSvg = function(workspace, prototypeName, opt_id) {
+Blockly.BlockSvg = function(workspace, prototypeName, opt_id, isVisible) {
   // Create core elements for the block.
   /**
    * @type {SVGElement}
    * @private
    */
-  this.svgGroup_ = Blockly.utils.dom.createSvgElement('g', {}, null);
+  var attrs = {};
+  if(typeof isVisible === 'boolean' && !isVisible){
+    attrs.display = 'none';
+    this._isVisible = false;
+  }else{
+    this._isVisible = true;
+  }
+  this.svgGroup_ = Blockly.utils.dom.createSvgElement('g', attrs, null);
   this.svgGroup_.translate_ = '';
 
   /**
@@ -132,6 +139,13 @@ Blockly.BlockSvg = function(workspace, prototypeName, opt_id) {
   this.markerSvg_ = null;
 };
 Blockly.utils.object.inherits(Blockly.BlockSvg, Blockly.Block);
+Blockly.BlockSvg.prototype.isVisible = function(){
+  return this._isVisible;
+}
+Blockly.BlockSvg.prototype.setVisible = function(bool){
+  this._isVisible = bool;
+  this.svgGroup_.setAttribute('display', bool ? 'block': 'none')
+}
 
 /**
  * Height of this block, not including any statement blocks above or below.

@@ -69,3 +69,9 @@ Blockly.JavaScript['lists_create_obj'] = function(block) {
   var code = '{' + elements.join(', ') + '}';
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
+
+Blockly.JavaScript['variables_set_hidden'] = function(block) {
+  var varName = Blockly.JavaScript.variableDB_.getName(block.getInput('VAR_NAME').fieldRow[0].getValue(), Blockly.Variables.NAME_TYPE);
+  var varValue = block.getInput('VAR_VALUE').fieldRow[0].getValue()
+  return `${varName} = ${varValue};`;
+}

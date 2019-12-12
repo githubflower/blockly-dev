@@ -223,6 +223,9 @@ Blockly.Xml.blockToDom = function(block, opt_noId) {
   if (!block.isEditable()) {
     element.setAttribute('editable', false);
   }
+  if (!block.isVisible()) {
+    element.setAttribute('visible', false);
+  }
 
   var nextBlock = block.getNextBlock();
   if (nextBlock) {
@@ -768,6 +771,12 @@ Blockly.Xml.domToBlockHeadless_ = function(xmlBlock, workspace) {
   if (collapsed) {
     block.setCollapsed(collapsed == 'true');
   }
+  // 主要用于在workspace中创建1个隐藏的block
+  var isVisible = xmlBlock.getAttribute('visible');
+  if(isVisible){
+    block.setVisible(isVisible == 'true');
+  }
+
   if (xmlBlock.nodeName.toLowerCase() == 'shadow') {
     // Ensure all children are also shadows.
     var children = block.getChildren(false);

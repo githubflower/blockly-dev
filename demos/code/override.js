@@ -946,7 +946,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       svgGroup.setAttribute('transform', 'translate(' + xPos + ',' + yPos + ')');
       fieldInfo.icon.computeIconLocation();
     } else {
-      svgGroup.setAttribute('transform', 'translate(' + xPos + ',' + yPos + ')' + scale);
+      svgGroup && svgGroup.setAttribute('transform', 'translate(' + xPos + ',' + yPos + ')' + scale);
     }
 
     if (this.info_.isInsertionMarker) {

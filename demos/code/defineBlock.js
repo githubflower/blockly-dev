@@ -348,8 +348,6 @@ Blockly.Blocks['lists_create_obj_item'] = {
 };
 
 
-window.aa = Blockly.JavaScript['variables_get'];
-
 Blockly.JavaScript['variables_get'] = function(block) {
   // Variable getter.
   var code = Blockly.JavaScript.variableDB_.getName(block.getFieldValue('VAR'),
@@ -365,12 +363,12 @@ Blockly.JavaScript.finish = function(code) {
   }
 
   var _initValueCode = '';
-  var vars = Blockly.JavaScript.variableDB_.variableMap_.getAllVariables();
+/*  var vars = Blockly.JavaScript.variableDB_.variableMap_.getAllVariables();
   vars.forEach(item => {
     if(typeof item._initValue !== 'undefined'){
       _initValueCode += (item.name + '=' + item._initValue + ';\n');
     }
-  })
+  })*/
 
   // Clean up temporary data.
   delete Blockly.JavaScript.definitions_;
@@ -378,3 +376,20 @@ Blockly.JavaScript.finish = function(code) {
   Blockly.JavaScript.variableDB_.reset();
   return definitions.join('\n\n') + '\n\n\n' + (_initValueCode ? (_initValueCode + '\n\n\n') : '') + code;
 };
+
+
+Blockly.Blocks['variables_set_hidden'] = {
+  init: function() {
+    this.appendDummyInput('VAR_NAME')
+        .appendField(new Blockly.FieldTextInput(''), "NAME_INPUT")
+    this.appendDummyInput('VAR_VALUE')
+        .appendField(new Blockly.FieldTextInput(''), 'VALUE_INPUT');
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(300);
+
+    this.setTooltip("define object");
+    this.setHelpUrl("test_url");
+  }
+}
