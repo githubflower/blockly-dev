@@ -8,7 +8,7 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
         this.drawConditionLayerRect({
           x: this.info_.getLoopInfo().width_left || 0,
           y: 20,
-          width: this.info_.width_google  ,
+          width: this.info_.width_google - 50, //todo 向左偏移了50
           height: 30,
           class: 'conditionLayerRect',
           fill: '#ff4b2c',
@@ -834,7 +834,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       case 'controls_for':
       //todo
         // params.xPos += loopInfo.width_left - fieldInfo.width;
-        params.xPos += loopInfo.width_left;
+        params.xPos += loopInfo.width_left - 50;
         // params.yPos += 5;
         break;
     }
@@ -862,7 +862,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       if(this.block_.type === 'controls_for'){
         var loopInfo = this.info_.getLoopInfo();
         // connX += loopInfo.width_left - this.constants_.DIAMOND_LONG + this.constants_.LOOP_FIELD_OFFSET_X;
-        connX += loopInfo.width_left;
+        connX += loopInfo.width_left - 50; //整体向左偏移50px   TODO
         yPos += this.constants_.LOOP_FIELD_OFFSET_Y;
       }
       if (this.info_.RTL) {
@@ -1278,12 +1278,12 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
 
         let connectedBlock = statementInput.connectedBlock;
         Object.assign(loopInfo, {
-          block_x: connectedBlock ? connectedBlock.previousConnection.offsetInBlock_.x : 0,
+          block_x: connectedBlock ? this.getWidestChildInfo(connectedBlock).width_left : 0,
           block_width: connectedBlock ? connectedBlock.width : 0,
           max_block_width: 0,
           height: row.height + this.constants_.STATEMENT_OFFSET_Y * 2
         })
-        loopInfo.max_block_width = Math.max(loopInfo.max_block_width, loopInfo.block_width);
+        loopInfo.max_block_width = this.getWidestChildInfo(connectedBlock).widestChild.width;
         loopInfo.width_left = Math.max(loopInfo.block_x, this.constants_.DIAMOND_LONG) + this.constants_.GAP_H;
         loopInfo.width_right = Math.max(loopInfo.max_block_width - loopInfo.block_x, this.constants_.DIAMOND_LONG) + this.constants_.GAP_H;
         loopInfo.width = loopInfo.width_left + loopInfo.width_right;
