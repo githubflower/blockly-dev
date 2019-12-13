@@ -49,4 +49,37 @@ Blockly.Block.prototype.doSthWithFieldBtnClick = function(btn){
       // print('controls_for.hidden_: ' + btn.name + '---' + input.connection.hidden_)
     }
   }
+  if(this.type === 'controls_forEach'){
+    if(btn.eventType === 'toggleInput'){
+      var inputs = btn.sourceBlock_.inputList.filter(item => {
+        return item.name !== 'DO';
+      }); 
+      debugger;
+      inputs.forEach(input => {
+        input.fieldRow.forEach(fieldRow => {
+          if(fieldRow.type !== 'field_btn'){
+            var isVisible = fieldRow.isVisible();
+            fieldRow.setVisible(!isVisible);
+          }
+        })
+        var connection = input && input.connection;
+        if(connection){
+          var bool = input.connection.hidden_;
+          var targetBlock = connection.targetBlock();
+          if(targetBlock){
+            // jQuery(targetBlock.svgGroup_)[bool ? 'show' : 'hide']();
+            // targetBlock.svgGroup_.setAttribute('display', bool ? 'block' : 'none');
+            jQuery(targetBlock.svgGroup_).css('display', bool ? 'block' : 'none');
+            input.connection.setHidden(!bool);
+          }
+        }
+      })
+      var loopNodeFlag = jQuery(btn.sourceBlock_.svgGroup_).find('> .conditionLayerRect').css('display') === 'none';
+      jQuery(btn.sourceBlock_.svgGroup_).find('> .loop')[loopNodeFlag ? 'show' : 'hide']();
+      jQuery(btn.sourceBlock_.svgGroup_).find('> .conditionLayerRect')[loopNodeFlag ? 'show' : 'hide']();
+
+
+      // print('controls_for.hidden_: ' + btn.name + '---' + input.connection.hidden_)
+    }
+  }
 }

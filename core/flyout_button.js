@@ -312,7 +312,6 @@ Object.assign(Blockly.FlyoutButton.prototype, {
       field.checkVarAndCreate(varKey, varVal, field.getTargetWorkspace(), (text, varVal)=>{
         var firstBlock = new Blockly.BlockSvg(field.getTargetWorkspace(), 'variables_set_hidden', null, false/*是否显示这个block*/);
         // var firstBlock = new Blockly.BlockSvg(field.getTargetWorkspace(), 'math_number', null, false/*是否显示这个block*/);
-        debugger;
         var varId = field.targetWorkspace_.variableMap_.getVariable(varKey).id_;
         firstBlock.getInput('VAR_NAME').fieldRow[0].setValue(varId);
         firstBlock.getInput('VAR_VALUE').fieldRow[0].setValue(varVal);

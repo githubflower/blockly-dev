@@ -5,6 +5,7 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
   drawSomeRect(){
     switch(this.block_.type){
       case 'controls_for':
+      case 'controls_forEach':
         this.drawConditionLayerRect({
           x: this.info_.getLoopInfo().width_left || 0,
           y: 20,
@@ -31,13 +32,12 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
       connectionRight = loopInfo.width_left - this.constants_.DIAMOND_LONG + this.constants_.LOOP_FIELD_OFFSET_X;
       yPos += this.constants_.LOOP_FIELD_OFFSET_Y;
     }
-    if(this.block_.type === 'controls_for'){
+    if(this.block_.type === 'controls_for' || 
+      this.block_.type === 'controls_forEach' ){
       var loopInfo = this.info_.getLoopInfo();
       connectionRight += loopInfo.width_left;//loopInfo.width_left - this.constants_.DIAMOND_LONG + this.constants_.LOOP_FIELD_OFFSET_X;
       yPos += this.constants_.LOOP_FIELD_OFFSET_Y;
-    }
-    if(this.block_.type !== 'controls_for'){
-
+    }else{
       this.inlinePath_ += Blockly.utils.svgPaths.moveTo(connectionRight, yPos) +
           Blockly.utils.svgPaths.lineOnAxis('v', connectionTop) +
           // input.shape.pathDown +
@@ -47,6 +47,7 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
           Blockly.utils.svgPaths.lineOnAxis('v', -height) +
           'z';
     }
+  
 
     this.positionInlineInputConnection_(input);
   },
@@ -96,6 +97,7 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
         break;
       case 'controls_whileUntil':
       case 'controls_for':
+      case 'controls_forEach':
         this.drawOutline_loop();
         break;
       default:
@@ -241,7 +243,8 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
         topRow.connection.connectionModel.setOffsetInBlock(ifBlockInfo.branchs[0] && ifBlockInfo.branchs[0].width_left || this.constants_.DIAMOND_LONG, 0); //a
       }else if(this.block_.type === 'controls_repeat_ext' ||
       this.block_.type === 'controls_whileUntil' ||
-      this.block_.type === 'controls_for'){
+      this.block_.type === 'controls_for' ||
+      this.block_.type === 'controls_forEach'){
         var loopInfo = this.info_.getLoopInfo();
         topRow.connection.connectionModel.setOffsetInBlock(/*this.constants_.DIAMOND_LONG + this.constants_.GAP_H*/loopInfo.width_left, 0);
       } else {
@@ -638,6 +641,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
         case 'controls_repeat_ext':
         case 'controls_whileUntil':
         case 'controls_for':
+        case 'controls_forEach':
           var loopInfo = this.info_.getLoopInfo();
           connInfo.connectionModel.setOffsetInBlock(loopInfo.width_left, loopInfo.height + 2 * this.constants_.DIAMOND_SHORT + this.constants_.GAP_V + this.constants_.LOOP_NEXTCONNECTION_OFFSET);
           break;
@@ -700,6 +704,9 @@ Object.assign(Blockly.geras.Drawer.prototype, {
   },
 
   positionExternalValueConnection_controls_for(row){
+    this.positionExternalValueConnection_controls_whileUntil.call(this, row);
+  },
+  positionExternalValueConnection_controls_forEach(row){
     this.positionExternalValueConnection_controls_whileUntil.call(this, row);
   },
   
@@ -795,6 +802,9 @@ Object.assign(Blockly.geras.Drawer.prototype, {
   drawValueInput_controls_for(row){
     return;
   },
+  drawValueInput_controls_forEach(row){
+    return;
+  },
   //调整field的位置  覆盖 \core\renderers\common\drawer.js
   layoutField_: function(fieldInfo) {
     switch (this.block_.type) {
@@ -804,6 +814,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       case 'controls_repeat_ext':
       case 'controls_whileUntil':
       case 'controls_for':
+      case 'controls_forEach':
         this.positionFieldsOfLoop(fieldInfo);
         break;
       default:
@@ -832,6 +843,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
         params.yPos += 5;
         break;
       case 'controls_for':
+      case 'controls_forEach':
       //todo
         // params.xPos += loopInfo.width_left - fieldInfo.width;
         params.xPos += loopInfo.width_left - 50;
@@ -859,7 +871,8 @@ Object.assign(Blockly.geras.Drawer.prototype, {
         // connX += this.constants_.LOOP_FIELD_OFFSET_X; //todo
         yPos += this.constants_.LOOP_FIELD_OFFSET_Y;
       }
-      if(this.block_.type === 'controls_for'){
+      if(this.block_.type === 'controls_for' ||
+       this.block_.type === 'controls_forEach'){
         var loopInfo = this.info_.getLoopInfo();
         // connX += loopInfo.width_left - this.constants_.DIAMOND_LONG + this.constants_.LOOP_FIELD_OFFSET_X;
         connX += loopInfo.width_left - 50; //整体向左偏移50px   TODO
@@ -1124,7 +1137,8 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
   setLoopBlockHeight() {
     if (this.block_.type === 'controls_repeat_ext' ||
       this.block_.type === 'controls_whileUntil' ||
-      this.block_.type === 'controls_for') {
+      this.block_.type === 'controls_for' ||
+      this.block_.type === 'controls_forEach') {
       this.height += (this.constants_.DIAMOND_SHORT * 2 + this.constants_.STATEMENT_OFFSET_Y + this.constants_.LOOP_NEXTCONNECTION_OFFSET);
     }
   },
