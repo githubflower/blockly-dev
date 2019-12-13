@@ -1,38 +1,4 @@
-var setNameJson = {
-  "message0": "set FirstName to %1%2",
-  "message1": "set LastName to %1%2",
-  "args0": [
-    {
-      "type": "field_variable",
-      "name": "VAR0",
-      "variable": "First Name"
-    },
-    {"type": "input_value", "name": "VALUE0", "check": "String"}
-  ],
-  "args1": [
-    {
-      "type": "field_variable",
-      "name": "VAR1",
-      "variable": "Last Name"
-    },
-    {"type": "input_value", "name": "VALUE1", "check": "String"}
-  ],
-  "previousStatement": null,
-  "nextStatement": null,
-  "colour": 230
-};
 
-Blockly.Blocks['set_name'] = {
-  init: function() {
-    this.jsonInit(setNameJson);
-    // Assign 'this' to a variable for use in the tooltip closure below.
-    var thisBlock = this;
-    this.setTooltip(function() {
-      return 'Add a string to variable "%1".'.replace('%1',
-          thisBlock.getFieldValue('VAR0'));
-    });
-  }
-};
 
 
 var lineJson = {
@@ -50,78 +16,6 @@ Blockly.Blocks['line'] = {
     });
   }
 };
-
-var threadJson = {
-  message0: 'test %1',
-  args0: [
-    {
-      "type": "input_statement",
-      "name": "thread"
-    }
-  ],
-};
-Blockly.Blocks.thread = {
-  init: function() {
-    this.jsonInit(threadJson);
-    // Assign 'this' to a variable for use in the tooltip closure below.
-    var thisBlock = this;
-    this.setTooltip(function() {
-      return 'a thread block that contains any blocks but thread block.'
-    });
-  }
-}
-
-Blockly.Blocks.thread2 = {
-  init: function() {
-    var nameField = new Blockly.FieldTextInput('',
-        Blockly.Procedures.rename);
-    nameField.setSpellcheck(false);
-    this.appendDummyInput()
-        .appendField(Blockly.Msg['PROCEDURES_DEFRETURN_TITLE'])
-        .appendField(nameField, 'NAME')
-        .appendField('', 'PARAMS');
- /*   this.appendValueInput('RETURN')
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField(Blockly.Msg['PROCEDURES_DEFRETURN_RETURN']);*/
-  
-    this.setStyle('procedure_blocks');
-    this.setTooltip(Blockly.Msg['PROCEDURES_DEFRETURN_TOOLTIP']);
-    this.setHelpUrl(Blockly.Msg['PROCEDURES_DEFRETURN_HELPURL']);
-    this.arguments_ = [];
-    this.argumentVarModels_ = [];
-    this.setStatements_(true);
-    this.statementConnection_ = null;
-  },
-  setStatements_: Blockly.Blocks['procedures_defnoreturn'].setStatements_,
-  updateParams_: Blockly.Blocks['procedures_defnoreturn'].updateParams_,
-  // mutationToDom: Blockly.Blocks['procedures_defnoreturn'].mutationToDom,
-  // domToMutation: Blockly.Blocks['procedures_defnoreturn'].domToMutation,
-  decompose: Blockly.Blocks['procedures_defnoreturn'].decompose,
-  compose: Blockly.Blocks['procedures_defnoreturn'].compose,
-  /**
-   * Return the signature of this procedure definition.
-   * @return {!Array} Tuple containing three elements:
-   *     - the name of the defined procedure,
-   *     - a list of all its arguments,
-   *     - that it DOES have a return value.
-   * @this {Blockly.Block}
-   */
-  getProcedureDef: function() {
-    return [this.getFieldValue('NAME'), this.arguments_, true];
-  },
-  getVars: Blockly.Blocks['procedures_defnoreturn'].getVars,
-  getVarModels: Blockly.Blocks['procedures_defnoreturn'].getVarModels,
-  renameVarById: Blockly.Blocks['procedures_defnoreturn'].renameVarById,
-  updateVarName: Blockly.Blocks['procedures_defnoreturn'].updateVarName,
-  displayRenamedVar_: Blockly.Blocks['procedures_defnoreturn'].displayRenamedVar_,
-  customContextMenu: Blockly.Blocks['procedures_defnoreturn'].customContextMenu,
-  callType_: 'procedures_callreturn'
-}
-
-
-
-
-
 
 Blockly.Blocks['set_local2'] = {
   init: function() {
@@ -152,31 +46,6 @@ Blockly.Blocks['set_local2'] = {
  this.setHelpUrl("https://www.qkmtech.com");
   }
 };
-
-
-
-Blockly.Blocks['create_obj'] = {
-  init: function() {
-  
-    this.appendDummyInput()
-        .appendField(new Blockly.FieldTextInput(''), 'item_key')
-        .appendField(":")
-        .appendField(new Blockly.FieldTextInput(''), 'item_value');
-   /* this.appendValueInput("location_y")
-        .setCheck("Number")
-        .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField("Y");*/
-    
-    this.setPreviousStatement(true, null);
-    this.setNextStatement(true, null);
-    this.setInputsInline(true);
-    this.setColour(290);
- this.setTooltip("set location function");
- this.setHelpUrl("https://www.qkmtech.com");
-  }
-};
-
-
 
 
 Blockly.Blocks['block_var'] = {
@@ -346,37 +215,6 @@ Blockly.Blocks['lists_create_obj_item'] = {
     this.contextMenu = false;
   }
 };
-
-
-Blockly.JavaScript['variables_get'] = function(block) {
-  // Variable getter.
-  var code = Blockly.JavaScript.variableDB_.getName(block.getFieldValue('VAR'),
-      Blockly.Variables.NAME_TYPE);
-  return [code, Blockly.JavaScript.ORDER_ATOMIC];
-};
-
-Blockly.JavaScript.finish = function(code) {
-  // Convert the definitions dictionary into a list.
-  var definitions = [];
-  for (var name in Blockly.JavaScript.definitions_) {
-    definitions.push(Blockly.JavaScript.definitions_[name]);
-  }
-
-  var _initValueCode = '';
-/*  var vars = Blockly.JavaScript.variableDB_.variableMap_.getAllVariables();
-  vars.forEach(item => {
-    if(typeof item._initValue !== 'undefined'){
-      _initValueCode += (item.name + '=' + item._initValue + ';\n');
-    }
-  })*/
-
-  // Clean up temporary data.
-  delete Blockly.JavaScript.definitions_;
-  delete Blockly.JavaScript.functionNames_;
-  Blockly.JavaScript.variableDB_.reset();
-  return definitions.join('\n\n') + '\n\n\n' + (_initValueCode ? (_initValueCode + '\n\n\n') : '') + code;
-};
-
 
 Blockly.Blocks['variables_set_hidden'] = {
   init: function() {
