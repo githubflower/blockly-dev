@@ -599,12 +599,12 @@ Object.assign(Blockly.geras.Drawer.prototype, {
   positionStatementInputConnection_threads_def(input, row){
     // 找出statementInput中所有主线block的connection最大x方向偏移
     // this.block_.
-    var maxOffsetX = this.getMaxOffsetX();
+    var maxOffsetX = this.getMaxOffsetX(this.block_.childBlocks_);
     input.connection.setOffsetInBlock(maxOffsetX || this.info_.width / 2, row.yPos + this.constants_.DARK_PATH_OFFSET);
     // input.connection.setOffsetInBlock(this.info_.width / 2, row.yPos + this.constants_.DARK_PATH_OFFSET);
   },
-  getMaxOffsetX(){
-    var childBlocks = this.block_.childBlocks_;
+  getMaxOffsetX(blocks){
+    var childBlocks = blocks;
     var curBlock;
     var maxOffsetX = 0;
     if(childBlocks && childBlocks.length){
@@ -1058,7 +1058,6 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
         yCursor += row.height;
       }
  
-
       if (this.block_.type === 'controls_if' && row.hasStatement) {
         var statementInput = this.getStatementInput(row)
         if (/do/i.test(statementInput.input.name) && statementInput.connectedBlock) {
@@ -1115,7 +1114,7 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     this.height = yCursor + this.constants_.DARK_PATH_OFFSET;
 
     if (this.block_.type === 'controls_if') {
-      this.height += (this.constants_.DIAMOND_SHORT * 2 + this.constants_.STATEMENT_OFFSET_Y);
+      this.height += (this.constants_.DIAMOND_SHORT * 2 + this.constants_.STATEMENT_OFFSET_Y * 2);
       this.height = this.height + this.constants_.GAP_V; //15 为了让子block于父block戳开一段距离，不然会挤在一起很难看
     }
     this.setLoopBlockHeight();
@@ -1171,6 +1170,37 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
   },
 
   /**
+   * [getWidestChildInfo 获取宽度最大的子block]
+   * @param  {[type]} block [description]
+   * @return {[type]}       [description]
+   */
+  getWidestChildInfo(block){
+    var curBlock = block;
+    var width_left = 0;
+    var widestChild = {
+      width: 0
+    };
+    /*if(block && block.childBlocks_ && block.childBlocks_.length){
+      curBlock = block.childBlocks_[0];
+    }*/
+    while(curBlock && curBlock.previousConnection){
+      if(curBlock.previousConnection.offsetInBlock_.x > width_left){
+        width_left = Math.max(width_left, curBlock.previousConnection.offsetInBlock_.x);
+        widestChild = curBlock;
+      }
+      if(curBlock.nextConnection){
+        curBlock = curBlock.nextConnection.targetBlock()
+      }else{
+        curBlock = null;
+      }
+    }
+    return {
+      width_left: Math.max(this.constants_.DIAMOND_LONG + this.constants_.GAP_H, width_left),
+      widestChild: widestChild 
+    }
+  },
+
+  /**
    * @return {Object}
    * 获取DO0 DO1 DO2 ... ELSE等各个branch（逻辑分支）的大小
    */
@@ -1178,8 +1208,6 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     const doElseBranchInfo = {};
     const branchs = [];
     const reg = /(do)?(else)?\d*/i;
-
-
 
     function getMaxHeight(obj) {
       var max = 0;
@@ -1205,12 +1233,12 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
           }
           let temmObj = doElseBranchInfo[key];
           let connectedBlock = statementInput.connectedBlock;
-          temmObj.block_x = connectedBlock ? connectedBlock.previousConnection.offsetInBlock_.x : 0;
+          temmObj.block_x = connectedBlock ? this.getWidestChildInfo(connectedBlock).width_left : 0;
           temmObj.block_width = connectedBlock ? connectedBlock.width : 0;
-          temmObj.max_block_width = Math.max(temmObj.max_block_width, temmObj.block_width);
+          temmObj.max_block_width = this.getWidestChildInfo(connectedBlock).widestChild.width; //Math.max(temmObj.max_block_width, temmObj.block_width);
           temmObj.width_left = Math.max(temmObj.block_x, key.toLowerCase() === 'else' ? 0 : this.constants_.DIAMOND_LONG); //主线左边的宽度 (这里的block_x可能和最长的那个block的x偏移对不上 TODO)
           temmObj.width_right = Math.max(temmObj.max_block_width - temmObj.block_x, key.toLowerCase() === 'else' ? 0 : (this.constants_.DIAMOND_LONG + this.constants_.LINE_ELSE_H)) + this.constants_.GAP_H;
-          temmObj.width = temmObj.width_left + temmObj.width_right; //15 设置一点间隙 美观一点
+          temmObj.width = temmObj.width_left + temmObj.width_right; //this.getWidestChildInfo(connectedBlock).widestChild.width; //
           temmObj.height = row.height;
         }
       }
