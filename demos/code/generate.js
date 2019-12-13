@@ -71,7 +71,21 @@ Blockly.JavaScript['lists_create_obj'] = function(block) {
 };
 
 Blockly.JavaScript['variables_set_hidden'] = function(block) {
-  var varName = Blockly.JavaScript.variableDB_.getName(block.getInput('VAR_NAME').fieldRow[0].getValue(), Blockly.Variables.NAME_TYPE);
+  var varName = ''; //Blockly.JavaScript.variableDB_.getName(, Blockly.Variables.NAME_TYPE);
+  debugger;
+  //因为variables_set_hidden这个block中不是引用的变量，而是临时存储的变量id，所以转代码时需要先验证这个变脸是否有使用，在使用则转为相应代码，否则返回空字符串
+  var varId = block.getInput('VAR_NAME').fieldRow[0].getValue();
+  var usedVars = Blockly.Variables.allUsedVarModels(block.workspace);
+  usedVars.forEach(item => {
+    if(item.getId() === varId){
+      varName = item.name;
+      return false;
+    }
+  })
   var varValue = block.getInput('VAR_VALUE').fieldRow[0].getValue()
-  return `${varName} = ${varValue};`;
+  if(varName){
+    return `${varName} = ${varValue};`;
+  }else{
+    return '';
+  }
 }
