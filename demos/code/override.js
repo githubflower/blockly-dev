@@ -1397,3 +1397,54 @@ Object.assign(Blockly.BlockSvg.prototype, {
   }
 })
 
+Blockly.TouchGesture.prototype.handleMove = function(e) {
+  //鼠标点击连线向导块进行移动
+  if(e.target.className.baseVal == 'connectGuideSvg'){
+    //开始画线
+    //TODO 暂时将逻辑写在这里看一下效果
+    var attrs = {};
+    debugger;
+    
+    //计算线段起点坐标
+    var leftTop = e.target.parentNode.getScreenCTM();
+    var startPoint = {
+      x: leftTop.e + this.targetBlock_.width / 2,
+      y: leftTop.f + this.targetBlock_.height / 2
+    };
+    var endPoint = {
+      x: e.clientX,
+      y: e.clientY
+    }
+    print('start:', startPoint);
+    print('end:', endPoint);
+    attrs.d = `m ${this.targetBlock_.width / 2} ${this.targetBlock_.height / 2} l 0 ${(endPoint.y - startPoint.y)/2} m 0 0 l ${endPoint.x - startPoint.x} 0 m 0 0 l 0 ${(endPoint.y - startPoint.y)/2}`;
+    if(this.targetBlock_.polylineSvg){
+      this.targetBlock_.polylineSvg.setAttribute('d', attrs.d);
+      print('if');
+    }else{
+      this.targetBlock_.polylineSvg = Blockly.utils.dom.createSvgElement('path', {
+        class: 'polylineSvg',
+        d: attrs.d,
+        stroke: '#ff0000'
+      }, this.targetBlock_.svgGroup_);
+      print('else');
+    }
+    return;
+  }
+  if (this.isDragging()) {
+    // We are in the middle of a drag, only handle the relevant events
+    if (Blockly.Touch.shouldHandleEvent(e)) {
+      Blockly.TouchGesture.superClass_.handleMove.call(this, e);
+    }
+    return;
+  }
+  if (this.isMultiTouch()) {
+    if (Blockly.Touch.isTouchEvent(e)) {
+      this.handleTouchMove(e);
+    }
+    Blockly.longStop_();
+  } else {
+    Blockly.TouchGesture.superClass_.handleMove.call(this, e);
+  }
+};
+

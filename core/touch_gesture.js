@@ -185,6 +185,7 @@ Blockly.TouchGesture.prototype.handleMove = function(e) {
  * @package
  */
 Blockly.TouchGesture.prototype.handleUp = function(e) {
+  window.QKM.isDrawingConnectedLine = false;
   if (Blockly.Touch.isTouchEvent(e) && !this.isDragging()) {
     this.handleTouchEnd(e);
   }
@@ -229,6 +230,10 @@ Blockly.TouchGesture.prototype.dispose = function() {
  * @package
  */
 Blockly.TouchGesture.prototype.handleTouchStart = function(e) {
+  debugger;
+  if(e.target.className.baseVal == 'connectGuideSvg'){
+    window.QKM.isDrawingConnectedLine = true;
+  }
   var pointerId = Blockly.Touch.getTouchIdentifierFromEvent(e);
   // store the pointerId in the current list of pointers
   this.cachedPoints_[pointerId] = this.getTouchPoint(e);
@@ -277,6 +282,7 @@ Blockly.TouchGesture.prototype.handleTouchMove = function(e) {
     this.previousScale_ = scale;
     e.preventDefault();
   }
+
 };
 
 /**
