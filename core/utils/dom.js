@@ -276,3 +276,22 @@ Blockly.utils.dom.getTextWidth = function(textElement) {
   }
   return width;
 };
+
+Blockly.utils.dom.find = function(node, selector){
+  var tagPath = null;
+  //selector is class selector:
+  var selectorType = 'id'; // ['id', 'class', 'tag'] 默认为id选择器   语法同jquery   #id  .class  tag
+  if(/^\./.test(selector)){
+    selectorType = 'class';
+  }
+  if(node.children){
+    var ary = Array.prototype.slice.call(node.children)
+    tagPath = ary.find(item => {
+      if(selectorType === 'class'){
+        return item.className.baseVal === selector.slice(1);
+      }
+      //TODO id, tag 
+    })
+  }
+  return tagPath;
+}

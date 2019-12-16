@@ -1306,3 +1306,94 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     return loopInfo;
   }
 })
+
+/*--------------------events-----------------*/
+Object.assign(Blockly.BlockSvg.prototype, {
+
+
+  onMouseWheel_(e) {
+    // Don't scroll or zoom anything if drag is in progress.
+    if (Blockly.Gesture.inProgress()) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    var canWheelZoom = this.options.zoomOptions && this.options.zoomOptions.wheel;
+    var canWheelMove = this.options.moveOptions && this.options.moveOptions.wheel;
+    if (!canWheelZoom && !canWheelMove) {
+      return;
+    }
+
+    var scrollDelta = Blockly.utils.getScrollDeltaPixels(e);
+    if (canWheelZoom && e.ctrlKey && !canWheelMove) {
+      // Zoom.
+      // The vertical scroll distance that corresponds to a click of a zoom
+      // button.
+      var PIXELS_PER_ZOOM_STEP = 50;
+      var delta = -scrollDelta.y / PIXELS_PER_ZOOM_STEP;
+      var position = Blockly.utils.mouseToSvg(e, this.getParentSvg(),
+          this.getInverseScreenCTM());
+      this.zoom(position.x, position.y, delta);
+    } else {
+      // Scroll.
+      var x = this.scrollX - scrollDelta.x;
+      var y = this.scrollY - scrollDelta.y;
+
+      if (e.shiftKey && !scrollDelta.x) {
+        // Scroll horizontally (based on vertical scroll delta).
+        // This is needed as for some browser/system combinations which do not
+        // set deltaX.
+        x = this.scrollX - scrollDelta.y;
+        y = this.scrollY; // Don't scroll vertically
+      }
+      this.scroll(x, y);
+    }
+    e.preventDefault();
+  },
+  createConnectGuideSvg(){
+    const guideSvgH = 20;
+    if(this.connectGuideSvg){
+      return;
+    }
+    this.connectGuideSvg = Blockly.utils.dom.createSvgElement('rect', {
+      class: 'connectGuideSvg',
+      x: 0,
+      y: this.height /*- guideSvgH*/ - 6,
+      width: this.width,
+      height: guideSvgH,
+      // fill: '#ff0000'
+    }, this.svgGroup_);
+
+    Blockly.bindEventWithChecks_(this.connectGuideSvg, 'mouseenter', this, this.onMouseEnter_);
+    Blockly.bindEventWithChecks_(this.connectGuideSvg, 'mouseleave', this, this.onMouseleave_);
+  },
+  onMouseEnter_(e){
+    if (Blockly.Gesture.inProgress()) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    if(e.ctrlKey){
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    // 将loop和if模块排除
+    const excludeBlock = ['controls_if', 'controls_for', 'controls_forEach', 'controls_whileUntil', 'controls_repeat_ext'];
+    if(excludeBlock.indexOf(this.type) > -1){
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    if(e.target.parentNode){
+      Blockly.utils.dom.addClass(e.target.parentNode, 'showConnectGuideSvg')
+    }
+  },
+
+  onMouseleave_(e){
+    if(e.target.parentNode){
+      Blockly.utils.dom.removeClass(e.target.parentNode, 'showConnectGuideSvg')
+    }
+  }
+})
+

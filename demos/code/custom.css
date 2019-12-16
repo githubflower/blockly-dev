@@ -59,3 +59,14 @@
 .blocklyFlyoutBackground{
 	fill: #0c9cb7 !important;	
 }
+
+.connectGuideSvg{
+	display: none;
+	fill: #f2631f; 
+    /*fill-opacity: .6;*/
+	opacity: .6;
+	cursor: auto;
+}
+.showConnectGuideSvg > .connectGuideSvg{
+	display: block;
+};

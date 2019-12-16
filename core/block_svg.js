@@ -268,6 +268,12 @@ Blockly.BlockSvg.prototype.initSvg = function() {
   if (!this.getSvgRoot().parentNode) {
     this.workspace.getCanvas().appendChild(this.getSvgRoot());
   }
+
+  var targetPath  = Blockly.utils.dom.find(this.svgGroup_, '.blocklyPath')
+  if(!this.workspace.isFlyout){
+    Blockly.bindEventWithChecks_(targetPath, 'mouseenter', this, this.onMouseEnter_);
+    Blockly.bindEventWithChecks_(targetPath, 'mouseleave', this, this.onMouseleave_);
+  }
 };
 
 /**
@@ -1694,6 +1700,8 @@ Blockly.BlockSvg.prototype.render = function(opt_bubble) {
     }
   }
   Blockly.utils.dom.stopTextWidthCache();
+
+  this.createConnectGuideSvg(); //创建连线向导svg
 };
 
 /**
