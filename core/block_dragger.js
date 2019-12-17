@@ -148,6 +148,10 @@ Blockly.BlockDragger.initIconData_ = function(block) {
  */
 Blockly.BlockDragger.prototype.startBlockDrag = function(currentDragDeltaXY,
     healStack) {
+  debugger;
+  if(window.QKM.isDrawingConnectedLine){
+    return;
+  }
   window.QKM._DRAGGER_STATUS = 'start';
   if (!Blockly.Events.getGroup()) {
     Blockly.Events.setGroup(true);

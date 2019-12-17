@@ -542,6 +542,7 @@ Blockly.Gesture.prototype.bindMouseEvents = function(e) {
  * @package
  */
 Blockly.Gesture.prototype.handleMove = function(e) {
+  print(e.target);
   this.updateFromEvent_(e);
   if (this.isDraggingWorkspace_) {
     this.workspaceDragger_.drag(this.currentDragDeltaXY_);

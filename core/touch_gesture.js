@@ -185,7 +185,43 @@ Blockly.TouchGesture.prototype.handleMove = function(e) {
  * @package
  */
 Blockly.TouchGesture.prototype.handleUp = function(e) {
-  window.QKM.isDrawingConnectedLine = false;
+  if(window.QKM.isDrawingConnectedLine){
+    window.QKM.isDrawingConnectedLine = false;
+    e.preventDefault();
+    e.stopPropagation();
+    this.dispose();
+    print(e.target);
+
+    //找到鼠标松开时所在的block, 作为endBlock, 然后创建1个lineBlock连接startBlock和endBlock, 最后移除startBlock的polylineSvg
+    function findTargetBlock(node){
+      if(node.parentNode){
+        var blockId = node.parentNode.getAttribute && node.parentNode.getAttribute('data-id');
+        if(blockId){
+          return this.creatorWorkspace_.blockDB_[blockId];
+        }else{
+          return findTargetBlock.call(this, node.parentNode)
+        }
+      }
+      return null;
+      console.error('findTargetBlock error, invalid node: ' + node);
+    }
+    var targetBlock = findTargetBlock.call(this, e.target);
+    
+    Blockly.utils.dom.removeNode(window.QKM.startBlock.polylineSvg);
+    window.QKM.startBlock.polylineSvg = null;
+    if(targetBlock === window.QKM.startBlock){
+      return;
+    }
+    if(targetBlock){
+      var lineBlock = new Blockly.BlockSvg(this.creatorWorkspace_, 'line');
+      lineBlock.render(true);
+      window.QKM.startBlock.nextConnection.connect(lineBlock.previousConnection);
+      lineBlock.nextConnection.connect(targetBlock.previousConnection);
+    }
+
+    debugger;
+    return;
+  }
   if (Blockly.Touch.isTouchEvent(e) && !this.isDragging()) {
     this.handleTouchEnd(e);
   }
@@ -230,9 +266,15 @@ Blockly.TouchGesture.prototype.dispose = function() {
  * @package
  */
 Blockly.TouchGesture.prototype.handleTouchStart = function(e) {
-  debugger;
   if(e.target.className.baseVal == 'connectGuideSvg'){
     window.QKM.isDrawingConnectedLine = true;
+    var leftTop = e.target.parentNode.getScreenCTM();
+    var startPoint = {
+      x: leftTop.e + this.targetBlock_.width / 2,
+      y: leftTop.f + this.targetBlock_.height / 2
+    };
+    window.QKM.startPoint = startPoint;
+    window.QKM.startBlock = this.targetBlock_;
   }
   var pointerId = Blockly.Touch.getTouchIdentifierFromEvent(e);
   // store the pointerId in the current list of pointers

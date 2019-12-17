@@ -1366,6 +1366,7 @@ Object.assign(Blockly.BlockSvg.prototype, {
 
     Blockly.bindEventWithChecks_(this.connectGuideSvg, 'mouseenter', this, this.onMouseEnter_);
     Blockly.bindEventWithChecks_(this.connectGuideSvg, 'mouseleave', this, this.onMouseleave_);
+    Blockly.bindEventWithChecks_(this.connectGuideSvg, 'mousedown', this, this.onMouseEnter_);
   },
   onMouseEnter_(e){
     if (Blockly.Gesture.inProgress()) {
@@ -1387,6 +1388,7 @@ Object.assign(Blockly.BlockSvg.prototype, {
     }
     if(e.target.parentNode){
       Blockly.utils.dom.addClass(e.target.parentNode, 'showConnectGuideSvg')
+      window.QKM.dragDisabled = true;
     }
   },
 
@@ -1399,25 +1401,21 @@ Object.assign(Blockly.BlockSvg.prototype, {
 
 Blockly.TouchGesture.prototype.handleMove = function(e) {
   //鼠标点击连线向导块进行移动
-  if(e.target.className.baseVal == 'connectGuideSvg'){
+  if(window.QKM.isDrawingConnectedLine  /*e.target.className.baseVal == 'connectGuideSvg'*/){
     //开始画线
     //TODO 暂时将逻辑写在这里看一下效果
     var attrs = {};
-    debugger;
     
     //计算线段起点坐标
-    var leftTop = e.target.parentNode.getScreenCTM();
-    var startPoint = {
-      x: leftTop.e + this.targetBlock_.width / 2,
-      y: leftTop.f + this.targetBlock_.height / 2
-    };
+    var startPoint = window.QKM.startPoint;
     var endPoint = {
       x: e.clientX,
       y: e.clientY
     }
     print('start:', startPoint);
     print('end:', endPoint);
-    attrs.d = `m ${this.targetBlock_.width / 2} ${this.targetBlock_.height / 2} l 0 ${(endPoint.y - startPoint.y)/2} m 0 0 l ${endPoint.x - startPoint.x} 0 m 0 0 l 0 ${(endPoint.y - startPoint.y)/2}`;
+    //为什么在最后会有+1，-1等运算？  避免鼠标一直悬浮在polylineSvg导致目标block捕捉不到鼠标的hover事件
+    attrs.d = `m ${this.targetBlock_.width / 2} ${this.targetBlock_.height / 2} l 0 ${(endPoint.y - startPoint.y)/2} m 0 0 l ${endPoint.x - startPoint.x} 0 m 0 0 l 0 ${(endPoint.y - startPoint.y)/2 > 0 ? (endPoint.y - startPoint.y)/2 - 1 : (endPoint.y - startPoint.y)/2 + 1}`;
     if(this.targetBlock_.polylineSvg){
       this.targetBlock_.polylineSvg.setAttribute('d', attrs.d);
       print('if');
@@ -1427,8 +1425,16 @@ Blockly.TouchGesture.prototype.handleMove = function(e) {
         d: attrs.d,
         stroke: '#ff0000'
       }, this.targetBlock_.svgGroup_);
+
+      Blockly.bindEventWithChecks_(this.targetBlock_.polylineSvg, 'mousedown', this, (e)=>{
+        debugger;
+        Blockly.utils.dom.addClass(this.targetBlock_.svgGroup_, 'showConnectGuideSvg')
+      });
       print('else');
     }
+    return;
+  }
+  if(window.QKM.isDrawingConnectedLine){
     return;
   }
   if (this.isDragging()) {
