@@ -181,7 +181,12 @@ Blockly.tree.BaseNode.prototype.disposeInternal = function() {
  */
 Blockly.tree.BaseNode.prototype.initAccessibility = function() {
   var el = this.getElement();
+
   if (el) {
+    //给el设置一个类 content, 方便自定义图标等
+    if(this.content_){
+      Blockly.utils.dom.addClass(el, this.content_.toLowerCase());
+    }
     // Set an id for the label
     var label = this.getLabelElement();
     if (label && !label.id) {
