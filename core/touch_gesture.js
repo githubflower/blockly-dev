@@ -190,7 +190,6 @@ Blockly.TouchGesture.prototype.handleUp = function(e) {
     e.preventDefault();
     e.stopPropagation();
     this.dispose();
-    print(e.target);
 
     //找到鼠标松开时所在的block, 作为endBlock, 然后创建1个lineBlock连接startBlock和endBlock, 最后移除startBlock的polylineSvg
     function findTargetBlock(node){
@@ -213,11 +212,17 @@ Blockly.TouchGesture.prototype.handleUp = function(e) {
       return;
     }
     if(targetBlock){
-      var lineBlock = new Blockly.BlockSvg(this.creatorWorkspace_, 'line');
-      lineBlock.render(true);
-      lineBlock.initSvg();//绑定鼠标按下的事件等一系列初始化操作
-      window.QKM.startBlock.nextConnection.connect(lineBlock.previousConnection);
-      lineBlock.nextConnection.connect(targetBlock.previousConnection);
+      var startBlock = window.QKM.startBlock;
+      //如果startBlock存在childBlock && childBlock.type === 'line' && childBlock.childBlock不存在 则不需要新创建lineBlock,只需将targetBlock.childBlock连接endBlock即可
+      if(startBlock.childBlocks_[0] && startBlock.childBlocks_[0].type === 'line' && startBlock.childBlocks_[0].childBlocks_.length === 0){
+        startBlock.childBlocks_[0].nextConnection.connect(targetBlock.previousConnection);
+      }else{
+        var lineBlock = new Blockly.BlockSvg(this.creatorWorkspace_, 'line');
+        lineBlock.render(true);
+        lineBlock.initSvg();//绑定鼠标按下的事件等一系列初始化操作
+        startBlock.nextConnection.connect(lineBlock.previousConnection);
+        lineBlock.nextConnection.connect(targetBlock.previousConnection);
+      }
     }
 
     debugger;

@@ -15,6 +15,18 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
           fill: '#ff4b2c',
         }, this.block_, true);
         break;
+      case 'line':
+        if(!this.block_.transparentRect){
+          this.block_.transparentRect = Blockly.utils.dom.createSvgElement('rect', {
+            x: -10,
+            y: 0,
+            width: 20,
+            height: 50,
+            class: 'transparentRect',
+            fill: 'transparent',
+          }, this.block_.svgGroup_);
+        }
+        break;  
       default:
         // do nothing
     }
