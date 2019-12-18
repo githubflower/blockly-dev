@@ -1478,7 +1478,8 @@ Blockly.WorkspaceSvg.prototype.onMouseWheel_ = function(e) {
   }
 
   var scrollDelta = Blockly.utils.getScrollDeltaPixels(e);
-  if (canWheelZoom && (e.ctrlKey || !canWheelMove)) {
+  // if (canWheelZoom && (e.ctrlKey || !canWheelMove)) {
+  if (canWheelZoom && e.ctrlKey && !canWheelMove) {
     // Zoom.
     // The vertical scroll distance that corresponds to a click of a zoom
     // button.
