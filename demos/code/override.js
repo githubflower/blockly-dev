@@ -1412,13 +1412,10 @@ Blockly.TouchGesture.prototype.handleMove = function(e) {
       x: e.clientX,
       y: e.clientY
     }
-    print('start:', startPoint);
-    print('end:', endPoint);
     //为什么在最后会有+1，-1等运算？  避免鼠标一直悬浮在polylineSvg导致目标block捕捉不到鼠标的hover事件
     attrs.d = `m ${this.targetBlock_.width / 2} ${this.targetBlock_.height / 2} l 0 ${(endPoint.y - startPoint.y)/2} m 0 0 l ${endPoint.x - startPoint.x} 0 m 0 0 l 0 ${(endPoint.y - startPoint.y)/2 > 0 ? (endPoint.y - startPoint.y)/2 - 1 : (endPoint.y - startPoint.y)/2 + 1}`;
     if(this.targetBlock_.polylineSvg){
       this.targetBlock_.polylineSvg.setAttribute('d', attrs.d);
-      print('if');
     }else{
       this.targetBlock_.polylineSvg = Blockly.utils.dom.createSvgElement('path', {
         class: 'polylineSvg',
@@ -1427,10 +1424,8 @@ Blockly.TouchGesture.prototype.handleMove = function(e) {
       }, this.targetBlock_.svgGroup_);
 
       Blockly.bindEventWithChecks_(this.targetBlock_.polylineSvg, 'mousedown', this, (e)=>{
-        debugger;
         Blockly.utils.dom.addClass(this.targetBlock_.svgGroup_, 'showConnectGuideSvg')
       });
-      print('else');
     }
     return;
   }
