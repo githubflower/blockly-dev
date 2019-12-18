@@ -215,6 +215,7 @@ Blockly.TouchGesture.prototype.handleUp = function(e) {
     if(targetBlock){
       var lineBlock = new Blockly.BlockSvg(this.creatorWorkspace_, 'line');
       lineBlock.render(true);
+      lineBlock.initSvg();//绑定鼠标按下的事件等一系列初始化操作
       window.QKM.startBlock.nextConnection.connect(lineBlock.previousConnection);
       lineBlock.nextConnection.connect(targetBlock.previousConnection);
     }
