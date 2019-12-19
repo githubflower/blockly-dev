@@ -60,6 +60,15 @@ path 路径结束后是会根据fill的值填充整个模块的，有时候我�
 
 在block中自定义加入了rect元素，但是每次重绘的时候就会产生脏数据（原先生成的rect没有删除且又新增了1个rect），将rect挂载到block上可以解决此问题
 
+12.19
+blockly主题有4个  core/theme/*
+主题在html页面中 demos/code/code.js 创建workspace时传入，如果没有传入则默认采用Classic主题  Code.workspace = Blockly.inject(xx, {theme: xxx})
+在en.js等资源文件中有对toolbox的配色进行覆盖，这里面有2个问题：
+1.资源中设置各个block颜色的字段和主题文件中的字段不是一一对应的关系，这点没设计好，也有可能是写demo页面的人没注意统一；
+2.对主题的颜色覆盖放在资源文件中一定是一个糟糕的设计；
+blockly对主题的设计是通过js将主题配置注入到行内属性；这种做法有1个大的缺陷就是不方便主题热替换，替换完必须刷新页面才有效果，如果设计成类名+css控制会更灵活；
+
+
 
 
 

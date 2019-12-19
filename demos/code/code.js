@@ -407,6 +407,7 @@ Code.init = function() {
       function(m, p1, p2) {return p1 + MSG[p2];});
   var toolboxXml = Blockly.Xml.textToDom(toolboxText);
 
+  var userTheme = window.localStorage.getItem('qkm.theme');
   Code.workspace = Blockly.inject('content_blocks',
       {grid:
           {spacing: 25,
@@ -418,7 +419,8 @@ Code.init = function() {
        toolbox: toolboxXml,
        zoom:
            {controls: true,
-            wheel: true}
+            wheel: true},
+      theme: Blockly.Themes[userTheme || HighContrast]
       });
 
   // Add to reserved word list: Local variables in execution environment (runJS)

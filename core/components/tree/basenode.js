@@ -207,6 +207,7 @@ Blockly.tree.BaseNode.prototype.initAccessibility = function() {
     var img = this.getIconElement();
     if (img) {
       Blockly.utils.aria.setRole(img, Blockly.utils.aria.Role.PRESENTATION);
+      Blockly.utils.dom.addClass(img, 'icon iconfont icon-' + this.content_.toLowerCase());
     }
 
     var ce = this.getChildrenElement();

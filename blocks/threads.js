@@ -52,7 +52,7 @@ Blockly.Blocks['threads_def'] = {
         Blockly.Msg['PROCEDURES_DEFNORETURN_COMMENT']) {
       this.setCommentText(Blockly.Msg['PROCEDURES_DEFNORETURN_COMMENT']);
     }
-    this.setStyle('THREAD');
+    this.setStyle('thread_blocks');
     this.setTooltip(Blockly.Msg['PROCEDURES_DEFNORETURN_TOOLTIP']);
     this.setHelpUrl(Blockly.Msg['PROCEDURES_DEFNORETURN_HELPURL']);
     this.arguments_ = [];
@@ -770,7 +770,7 @@ Blockly.Blocks['threads_end'] = {
         .appendField(this.id, 'NAME');
     this.setPreviousStatement(true);
     this.setNextStatement(true);
-    this.setStyle('THREAD');
+    this.setStyle('thread_blocks');
     // Tooltip is set in renameThread.
     this.setHelpUrl(Blockly.Msg['PROCEDURES_CALLNORETURN_HELPURL']);
     this.arguments_ = [];

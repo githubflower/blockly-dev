@@ -31,9 +31,9 @@ Blockly.Themes.Modern = {};
 
 Blockly.Themes.Modern.defaultBlockStyles = {
   "colour_blocks": {
-    "colourPrimary": "#a5745b",
-    "colourSecondary": "#dbc7bd",
-    "colourTertiary": "#845d49"
+    "colourPrimary": "#a5745b",//fill
+    "colourSecondary": "#dbc7bd",//shadow
+    "colourTertiary": "#845d49"//border
   },
   "list_blocks": {
     "colourPrimary": "#745ba5",
@@ -80,7 +80,12 @@ Blockly.Themes.Modern.defaultBlockStyles = {
     "colourSecondary": "#dbbdd6",
     "colourTertiary": "#84497a",
     "hat": "cap"
-  }
+  },
+  "thread_blocks": {
+    "colourPrimary": "#ff0000",
+    "colourSecondary": "#dbbdd6",
+    "colourTertiary": "#84497a"
+  },
 };
 
 Blockly.Themes.Modern.categoryStyles = {

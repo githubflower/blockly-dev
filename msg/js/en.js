@@ -425,12 +425,19 @@ Blockly.Msg["PROCEDURES_DEFRETURN_TITLE"] = Blockly.Msg["PROCEDURES_DEFNORETURN_
 Blockly.Msg["TEXT_APPEND_VARIABLE"] = Blockly.Msg["VARIABLES_DEFAULT_NAME"];
 Blockly.Msg["TEXT_CREATE_JOIN_ITEM_TITLE_ITEM"] = Blockly.Msg["VARIABLES_DEFAULT_NAME"];
 
-Blockly.Msg["MATH_HUE"] = "230";
-Blockly.Msg["LOOPS_HUE"] = "120";
-Blockly.Msg["LISTS_HUE"] = "260";
-Blockly.Msg["LOGIC_HUE"] = "210";
-Blockly.Msg["VARIABLES_HUE"] = "330";
-Blockly.Msg["TEXTS_HUE"] = "160";
-Blockly.Msg["PROCEDURES_HUE"] = "290";
-Blockly.Msg["COLOUR_HUE"] = "20";
-Blockly.Msg["VARIABLES_DYNAMIC_HUE"] = "310";
+function setToolboxColour(theme){
+	if(!Blockly.Themes[theme]){
+		console.warn('theme error');
+		theme = 'Classic';
+	}
+	var blockStyles = Blockly.Themes[theme].blockStyles_;
+	var tail = '_HUE';
+	Object.keys(blockStyles).forEach(blockType => {
+		var type = blockType.replace('_blocks', '');
+		Blockly.Msg[type.toUpperCase() + tail] = blockStyles[blockType].colourPrimary;
+		Blockly.Msg[type.toUpperCase() + 'S' + tail] = blockStyles[blockType].colourPrimary;
+	})
+}
+
+const theme = window.localStorage.getItem('qkm.theme');
+setToolboxColour(theme || 'Classic');

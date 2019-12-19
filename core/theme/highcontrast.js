@@ -80,7 +80,12 @@ Blockly.Themes.HighContrast.defaultBlockStyles = {
     "colourSecondary": "#FF73BE",
     "colourTertiary": "#FFD4EB",
     "hat": "cap"
-  }
+  },
+  "thread_blocks": {
+    "colourPrimary": "#ff0000",
+    "colourSecondary": "#dbbdd6",
+    "colourTertiary": "#84497a"
+  },
 };
 
 Blockly.Themes.HighContrast.categoryStyles = {

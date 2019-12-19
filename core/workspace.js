@@ -27,6 +27,9 @@ goog.require('Blockly.Cursor');
 goog.require('Blockly.MarkerCursor');
 goog.require('Blockly.Events');
 goog.require('Blockly.ThemeManager');
+goog.require('Blockly.Themes.Dark');
+goog.require('Blockly.Themes.Modern');
+goog.require('Blockly.Themes.HighContrast');
 goog.require('Blockly.Themes.Classic');
 goog.require('Blockly.utils');
 goog.require('Blockly.utils.math');
@@ -135,7 +138,7 @@ Blockly.Workspace = function(opt_options) {
    */
   this.themeManager_ = this.options.parentWorkspace ?
       this.options.parentWorkspace.getThemeManager() :
-      new Blockly.ThemeManager(this.options.theme || Blockly.Themes.Classic);
+      new Blockly.ThemeManager(this.options.theme || Blockly.Themes.Modern);
   
   this.themeManager_.subscribeWorkspace(this);
 };
@@ -215,7 +218,7 @@ Blockly.Workspace.prototype.getTheme = function() {
  */
 Blockly.Workspace.prototype.setTheme = function(theme) {
   if (!theme) {
-    theme = /** @type {!Blockly.Theme} */ (Blockly.Themes.Classic);
+    theme = /** @type {!Blockly.Theme} */ (Blockly.Themes.Modern);
   }
   this.themeManager_.setTheme(theme);
 };

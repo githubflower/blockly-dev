@@ -1,3 +1,19 @@
+/*@import url('./css/iconfont.css')*/
+.blocklyToolboxDiv{
+	background-color: #FFFFFF;
+}
+.darkTheme .blocklyToolboxDiv{
+	background-color: #333333;
+}
+.darkTheme .blocklyToolboxDiv .blocklyTreeLabel{
+	color: #1976D2;
+}
+.darkTheme .blocklyTreeSelected .blocklyTreeLabel,
+.darkTheme .blocklyTreeSelected .iconfont{
+	color: #FFFFFF;
+}
+
+
 .blocklyPathDark {
     display: none;
 }
@@ -57,7 +73,8 @@
 	fill: #282c34 !important;
 }
 .blocklyFlyoutBackground{
-	fill: #0c9cb7 !important;	
+	fill: #0d0a31 !important;	
+	/*fill: #0c9cb7 !important;	*/
 }
 
 .connectGuideSvg{
@@ -69,4 +86,50 @@
 }
 .showConnectGuideSvg > .connectGuideSvg{
 	display: block;
-};
+}
+.blocklyTreeRoot{
+	padding: 0px;
+}
+.blocklyTreeRow{
+	height: 40px;
+	line-height: 40px;
+	margin-bottom: 0px;
+}
+.blocklyTreeIcon{
+	height: 40px;
+	padding: 0 10px;
+	/*font-weight: bold;*/
+	background-image: none;
+}
+.blocklyFlyout{
+
+}
+.blocklyTreeLabel{
+	color: #2e3131;
+}
+.blocklyTreeRow.blocklyTreeSelected{
+	transition: all .3s;
+}
+
+.blocklyTreeRow:not(.blocklyTreeSelected):hover{
+	color: #FFFFFF;
+	background-color: rgba(34, 167, 240, 1);
+	/*font-weight: bold;*/
+}
+.blocklyTreeRow:not(.blocklyTreeSelected):hover .iconfont{
+	color: #FFFFFF;
+	font-size: 24px;
+}
+.blocklyTreeRow:not(.blocklyTreeSelected):hover .blocklyTreeLabel{
+	color: #FFFFFF;
+}
+div[role="treeitem"]{
+	/*padding-left: 5px;*/
+	/*border-bottom: 1px solid #1976D2;*/
+}
+div[role="treeitem"]:hover{
+	transition: all .3s;
+}
+div[role="treeitem"] > .blocklyTreeRow{
+	border-left: none !important;
+}

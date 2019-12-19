@@ -1,0 +1,149 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "843899",
+      "name": "wan_list",
+      "font_class": "list",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "1206019",
+      "name": "text",
+      "font_class": "text",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "1444888",
+      "name": "math-compass",
+      "font_class": "math-compass",
+      "unicode": "e7e7",
+      "unicode_decimal": 59367
+    },
+    {
+      "icon_id": "1481171",
+      "name": "Function svg icon",
+      "font_class": "Functionsvgicon",
+      "unicode": "e505",
+      "unicode_decimal": 58629
+    },
+    {
+      "icon_id": "1634704",
+      "name": "function",
+      "font_class": "function",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "4472428",
+      "name": "loop",
+      "font_class": "loop",
+      "unicode": "e6fd",
+      "unicode_decimal": 59133
+    },
+    {
+      "icon_id": "5326840",
+      "name": "text",
+      "font_class": "text1",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "7117114",
+      "name": "function",
+      "font_class": "icon-trace-function",
+      "unicode": "e510",
+      "unicode_decimal": 58640
+    },
+    {
+      "icon_id": "7213103",
+      "name": "Text",
+      "font_class": "Text",
+      "unicode": "e673",
+      "unicode_decimal": 58995
+    },
+    {
+      "icon_id": "7213606",
+      "name": "Mathematics",
+      "font_class": "Mathematics",
+      "unicode": "e685",
+      "unicode_decimal": 59013
+    },
+    {
+      "icon_id": "7213611",
+      "name": "Basic math",
+      "font_class": "Basicmath",
+      "unicode": "e683",
+      "unicode_decimal": 59011
+    },
+    {
+      "icon_id": "7352980",
+      "name": "list",
+      "font_class": "list1",
+      "unicode": "e656",
+      "unicode_decimal": 58966
+    },
+    {
+      "icon_id": "7447690",
+      "name": "Logical domain",
+      "font_class": "Logicaldomain",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "7684921",
+      "name": "variable",
+      "font_class": "variable",
+      "unicode": "e6cd",
+      "unicode_decimal": 59085
+    },
+    {
+      "icon_id": "7720055",
+      "name": "thread",
+      "font_class": "thread",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "9369727",
+      "name": "text",
+      "font_class": "text2",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "9455547",
+      "name": "logic",
+      "font_class": "logic",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "10089820",
+      "name": "Line 1",
+      "font_class": "Line",
+      "unicode": "e61d",
+      "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "10330718",
+      "name": "math",
+      "font_class": "math",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    },
+    {
+      "icon_id": "10564398",
+      "name": "text",
+      "font_class": "text3",
+      "unicode": "e71e",
+      "unicode_decimal": 59166
+    }
+  ]
+}

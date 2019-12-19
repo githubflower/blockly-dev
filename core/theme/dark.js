@@ -80,7 +80,12 @@ Blockly.Themes.Dark.defaultBlockStyles = {
     "colourSecondary": "#dbbdd6",
     "colourTertiary": "#84497a",
     "hat": "cap"
-  }
+  },
+  "thread_blocks": {
+    "colourPrimary": "#ff0000",
+    "colourSecondary": "#dbbdd6",
+    "colourTertiary": "#84497a"
+  },
 };
 
 Blockly.Themes.Dark.categoryStyles = {

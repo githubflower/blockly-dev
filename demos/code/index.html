@@ -6,6 +6,8 @@
   <title>Blockly Demo:</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" type="text/css" href="./custom.css">
+  <link rel="stylesheet" type="text/css" href="./css/iconfont.css">
+
   <script src="/storage.js"></script>
   <!-- <script src="../../blockly_compressed.js"></script> -->
   <script src="../../blockly_uncompressed.js"></script>
@@ -43,7 +45,7 @@
   <script type="text/javascript" src="./generate.js"></script>
   <script src="code.js"></script>
 </head>
-<body>
+<body class="darkTheme">
   <table width="100%" height="100%">
     <tr>
       <td>
@@ -330,6 +332,7 @@
           </shadow>
         </value>
       </block>
+      <block type="lists_create_obj"></block>
       <block type="lists_length"></block>
       <block type="lists_isEmpty"></block>
       <block type="lists_indexOf">
@@ -369,7 +372,7 @@
       </block>
       <block type="lists_sort"></block>
     </category>
-    <category name="%{BKY_CATCOLOUR}" colour="%{BKY_COLOUR_HUE}">
+    <!-- <category name="%{BKY_CATCOLOUR}" colour="%{BKY_COLOUR_HUE}">
       <block type="colour_picker"></block>
       <block type="colour_random"></block>
       <block type="colour_rgb">
@@ -406,21 +409,16 @@
           </shadow>
         </value>
       </block>
-    </category>
-    <sep></sep>
+    </category> -->
     <category name="%{BKY_CATVARIABLES}" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
     <category name="%{BKY_CATFUNCTIONS}" colour="%{BKY_PROCEDURES_HUE}" custom="PROCEDURE"></category>
     <seq></seq>
     <category name="Thread" custom="THREAD"></category>
-    <category name="CustomBlock" colour="#0c9cb7">
-      <category name="todo" colour="#f2631f">
-        <block type="set_local2"></block>
-        <block type="block_var"></block>
-        <block type="lists_create_obj"></block>
-      </category>
-      <category name="base" colour="#2abeda">
-        <block type="line"></block>
-      </category>
+    <!-- <category name="Easy create" colour="#0c9cb7">
+      <block type="block_var"></block>
+    </category> -->
+    <category name="Connect" colour="%{BKY_CONNECT_HUE}">
+      <block type="line"></block>
     </category>
   </xml>
 
