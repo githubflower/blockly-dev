@@ -747,7 +747,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       //zjie 当有外部输入的时候，是否画右边的凹槽
       if (window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner) {
         this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
-          // pathDown +  //zjie
+          (window.CUSTOM_CFG_OUTLINE.rightNotch ? pathDown : '') +  //zjie
           Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
       } else {
         this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
