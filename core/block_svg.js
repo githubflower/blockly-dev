@@ -1701,7 +1701,7 @@ Blockly.BlockSvg.prototype.render = function(opt_bubble) {
   }
   Blockly.utils.dom.stopTextWidthCache();
 
-  if(this.type !== 'line'){
+  if(this.type !== 'line' && this.nextConnection){
     this.createConnectGuideSvg(); //创建连线向导svg
   }
 };

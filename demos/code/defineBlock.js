@@ -4,7 +4,7 @@
 var lineJson = {
   "previousStatement": true,
   "nextStatement": true,
-  "colour": '#ff00cc'
+  // "colour": '#ff00cc'  //可以单独给这个块指定颜色  如果不指定则采用大类的颜色
 }
 Blockly.Blocks['line'] = {
   init: function() {
@@ -14,6 +14,7 @@ Blockly.Blocks['line'] = {
     this.setTooltip(function() {
       return 'a block connection two blocks.'
     });
+    this.setStyle('connect_blocks');
   }
 };
 

@@ -1,5 +1,20 @@
 //存放一些自定义参数
 window.QKM = {};
+function drawArrow(arrow){
+  const CONSTANTS = new Blockly.blockRendering.ConstantProvider();
+  var path = '';
+  switch(arrow){
+    case 'up':
+      path += `m 0 ${CONSTANTS.ARROW_HEIGHT}`; //往下移箭头的高度
+      path += `l -${CONSTANTS.ARROW_WIDTH} 0 l ${CONSTANTS.ARROW_WIDTH} -${CONSTANTS.ARROW_HEIGHT} l ${CONSTANTS.ARROW_WIDTH} ${CONSTANTS.ARROW_HEIGHT} l -${CONSTANTS.ARROW_WIDTH} 0 z`;
+      break;
+    case 'down':
+      path += `m 0 -${CONSTANTS.ARROW_HEIGHT}`; //往上移箭头的高度
+      path += `l -${CONSTANTS.ARROW_WIDTH} 0 l ${CONSTANTS.ARROW_WIDTH} ${CONSTANTS.ARROW_HEIGHT} l ${CONSTANTS.ARROW_WIDTH} -${CONSTANTS.ARROW_HEIGHT} l -${CONSTANTS.ARROW_WIDTH} 0 z`;
+      break;
+  }
+  return path;
+}
 
 Object.assign(Blockly.blockRendering.Drawer.prototype, {
   drawSomeRect(){
@@ -386,14 +401,10 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     var arrowWidth = 8;
     var arrowHeight = 16;
     this.positionPreviousConnection_();
-    this.outlinePath_ +=
-      Blockly.utils.svgPaths.moveBy(topRow.xPos, this.info_.startY);
-
-    /*this.outlinePath_ += ` h ${ lineWidth / 2 } `;
-    this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('v', lineHeight);
-    this.outlinePath_ += ` l ${arrowWidth / 2} -2 l ${(arrowWidth / 2 + lineWidth / 2) * -1} ${arrowHeight} l ${(arrowWidth / 2 + lineWidth / 2) * -1} ${arrowHeight * -1} l ${arrowWidth / 2} 2 v -50 z `;
-*/
-    this.outlinePath_ += ` v ${lineHeight} m 0 0 l -${this.constants_.ARROW_SHORT} -${this.constants_.ARROW_LONG} m ${2 * this.constants_.ARROW_SHORT} 0 l -${this.constants_.ARROW_SHORT} ${this.constants_.ARROW_LONG} z`;
+    this.outlinePath_ += Blockly.utils.svgPaths.moveBy(topRow.xPos, this.info_.startY);
+    // l -${this.constants_.ARROW_SHORT} -${this.constants_.ARROW_LONG} m ${2 * this.constants_.ARROW_SHORT} 0 l -${this.constants_.ARROW_SHORT} ${this.constants_.ARROW_LONG} z
+    this.outlinePath_ += ` v ${lineHeight} m 0 0 `;
+    this.outlinePath_ += drawArrow('down');
     this.positionNextConnection_();
   },
   drawThreadBlock(){
@@ -1137,7 +1148,6 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       this.widthWithChildren = this.width; //外部的容器在计算宽度时会参考this.widthWithChildren
     }
     this.height = yCursor + this.constants_.DARK_PATH_OFFSET;
-
     if (this.block_.type === 'controls_if') {
       this.height += (this.constants_.DIAMOND_SHORT * 2 + this.constants_.STATEMENT_OFFSET_Y * 2);
       this.height = this.height + this.constants_.GAP_V; //15 为了让子block于父block戳开一段距离，不然会挤在一起很难看
@@ -1363,8 +1373,17 @@ Object.assign(Blockly.BlockSvg.prototype, {
     e.preventDefault();
   },
   createConnectGuideSvg(){
-    const guideSvgH = 20;
+    const guideSvgH = new Blockly.blockRendering.ConstantProvider().CONNECT_GUIDE_SVG_HEIGHT;
     if(this.connectGuideSvg){
+      Blockly.utils.dom.update(this.connectGuideSvg, {
+        y: this.height /*- guideSvgH*/ - 6,
+        width: this.width,
+      });
+      //如果connectGuideSvg不是这个svgGroup_的最后1个元素需要将他移到最后，否则可能会出现子block将向导块覆盖的情况
+      var isLastChild = Blockly.utils.dom.isLastChild(this.connectGuideSvg);
+      if(!isLastChild){
+        Blockly.utils.dom.moveToLast(this.connectGuideSvg);
+      }
       return;
     }
     this.connectGuideSvg = Blockly.utils.dom.createSvgElement('rect', {
@@ -1412,6 +1431,23 @@ Object.assign(Blockly.BlockSvg.prototype, {
 })
 
 Blockly.TouchGesture.prototype.handleMove = function(e) {
+  function drawArrow(arrow){
+    const CONSTANTS = new Blockly.blockRendering.ConstantProvider();
+    var path = '';
+    switch(arrow){
+      case 'up':
+        path += `m 0 ${CONSTANTS.ARROW_HEIGHT}`; //往下移箭头的高度
+        path += `l -${CONSTANTS.ARROW_WIDTH} 0 l ${CONSTANTS.ARROW_WIDTH} -${CONSTANTS.ARROW_HEIGHT} l ${CONSTANTS.ARROW_WIDTH} ${CONSTANTS.ARROW_HEIGHT} l -${CONSTANTS.ARROW_WIDTH} 0 z`;
+        break;
+      case 'down':
+        path += `m 0 -${CONSTANTS.ARROW_HEIGHT}`; //往上移箭头的高度
+        path += `l -${CONSTANTS.ARROW_WIDTH} 0 l ${CONSTANTS.ARROW_WIDTH} ${CONSTANTS.ARROW_HEIGHT} l ${CONSTANTS.ARROW_WIDTH} -${CONSTANTS.ARROW_HEIGHT} l -${CONSTANTS.ARROW_WIDTH} 0 z`;
+        break;
+    }
+    return path;
+  }
+
+  const guideSvgH = new Blockly.blockRendering.ConstantProvider().CONNECT_GUIDE_SVG_HEIGHT;
   //鼠标点击连线向导块进行移动
   if(window.QKM.isDrawingConnectedLine  /*e.target.className.baseVal == 'connectGuideSvg'*/){
     //开始画线
@@ -1425,14 +1461,17 @@ Blockly.TouchGesture.prototype.handleMove = function(e) {
       y: e.clientY
     }
     //为什么在最后会有+1，-1等运算？  避免鼠标一直悬浮在polylineSvg导致目标block捕捉不到鼠标的hover事件
-    attrs.d = `m ${this.targetBlock_.width / 2} ${this.targetBlock_.height / 2} l 0 ${(endPoint.y - startPoint.y)/2} m 0 0 l ${endPoint.x - startPoint.x} 0 m 0 0 l 0 ${(endPoint.y - startPoint.y)/2 > 0 ? (endPoint.y - startPoint.y)/2 - 1 : (endPoint.y - startPoint.y)/2 + 1}`;
+    attrs.d = `m ${this.targetBlock_.width / 2} ${this.targetBlock_.height - guideSvgH / 2} l 0 ${(endPoint.y - startPoint.y)/2} m 0 0 l ${endPoint.x - startPoint.x} 0 m 0 0 l 0 ${(endPoint.y - startPoint.y)/2 > 0 ? (endPoint.y - startPoint.y)/2 - 1 : (endPoint.y - startPoint.y)/2 + 1} `;
+    var arrow = endPoint.y - startPoint.y > 0 ? 'down': 'up';
+    attrs.d += `${drawArrow(arrow)}`;
     if(this.targetBlock_.polylineSvg){
       this.targetBlock_.polylineSvg.setAttribute('d', attrs.d);
     }else{
       this.targetBlock_.polylineSvg = Blockly.utils.dom.createSvgElement('path', {
         class: 'polylineSvg',
         d: attrs.d,
-        stroke: '#ff0000'
+        stroke: '#ff0000',
+        fill: '#ff0000'
       }, this.targetBlock_.svgGroup_);
 
       Blockly.bindEventWithChecks_(this.targetBlock_.polylineSvg, 'mousedown', this, (e)=>{

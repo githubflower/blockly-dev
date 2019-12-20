@@ -154,6 +154,9 @@ Blockly.blockRendering.ConstantProvider = function() {
 
   this.LOOP_FIELD_OFFSET_X = 35;
   this.LOOP_FIELD_OFFSET_Y = 17;
+
+  //鼠标悬浮在block上显示的连接向导块的高度
+  this.CONNECT_GUIDE_SVG_HEIGHT = 20;
 };
 
 /**

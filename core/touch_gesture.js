@@ -224,8 +224,6 @@ Blockly.TouchGesture.prototype.handleUp = function(e) {
         lineBlock.nextConnection.connect(targetBlock.previousConnection);
       }
     }
-
-    debugger;
     return;
   }
   if (Blockly.Touch.isTouchEvent(e) && !this.isDragging()) {
@@ -273,11 +271,12 @@ Blockly.TouchGesture.prototype.dispose = function() {
  */
 Blockly.TouchGesture.prototype.handleTouchStart = function(e) {
   if(e.target.className.baseVal == 'connectGuideSvg'){
+    const guideSvgH = new Blockly.blockRendering.ConstantProvider().CONNECT_GUIDE_SVG_HEIGHT;
     window.QKM.isDrawingConnectedLine = true;
     var leftTop = e.target.parentNode.getScreenCTM();
     var startPoint = {
       x: leftTop.e + this.targetBlock_.width / 2,
-      y: leftTop.f + this.targetBlock_.height / 2
+      y: leftTop.f + this.targetBlock_.height - guideSvgH / 2
     };
     window.QKM.startPoint = startPoint;
     window.QKM.startBlock = this.targetBlock_;

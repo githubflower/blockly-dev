@@ -295,3 +295,24 @@ Blockly.utils.dom.find = function(node, selector){
   }
   return tagPath;
 }
+
+Blockly.utils.dom.update = function(node, attrs){
+  if(typeof attrs === 'object'){
+    Object.keys(attrs).forEach(k => {
+      node.setAttribute(k, attrs[k]);
+    })
+  }
+}
+
+Blockly.utils.dom.isLastChild = function(node){
+  if(node.parentNode.lastElementChild === node){
+    return true;
+  }
+  return false;
+}
+
+Blockly.utils.dom.moveToLast = function(node){
+  var parentNode = node.parentNode;
+  parentNode.removeChild(node)
+  parentNode.appendChild(node);
+}

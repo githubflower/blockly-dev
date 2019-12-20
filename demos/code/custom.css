@@ -49,7 +49,7 @@
 	stroke-width: 3px !important;
 	stroke-dashoffset: 5 !important;
 	stroke: #06D6A0 !important;
-	transform: scale(1.01);
+	transform: translate(1px, 1px);
 }
 .blocklyNonEditableText>rect, .blocklyEditableText>rect{
 	stroke: #222222;
@@ -72,8 +72,9 @@
 }
 
 .blocklyMainBackground{
-	fill: #0d0a31 !important;
-	/*fill: #282c34 !important;*/
+	fill: rgba(13, 10, 49, 0.9) !important; /*浅蓝*/
+	/*fill: #0d0a31 !important;*/ /*深蓝*/
+	/*fill: #282c34 !important;*/ /*深灰*/
 }
 .blocklyFlyoutBackground{
 	fill: #120E33 !important;	
