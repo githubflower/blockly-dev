@@ -40,6 +40,7 @@
 	transition: all 0.3s;
 }
 .conn-up-down > .blocklyPath{
+	/*stroke: #dd2c00;*/
 	stroke: #f2631f;
 	/*stroke: #d1f30d;*/
 }
@@ -48,6 +49,7 @@
 	stroke-width: 3px !important;
 	stroke-dashoffset: 5 !important;
 	stroke: #06D6A0 !important;
+	transform: scale(1.01);
 }
 .blocklyNonEditableText>rect, .blocklyEditableText>rect{
 	stroke: #222222;
@@ -70,10 +72,11 @@
 }
 
 .blocklyMainBackground{
-	fill: #282c34 !important;
+	fill: #0d0a31 !important;
+	/*fill: #282c34 !important;*/
 }
 .blocklyFlyoutBackground{
-	fill: #0d0a31 !important;	
+	fill: #120E33 !important;	
 	/*fill: #0c9cb7 !important;	*/
 }
 
