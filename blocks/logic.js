@@ -72,7 +72,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
         "type": "field_btn",
         "eventType": "toggleIF",
         "name": "IF0",
-        "text": "条件"
+        "text": "IF"
+        // "text": Blockly.Msg['CONTROLS_IF_MSG_IF']
       },
       {
         "type": "input_value",

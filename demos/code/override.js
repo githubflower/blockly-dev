@@ -766,6 +766,27 @@ Object.assign(Blockly.geras.Drawer.prototype, {
         input.shape.pathDown(input.height) :
         input.shape.pathDown;
 
+
+        var width = input.width;
+        var height = input.height;
+        var yPos = input.centerline - height / 2;
+        var connectionTop = input.connectionOffsetY;
+        var connectionBottom = input.connectionHeight + connectionTop;
+        var connectionRight = input.xPos + input.connectionWidth;
+      
+        pathDown = Blockly.utils.svgPaths.moveTo(connectionRight, yPos) +
+            Blockly.utils.svgPaths.lineOnAxis('v', connectionTop) +
+            // input.shape.pathDown +
+            'v 15 ' +
+            Blockly.utils.svgPaths.lineOnAxis('v', height - connectionBottom) +
+            Blockly.utils.svgPaths.lineOnAxis('h', -(width - input.connectionWidth)) +
+            Blockly.utils.svgPaths.lineOnAxis('v', -height) +
+            'z';
+        pathDown = `h -20 v ${input.connectionHeight} h 20 `;
+            debugger;
+
+
+
       //zjie 当有外部输入的时候，是否画右边的凹槽
       if (window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner) {
         this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +

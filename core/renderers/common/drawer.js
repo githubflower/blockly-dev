@@ -186,16 +186,10 @@ Blockly.blockRendering.Drawer.prototype.drawValueInput_ = function(row) {
     input.shape.pathDown(input.height) :
     input.shape.pathDown;
 
-  //zjie 当有外部输入的时候，是否画右边的凹槽
-  if (window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner) {
-    this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
-      // pathDown +  //zjie
-      Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
-  } else {
-    this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
-      pathDown +
-      Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
-  }
+  this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
+    pathDown +
+    Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
+  
 };
 
 

@@ -16,57 +16,57 @@
  */
 
 /**
- * @fileoverview Dark theme.
+ * @fileoverview Light theme.
  * @author samelh@google.com (Sam El-Husseini)
  */
 'use strict';
 
-goog.provide('Blockly.Themes.Dark');
+goog.provide('Blockly.Themes.Light');
 
 goog.require('Blockly.Theme');
 
 
 // Temporary holding object.
-Blockly.Themes.Dark = {};
+Blockly.Themes.Light = {};
 
-Blockly.Themes.Dark.defaultBlockStyles = {
+Blockly.Themes.Light.defaultBlockStyles = {
   "colour_blocks": {
     "colourPrimary": "#a5745b",
     "colourSecondary": "#dbc7bd",
     "colourTertiary": "#845d49"
   },
   "list_blocks": {
-    "colourPrimary": "#1976D2",
+    "colourPrimary": "#745ba5",
     "colourSecondary": "#c7bddb",
     "colourTertiary": "#5d4984"
   },
   "logic_blocks": {
-    "colourPrimary": "#7B1FA2",
+    "colourPrimary": "#5b80a5",
     "colourSecondary": "#bdccdb",
     "colourTertiary": "#496684"
   },
   "loop_blocks": {
-    "colourPrimary": "#512DA8",
+    "colourPrimary": "#5ba55b",
     "colourSecondary": "#bddbbd",
     "colourTertiary": "#498449"
   },
   "math_blocks": {
-    "colourPrimary": "#303F9F",
+    "colourPrimary": "#5b67a5",
     "colourSecondary": "#bdc2db",
     "colourTertiary": "#495284"
   },
   "procedure_blocks": {
-    "colourPrimary": "#0097A7",
+    "colourPrimary": "#995ba5",
     "colourSecondary": "#d6bddb",
     "colourTertiary": "#7a4984"
   },
   "text_blocks": {
-    "colourPrimary": "#00796B",
+    "colourPrimary": "#5ba58c",
     "colourSecondary": "#bddbd1",
     "colourTertiary": "#498470"
   },
   "variable_blocks": {
-    "colourPrimary": "#689F38",
+    "colourPrimary": "#a55b99",
     "colourSecondary": "#dbbdd6",
     "colourTertiary": "#84497a"
   },
@@ -82,16 +82,13 @@ Blockly.Themes.Dark.defaultBlockStyles = {
     "hat": "cap"
   },
   "thread_blocks": {
-    "colourPrimary": "#455A64",
+    "colourPrimary": "#ff0000",
     "colourSecondary": "#dbbdd6",
     "colourTertiary": "#84497a"
   },
-  "connect_blocks": {
-    "colourPrimary": "#5D4037",
-  },
 };
 
-Blockly.Themes.Dark.categoryStyles = {
+Blockly.Themes.Light.categoryStyles = {
   "colour_category": {
     "colour": "#a5745b"
   },
@@ -122,16 +119,15 @@ Blockly.Themes.Dark.categoryStyles = {
 };
 
 // This style is still being fleshed out and may change.
-Blockly.Themes.Dark =
-    new Blockly.Theme(Blockly.Themes.Dark.defaultBlockStyles,
-        Blockly.Themes.Dark.categoryStyles);
+Blockly.Themes.Light =
+    new Blockly.Theme(Blockly.Themes.Light.defaultBlockStyles,
+        Blockly.Themes.Light.categoryStyles);
 
-Blockly.Themes.Dark.setComponentStyle('workspace', '#000000');
-// Blockly.Themes.Dark.setComponentStyle('workspace', '#1e1e1e');
-Blockly.Themes.Dark.setComponentStyle('toolbox', '#333');
-Blockly.Themes.Dark.setComponentStyle('toolboxText', '#fff');
-Blockly.Themes.Dark.setComponentStyle('flyout', '#252526');
-Blockly.Themes.Dark.setComponentStyle('flyoutText', '#ccc');
-Blockly.Themes.Dark.setComponentStyle('flyoutOpacity', 1);
-Blockly.Themes.Dark.setComponentStyle('scrollbar', '#797979');
-Blockly.Themes.Dark.setComponentStyle('scrollbarOpacity', 0.4);
+Blockly.Themes.Light.setComponentStyle('workspace', '#1e1e1e');
+Blockly.Themes.Light.setComponentStyle('toolbox', '#333');
+Blockly.Themes.Light.setComponentStyle('toolboxText', '#fff');
+Blockly.Themes.Light.setComponentStyle('flyout', '#252526');
+Blockly.Themes.Light.setComponentStyle('flyoutText', '#ccc');
+Blockly.Themes.Light.setComponentStyle('flyoutOpacity', 1);
+Blockly.Themes.Light.setComponentStyle('scrollbar', '#797979');
+Blockly.Themes.Light.setComponentStyle('scrollbarOpacity', 0.4);
