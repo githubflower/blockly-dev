@@ -24,10 +24,11 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
         this.drawConditionLayerRect({
           x: this.info_.getLoopInfo().width_left || 0,
           y: 20,
-          width: this.info_.width_google - 50, //todo 向左偏移了50
+          width: Math.max(this.info_.width_google - 50, 0), //todo 向左偏移了50
           height: 30,
           class: 'conditionLayerRect',
-          fill: '#ff4b2c',
+          fill: '#01579b',
+          // fill: '#ff4b2c',
         }, this.block_, true);
         break;
       case 'line':
@@ -138,14 +139,13 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
   drawSthCustom(){  
     if(/logic_/.test(this.block_.type)){
       this.drawMaskRect({
-        x: 6,
-        y: -2,
-        width: this.info_.width - 5,
-        height: this.info_.height + 3,
+        x: 7,
+        y: -1,
+        width: this.info_.width - 7,
+        height: this.info_.height + 1,
         class: 'logicBlocakMask',
-        // fill: '#f7488d',
-        // fill: '#06D6A0',
-        fill: '#ff4b2c',
+        fill: '#19b5fe',
+        // fill: '#ff4b2c',
         'fill-opacity': 1
       }, this.block_, true/* unshiftFlag: 是否插入到parent的第一个子节点前面*/);
     } 
@@ -155,28 +155,38 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     // this.outlinePath_ 需要分为if---elseif---else 3个部分进行绘制
     var doElseBranchInfo = this.info_.getDoElseBranchInfo();
     var hasElseBranch = false;
-    doElseBranchInfo.branchs.forEach(item => {
-      const reg = /(do)?(else)?(\d*)/i;
-      var typeObj = reg.exec(item.type);
-      if (typeObj[1] === 'DO' && typeObj[3] === '0') {
-        this.drawIf(item, doElseBranchInfo);
-      } else if (typeObj[1] === 'DO' && parseInt(typeObj[3], 10) > 0) {
-        this.drawElseif(item, doElseBranchInfo);
-      } else {
-        // this.drawElseFlag();    
-        // todo positionElseStatementConnection
-        hasElseBranch = true;
-        this.drawElse(item, doElseBranchInfo);
-      }
-    });
     // branchs = [] 说明是收拢状态
-    if (this.block_.isCollapsed()) {
+    if(this.block_.workspace.isFlyout){
       this.moveToStartPoint();
       this.drawDiamond();
+    }else if(this.block_.isCollapsed()) {
+      this.moveToStartPoint();
+      this.drawDiamond();
+     
+      this.outlinePath_ += `m 0 ${this.constants_.DIAMOND_SHORT * 2} l 0 20 `;
+      this.drawArrowDown();
+      this.outlinePath_ += `m 0 -20`;
+      
     } else {
+     
+      doElseBranchInfo.branchs.forEach(item => {
+        const reg = /(do)?(else)?(\d*)/i;
+        var typeObj = reg.exec(item.type);
+        if (typeObj[1] === 'DO' && typeObj[3] === '0') {
+          this.drawIf(item, doElseBranchInfo);
+        } else if (typeObj[1] === 'DO' && parseInt(typeObj[3], 10) > 0) {
+          this.drawElseif(item, doElseBranchInfo);
+        } else {
+          // this.drawElseFlag();    
+          // todo positionElseStatementConnection
+          hasElseBranch = true;
+          this.drawElse(item, doElseBranchInfo);
+        }
+      });
       if (!hasElseBranch) {
         this.outlinePath_ += `m 0 0 v ${doElseBranchInfo.maxHeight + this.constants_.DIAMOND_SHORT} `;
       }
+      
     }
 
     this.positionPreviousConnection_();
@@ -227,6 +237,7 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
       height: this.constants_.GAP_V - 2,
       class: 'maskRect',
       fill: lineColor,
+      'fill-opacity': 0.9
       // stroke: lineColor
     };
     if(target.maskRect){
@@ -479,6 +490,13 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     // 绘制分支下面回到主线的横线  先画左边再画右边
     var reg = /(do)?(else)?(\d*)/i;
     var regInfo = reg.exec(item.type);
+    if(regInfo[1] && regInfo[3] == 0){
+      this.outlinePath_ += ` l 0 20 `;
+      this.drawArrowDown();
+      this.outlinePath_ += `m 0 -20`;
+    }
+
+
     // DO1...DOn...ELSE   (排除DO0)
     if (!regInfo[1] || regInfo[3] > 0) {
       this.outlinePath_ += `m 0 0 l -${item.width_left} 0 m ${item.width_left} 0 `;
@@ -655,9 +673,13 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       var connX = (this.info_.RTL ? -x : x);
       switch (this.block_.type) {
         case 'controls_if':
+          var y = this.constants_.DIAMOND_SHORT * 2 + 20;
+          if(!this.block_.isCollapsed()){
+            y = doElseBranchInfo.maxHeight + doElseBranchInfo.otherRowHeight + this.constants_.GAP_V + 30;// 这里需要手动调整高度10  ？  具体原因待确认
+          }
           if (doElseBranchInfo && doElseBranchInfo.branchs.length) {
-            // 这里需要手动调整高度10  ？  具体原因待确认
-            connInfo.connectionModel.setOffsetInBlock(doElseBranchInfo.branchs[0].width_left, doElseBranchInfo.maxHeight + doElseBranchInfo.otherRowHeight + this.constants_.GAP_V + 10);
+            
+            connInfo.connectionModel.setOffsetInBlock(doElseBranchInfo.branchs[0].width_left, y);
 
           }
           break;
@@ -786,12 +808,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     var xPos = getAllWidthLeft(index, doElseBranchInfo.branchs) + doElseBranchInfo.branchs[index].width_left;
     var yPos = this.constants_.DIAMOND_SHORT / 2;
     this.outlinePath_ += (` M ${xPos} ${yPos} v 35 z`);
-    print(JSON.stringify({
-      x: xPos,
-      y: yPos,
-      width: row.width,
-      height: row.height
-    }));
+  
     /*var lineColor = jQuery('.blocklyMainBackground').css('fill');
     var defaultAttrs = {
       width: '3',
@@ -1143,15 +1160,19 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
       return sum;
     }
 
-    if (this.block_.type === 'controls_if') {
-      this.width = getAllBranchWidth.call(this);
-      this.widthWithChildren = this.width; //外部的容器在计算宽度时会参考this.widthWithChildren
-    }
     this.height = yCursor + this.constants_.DARK_PATH_OFFSET;
     if (this.block_.type === 'controls_if') {
-      this.height += (this.constants_.DIAMOND_SHORT * 2 + this.constants_.STATEMENT_OFFSET_Y * 2);
-      this.height = this.height + this.constants_.GAP_V; //15 为了让子block于父block戳开一段距离，不然会挤在一起很难看
+      if(this.block_.isCollapsed() || this.block_.isInFlyout){
+        this.width = this.constants_.DIAMOND_LONG * 2;
+        this.height = this.constants_.DIAMOND_SHORT * 2;
+      }else{
+        this.width = getAllBranchWidth.call(this);
+        this.height += (this.constants_.DIAMOND_SHORT * 2 + this.constants_.STATEMENT_OFFSET_Y * 2);
+        this.height = this.height + this.constants_.GAP_V; //15 为了让子block于父block戳开一段距离，不然会挤在一起很难看
+      }
+      this.widthWithChildren = this.width; //外部的容器在计算宽度时会参考this.widthWithChildren
     }
+ 
     this.setLoopBlockHeight();
     this.startY = this.topRow.capline;
   },
@@ -1321,7 +1342,7 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
         })
         loopInfo.max_block_width = this.getWidestChildInfo(connectedBlock).widestChild.width;
         loopInfo.width_left = Math.max(loopInfo.block_x, this.constants_.DIAMOND_LONG) + this.constants_.GAP_H;
-        loopInfo.width_right = Math.max(loopInfo.max_block_width - loopInfo.block_x, this.constants_.DIAMOND_LONG) + this.constants_.GAP_H;
+        loopInfo.width_right = Math.max(loopInfo.max_block_width - loopInfo.block_x + this.constants_.GAP_H, this.constants_.DIAMOND_LONG) + this.constants_.GAP_H;
         loopInfo.width = loopInfo.width_left + loopInfo.width_right;
       }
     }

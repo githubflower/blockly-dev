@@ -12,4 +12,19 @@ window.CUSTOM_CFG_OUTLINE = {
 window.zjie = ()=>{
   debugger;
 }
+jQuery(function(){
+	var theme = window.localStorage.getItem('qkm.theme');
+	jQuery('body').attr('data-theme', theme.toLowerCase() || 'light');
+	jQuery('[data-theme=' + theme + ']').addClass('active');
 
+	jQuery('#content_blocks').on('click', '.theme-wrap li', function(e){
+		jQuery(e.target).addClass('active').siblings().removeClass('active');
+		var theme = jQuery(e.target).data('theme');
+		window.localStorage.setItem('qkm.theme', theme);
+		window.location.reload();
+	})
+	jQuery('#content_blocks').on('click', '.icon-theme', function(e){
+		jQuery('.theme-wrap > ul').toggleClass('active');
+	})
+
+})

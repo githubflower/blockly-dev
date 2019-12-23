@@ -95,7 +95,19 @@
       </td>
     </tr>
   </table>
-  <div id="content_blocks" class="content"></div>
+  <div id="content_blocks" class="content">
+    <div class="theme-wrap">
+      <span class="icon iconfont icon-theme"></span>
+      <ul>
+        <li data-theme="Light">Light 
+          <span class="icon iconfont icon-select"></span>
+        </li>
+        <li data-theme="Dark">Dark 
+          <span class="icon iconfont icon-select"></span>
+        </li>
+      </ul>
+    </div>
+  </div>
   <pre id="content_javascript" class="content prettyprint lang-js"></pre>
   <pre id="content_python" class="content prettyprint lang-py"></pre>
   <pre id="content_php" class="content prettyprint lang-php"></pre>
@@ -413,7 +425,7 @@
     <category name="%{BKY_CATVARIABLES}" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
     <category name="%{BKY_CATFUNCTIONS}" colour="%{BKY_PROCEDURES_HUE}" custom="PROCEDURE"></category>
     <seq></seq>
-    <category name="Thread" custom="THREAD"></category>
+    <category name="Thread" colour="%{BKY_THREADS_HUE}" custom="THREAD"></category>
     <!-- <category name="Easy create" colour="#0c9cb7">
       <block type="block_var"></block>
     </category> -->

@@ -1,4 +1,4 @@
-/*@import url('./css/iconfont.css')*/
+@import url('./css/iconfont.css')*/
 .blocklyToolboxDiv{
 	background-color: #FFFFFF;
 }
@@ -71,19 +71,12 @@
 	stroke: #409EFF
 }
 
-.blocklyMainBackground{
-	fill: rgba(13, 10, 49, 0.9) !important; /*浅蓝*/
-	/*fill: #0d0a31 !important;*/ /*深蓝*/
-	/*fill: #282c34 !important;*/ /*深灰*/
-}
-.blocklyFlyoutBackground{
-	fill: #120E33 !important;	
-	/*fill: #0c9cb7 !important;	*/
-}
+
 
 .connectGuideSvg{
 	display: none;
-	fill: #f2631f; 
+	/*fill: #f2631f; */
+	fill: #120E33; 
     /*fill-opacity: .6;*/
 	opacity: .6;
 	cursor: auto;
@@ -137,3 +130,72 @@ div[role="treeitem"]:hover{
 div[role="treeitem"] > .blocklyTreeRow{
 	border-left: none !important;
 }
+ul,li{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+.theme-wrap{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	z-index: 2;
+}
+.iconfont.icon-theme{
+	width: 30px;
+	height: 30px;
+	cursor: pointer;
+}
+.iconfont.icon-select{
+	width: 15px;
+	height: 15px;
+}
+.theme-wrap > ul{
+	display: none;
+	position: absolute;
+	top: 30px;
+	right: 0;
+	border: 1px solid #ddd;
+	background-color: #ffffff;
+}
+.theme-wrap > ul.active{
+	display: block;
+}
+.theme-wrap > ul > li{
+	width: 60px;
+	/*text-align: center;*/
+	padding: 3px 20px;
+	border-bottom: 1px solid #ddd;
+	cursor: pointer;
+}
+.theme-wrap > ul > li:hover{
+	background-color: #dddddd;
+}
+.theme-wrap > ul > li > span{
+	display: none;
+}
+.theme-wrap > ul > li.active > span{
+	display: inline-block;
+}
+
+
+
+
+/*主题相关---start*/
+/*light*/
+[data-theme='light'] .blocklyMainBackground{
+	fill: #ffffff !important;
+}
+[data-theme='light'] .blocklyFlyoutBackground{
+	fill: #120E33 !important;	
+}
+
+
+/*dark*/
+[data-theme='dark'] .blocklyMainBackground{
+	fill: rgba(13, 10, 49, 0.9) !important; /*浅蓝*/
+}
+[data-theme='dark'] .blocklyFlyoutBackground{
+	fill: #120E33 !important;	
+}
+/*主题相关---end

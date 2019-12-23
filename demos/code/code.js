@@ -420,7 +420,7 @@ Code.init = function() {
        zoom:
            {controls: true,
             wheel: true},
-      theme: Blockly.Themes[userTheme || HighContrast]
+      theme: Blockly.Themes[userTheme || Blockly.Themes.HighContrast]
       });
 
   // Add to reserved word list: Local variables in execution environment (runJS)

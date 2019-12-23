@@ -1,6 +1,6 @@
 {
-  "id": "",
-  "name": "",
+  "id": "1572302",
+  "name": "flow",
   "font_family": "iconfont",
   "css_prefix_text": "icon-",
   "description": "",
@@ -30,8 +30,8 @@
       "icon_id": "1481171",
       "name": "Function svg icon",
       "font_class": "Functionsvgicon",
-      "unicode": "e505",
-      "unicode_decimal": 58629
+      "unicode": "e600",
+      "unicode_decimal": 58880
     },
     {
       "icon_id": "1634704",
@@ -39,6 +39,13 @@
       "font_class": "function",
       "unicode": "e624",
       "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "1920480",
+      "name": "select",
+      "font_class": "select",
+      "unicode": "e783",
+      "unicode_decimal": 59267
     },
     {
       "icon_id": "4472428",
@@ -58,8 +65,8 @@
       "icon_id": "7117114",
       "name": "function",
       "font_class": "icon-trace-function",
-      "unicode": "e510",
-      "unicode_decimal": 58640
+      "unicode": "e601",
+      "unicode_decimal": 58881
     },
     {
       "icon_id": "7213103",
@@ -130,6 +137,13 @@
       "font_class": "Line",
       "unicode": "e61d",
       "unicode_decimal": 58909
+    },
+    {
+      "icon_id": "10317317",
+      "name": "theme",
+      "font_class": "theme",
+      "unicode": "e602",
+      "unicode_decimal": 58882
     },
     {
       "icon_id": "10330718",
