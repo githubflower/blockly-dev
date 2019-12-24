@@ -31,7 +31,7 @@ jQuery(function(){
 		};
 	}
 	var theme = window.localStorage.getItem('qkm.theme');
-	jQuery('body').attr('data-theme', theme.toLowerCase() || 'light');
+	jQuery('body').attr('data-theme', theme && theme.toLowerCase() || 'light');
 	jQuery('[data-theme=' + theme + ']').addClass('active');
 
 	jQuery('#content_blocks').on('click', '.theme-wrap li', function(e){

@@ -1678,11 +1678,12 @@ Blockly.BlockSvg.prototype.positionNearConnection = function(sourceConnection,
  * Lays out and reflows a block based on its contents and settings.
  * @param {boolean=} opt_bubble If false, just render this block.
  *   If true, also render block's parent, grandparent, etc.  Defaults to true.
+ * @param {boolean=} forceRender If true, 强制进行渲染更新
  */
-Blockly.BlockSvg.prototype.render = function(opt_bubble) {
+Blockly.BlockSvg.prototype.render = function(opt_bubble, forceRender) {
   Blockly.utils.dom.startTextWidthCache();
   this.rendered = true;
-  if(window.QKM._DRAGGER_STATUS === 'end' || typeof window.QKM._DRAGGER_STATUS === 'undefined'){
+  if (window.QKM._DRAGGER_STATUS === 'end' || typeof window.QKM._DRAGGER_STATUS === 'undefined' || forceRender){
     (this.workspace).getRenderer().render(this)
   }
   //(this.workspace).getRenderer().render(this);

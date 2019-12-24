@@ -1597,3 +1597,24 @@ Blockly.TouchGesture.prototype.handleMove = function(e) {
   }
 };
 
+/* core/rendered_connection.js */
+/**
+ * Disconnect two blocks that are connected by this connection.
+ * @param {!Blockly.Block} parentBlock The superior block.
+ * @param {!Blockly.Block} childBlock The inferior block.
+ * @private
+ */
+Blockly.RenderedConnection.prototype.disconnectInternal_ = function (parentBlock,
+  childBlock) {
+  Blockly.RenderedConnection.superClass_.disconnectInternal_.call(this,
+    parentBlock, childBlock);
+  // Rerender the parent so that it may reflow.
+  if (parentBlock.rendered) {
+    parentBlock.render(true/* opt_bubble  @Blockly.BlockSvg.prototype.render */, true/* force render */);
+  }
+  if (childBlock.rendered) {
+    childBlock.updateDisabled();
+    childBlock.render(false/* opt_bubble  @Blockly.BlockSvg.prototype.render */, true/* force render */);
+  }
+};
+
