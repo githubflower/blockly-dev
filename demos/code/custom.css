@@ -193,7 +193,10 @@ ul,li{
 
 /*dark*/
 [data-theme='dark'] .blocklyMainBackground{
-	fill: rgba(13, 10, 49, 0.9) !important; /*浅蓝*/
+	/*浅蓝*/
+	/*fill: rgba(13, 10, 49, 0.9) !important; */
+	 /*灰*/
+	fill: #282c34 !important;
 }
 [data-theme='dark'] .blocklyFlyoutBackground{
 	fill: #120E33 !important;	

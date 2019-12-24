@@ -1,0 +1,421 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="digital_output_set" id="{Lg6FFik;!vDqbeTBE52" x="213" y="-162">
+    <field name="io_state">state_on</field>
+    <value name="io_index">
+      <shadow type="math_number" id="m5)6xED{:[!|p%^D=]@l">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+    <next>
+      <block type="controls_if" id="yx6{]2-?L`UVbcS~HuIw">
+        <mutation else="1"></mutation>
+        <value name="IF0">
+          <block type="logic_compare" id="lr$QhDq{*8hqhds;UJGt">
+            <field name="OP">EQ</field>
+            <value name="A">
+              <block type="math_number" id="+0VfKB{oXLaZ-IZL-Iht">
+                <field name="NUM">0</field>
+              </block>
+            </value>
+            <value name="B">
+              <block type="digital_iostate_get" id="SGgN%J$Gu+Zr)c]Dh%aE">
+                <field name="io_mode">DOUT</field>
+                <value name="io_index">
+                  <shadow type="math_number" id="F2qv662Qqxe1cLgN8edy">
+                    <field name="NUM">1</field>
+                  </shadow>
+                </value>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="DO0">
+          <block type="text_print" id="{a(JkpzP8;aLu$#HxMU,">
+            <value name="TEXT">
+              <shadow type="text" id="Lxx^bIuL3O-B_PnYOGj)">
+                <field name="TEXT">out  1  Off</field>
+              </shadow>
+            </value>
+          </block>
+        </statement>
+        <statement name="ELSE">
+          <block type="text_print" id=")%2a,{u[dr3O,/F0}]:Y">
+            <value name="TEXT">
+              <shadow type="text" id="$:/a}`HJU.xQde2Uy(J}">
+                <field name="TEXT">out  1  On</field>
+              </shadow>
+            </value>
+          </block>
+        </statement>
+        <next>
+          <block type="digital_output_set" id="^Z79{j2(^kS-e(ZJe?0S">
+            <field name="io_state">state_off</field>
+            <value name="io_index">
+              <shadow type="math_number" id="[J0-md|nw0~*E!Hn${I?">
+                <field name="NUM">1</field>
+              </shadow>
+            </value>
+            <next>
+              <block type="controls_if" id="uZK|Fpol6v8fZ()K]gLL">
+                <mutation else="1"></mutation>
+                <value name="IF0">
+                  <block type="logic_compare" id="B`*E-UxS84,|*PKsjKq1">
+                    <field name="OP">EQ</field>
+                    <value name="A">
+                      <block type="math_number" id="xBQFDLvC5ed(jdsX0J~-">
+                        <field name="NUM">0</field>
+                      </block>
+                    </value>
+                    <value name="B">
+                      <block type="digital_iostate_get" id="-KMDfV-Q9}loY5yhM1rL">
+                        <field name="io_mode">DOUT</field>
+                        <value name="io_index">
+                          <shadow type="math_number" id="Z:!M!or{-bJn:3?02.J}">
+                            <field name="NUM">1</field>
+                          </shadow>
+                        </value>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <statement name="DO0">
+                  <block type="text_print" id="oubcu_f54x?Obu3x#1zF">
+                    <value name="TEXT">
+                      <shadow type="text" id="OaO(ZBej-I;swz-|T_]B">
+                        <field name="TEXT">out 1  Off</field>
+                      </shadow>
+                    </value>
+                  </block>
+                </statement>
+                <statement name="ELSE">
+                  <block type="text_print" id="?;p,kRs|(*X=)h*|zRyU">
+                    <value name="TEXT">
+                      <shadow type="text" id="~qrRy^3R]c;KL[V81?vr">
+                        <field name="TEXT">out  1  On</field>
+                      </shadow>
+                    </value>
+                  </block>
+                </statement>
+                <next>
+                  <block type="robot_speed_set" id="@BdW;u0)hxhrLmTmR~.z">
+                    <field name="speed_value">50</field>
+                    <value name="robot_index">
+                      <shadow type="math_number" id="V+D[=N0`Eabf~)ICP|(]">
+                        <field name="NUM">1</field>
+                      </shadow>
+                    </value>
+                    <next>
+                      <block type="system_clear_variables" id="5Fe7=Y4!z3)3?KE:r/*j">
+                        <next>
+                          <block type="new_location" id="|vcdMvdJ_4~wxuag7:vg" collapsed="true">
+                            <field name="location_name">p1</field>
+                            <value name="location_x">
+                              <shadow type="math_number" id="%4.jp@_BJHA]3$FHG@uI">
+                                <field name="NUM">0</field>
+                              </shadow>
+                            </value>
+                            <value name="location_y">
+                              <shadow type="math_number" id="|)amn4tT!a!tdX%l5UM6">
+                                <field name="NUM">0</field>
+                              </shadow>
+                            </value>
+                            <value name="location_z">
+                              <shadow type="math_number" id=".7dLNBSl+.09qm5|o!(Y">
+                                <field name="NUM">0</field>
+                              </shadow>
+                            </value>
+                            <value name="location_yaw">
+                              <shadow type="math_number" id=",6g$FbK[e^?QmVt!}}FS">
+                                <field name="NUM">0</field>
+                              </shadow>
+                            </value>
+                            <value name="location_pitch">
+                              <shadow type="math_number" id="nNYSP/dpgc./x.z,F5J=">
+                                <field name="NUM">0</field>
+                              </shadow>
+                            </value>
+                            <value name="location_roll">
+                              <shadow type="math_number" id="{uqwNR:ZbhwPA|g~.c{O">
+                                <field name="NUM">0</field>
+                              </shadow>
+                            </value>
+                            <value name="location_config">
+                              <shadow type="math_number" id="UHGk,UW7PZ8.)4??nz.[">
+                                <field name="NUM">0</field>
+                              </shadow>
+                            </value>
+                            <value name="location_ex1">
+                              <shadow type="math_number" id="o|XIFYu#o.~Djj=gJ_zD">
+                                <field name="NUM">0</field>
+                              </shadow>
+                            </value>
+                            <value name="location_ex2">
+                              <shadow type="math_number" id="3Q5Q+~f|WevifS1q#Thm">
+                                <field name="NUM">0</field>
+                              </shadow>
+                            </value>
+                            <value name="location_ex3">
+                              <shadow type="math_number" id="#6fr%cy(z/o7M(|q%m`*">
+                                <field name="NUM">0</field>
+                              </shadow>
+                            </value>
+                            <value name="location_zclearance">
+                              <shadow type="math_number" id="6rrzKq}R$3PH*|^|3J1D">
+                                <field name="NUM">0</field>
+                              </shadow>
+                            </value>
+                            <value name="location_zworld">
+                              <shadow type="math_number" id="dpl{t}v]%P8PBn%Kh1H9">
+                                <field name="NUM">0</field>
+                              </shadow>
+                            </value>
+                            <next>
+                              <block type="new_location" id="f`bXYQC/bidiU,~AGUnf" collapsed="true">
+                                <field name="location_name">p2</field>
+                                <value name="location_x">
+                                  <shadow type="math_number" id="*pmEFxjxsy7qluOuhvCe">
+                                    <field name="NUM">0</field>
+                                  </shadow>
+                                </value>
+                                <value name="location_y">
+                                  <shadow type="math_number" id="OKZkBY124@chm4kaSBEC">
+                                    <field name="NUM">0</field>
+                                  </shadow>
+                                </value>
+                                <value name="location_z">
+                                  <shadow type="math_number" id="#1g9tGXiH4l+_`[=6Vrp">
+                                    <field name="NUM">0</field>
+                                  </shadow>
+                                </value>
+                                <value name="location_yaw">
+                                  <shadow type="math_number" id="5;tYxr`+3(~7(9zt7soR">
+                                    <field name="NUM">0</field>
+                                  </shadow>
+                                </value>
+                                <value name="location_pitch">
+                                  <shadow type="math_number" id="%Q{eN,HZ|FQnCNuqmNYD">
+                                    <field name="NUM">0</field>
+                                  </shadow>
+                                </value>
+                                <value name="location_roll">
+                                  <shadow type="math_number" id="#/Jc~u@TuIoS%?@_X{(;">
+                                    <field name="NUM">0</field>
+                                  </shadow>
+                                </value>
+                                <value name="location_config">
+                                  <shadow type="math_number" id="4]$TIB~iWjd}AOOA[CG#">
+                                    <field name="NUM">0</field>
+                                  </shadow>
+                                </value>
+                                <value name="location_ex1">
+                                  <shadow type="math_number" id="9lVWyv9Y:4=HILojmB:n">
+                                    <field name="NUM">0</field>
+                                  </shadow>
+                                </value>
+                                <value name="location_ex2">
+                                  <shadow type="math_number" id="/fwrwvm.DR,hcf%c1[=i">
+                                    <field name="NUM">0</field>
+                                  </shadow>
+                                </value>
+                                <value name="location_ex3">
+                                  <shadow type="math_number" id="Xg)Ba(gglB6zHC*6YlbF">
+                                    <field name="NUM">0</field>
+                                  </shadow>
+                                </value>
+                                <value name="location_zclearance">
+                                  <shadow type="math_number" id="#gWJ2tNXG9R)!Itl0p-J">
+                                    <field name="NUM">0</field>
+                                  </shadow>
+                                </value>
+                                <value name="location_zworld">
+                                  <shadow type="math_number" id="cHF38m^?O5sh}Zz*dYjC">
+                                    <field name="NUM">0</field>
+                                  </shadow>
+                                </value>
+                                <next>
+                                  <block type="change_location" id="_wM%mcWg^7^5?=i${!CI">
+                                    <field name="location_name">p1</field>
+                                    <value name="location_value">
+                                      <block type="robot_where" id="krf+:O7ZUljy.cEc._c=">
+                                        <value name="robot_index">
+                                          <shadow type="math_number" id="v)XD9.8xr}Yjr{lbU$dY">
+                                            <field name="NUM">1</field>
+                                          </shadow>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <next>
+                                      <block type="change_location" id="{(bs[qS8`GoE#/1g8h#(">
+                                        <field name="location_name">p2</field>
+                                        <value name="location_value">
+                                          <block type="get_location" id="KjKF4n=tK8,Z5n/FN`H3">
+                                            <field name="location_name">p1</field>
+                                          </block>
+                                        </value>
+                                        <next>
+                                          <block type="change_location_member" id="*le~5!YNF$Xh^(/d18Wk">
+                                            <field name="location_member">x</field>
+                                            <field name="location_name">p2</field>
+                                            <value name="location_member_value">
+                                              <block type="math_arithmetic" id="w-B:h3G382{zL2MMkld=">
+                                                <field name="OP">ADD</field>
+                                                <value name="A">
+                                                  <shadow type="math_number" id="hU)*)]s_%Vn}hb7dshO_">
+                                                    <field name="NUM">1</field>
+                                                  </shadow>
+                                                  <block type="get_location_member" id="(#T@p{Mnf/xjlMSU/7YZ">
+                                                    <field name="location_member">x</field>
+                                                    <field name="location_name">p1</field>
+                                                  </block>
+                                                </value>
+                                                <value name="B">
+                                                  <shadow type="math_number" id="dJ90%{;L=X)6J9Y,/UQB">
+                                                    <field name="NUM">100</field>
+                                                  </shadow>
+                                                </value>
+                                              </block>
+                                            </value>
+                                            <next>
+                                              <block type="change_location_member" id="%x|88@:DK=o#gK+*,J(t">
+                                                <field name="location_member">y</field>
+                                                <field name="location_name">p2</field>
+                                                <value name="location_member_value">
+                                                  <block type="math_arithmetic" id="_aae*jSbAy{AexKSOY}i">
+                                                    <field name="OP">ADD</field>
+                                                    <value name="A">
+                                                      <shadow type="math_number" id="hU)*)]s_%Vn}hb7dshO_">
+                                                        <field name="NUM">1</field>
+                                                      </shadow>
+                                                      <block type="get_location_member" id="7F-+uN0/Gt8}j8u.?4ZU">
+                                                        <field name="location_member">y</field>
+                                                        <field name="location_name">p1</field>
+                                                      </block>
+                                                    </value>
+                                                    <value name="B">
+                                                      <shadow type="math_number" id="B|c8-NnN#zV#N3#gCWiT">
+                                                        <field name="NUM">-100</field>
+                                                      </shadow>
+                                                    </value>
+                                                  </block>
+                                                </value>
+                                                <next>
+                                                  <block type="controls_repeat_ext" id="RFz_ia6{J/#8B{vwwd:F" inline="false">
+                                                    <value name="TIMES">
+                                                      <shadow type="math_number" id="W!cccyFzOeVDRH%]4Yr2">
+                                                        <field name="NUM">3</field>
+                                                      </shadow>
+                                                    </value>
+                                                    <statement name="DO">
+                                                      <block type="move_line" id="Cch%yR{u4iJ0%Ki=ik}q">
+                                                        <value name="point_value">
+                                                          <block type="get_location" id="+up.JgC|/V7:@o~tp{HI">
+                                                            <field name="location_name">p1</field>
+                                                          </block>
+                                                        </value>
+                                                        <next>
+                                                          <block type="move_jump" id="*C(yy)RP1[WE9DAP8Jq`">
+                                                            <field name="trigger_id1_value">1</field>
+                                                            <field name="trigger_id2_value">1</field>
+                                                            <field name="trigger_id3_value">1</field>
+                                                            <field name="trigger_id4_value">1</field>
+                                                            <value name="point_value">
+                                                              <block type="get_location" id="ZPI`A4|3)P]qMy/yW%vW">
+                                                                <field name="location_name">p2</field>
+                                                              </block>
+                                                            </value>
+                                                            <value name="height_value">
+                                                              <block type="math_number" id="lw$*VsqUQ~E#Qhow-GP=">
+                                                                <field name="NUM">50</field>
+                                                              </block>
+                                                            </value>
+                                                            <next>
+                                                              <block type="move_line" id="L1jf@sKpy8V(y@|#^!ej">
+                                                                <value name="point_value">
+                                                                  <block type="get_location" id="lY[LG;wsa;Ud)wm4Mi-j">
+                                                                    <field name="location_name">p2</field>
+                                                                  </block>
+                                                                </value>
+                                                                <next>
+                                                                  <block type="move_jump" id="eaq:EOdR3[xM(9Q;k/73">
+                                                                    <field name="trigger_id1_value">1</field>
+                                                                    <field name="trigger_id2_value">1</field>
+                                                                    <field name="trigger_id3_value">1</field>
+                                                                    <field name="trigger_id4_value">1</field>
+                                                                    <value name="point_value">
+                                                                      <block type="get_location" id="WPPZ6`RU~!B+TaFkA!pc">
+                                                                        <field name="location_name">p1</field>
+                                                                      </block>
+                                                                    </value>
+                                                                    <value name="height_value">
+                                                                      <block type="math_number" id="#t/Q2YCwDdj)/pfZ#L0R">
+                                                                        <field name="NUM">50</field>
+                                                                      </block>
+                                                                    </value>
+                                                                  </block>
+                                                                </next>
+                                                              </block>
+                                                            </next>
+                                                          </block>
+                                                        </next>
+                                                      </block>
+                                                    </statement>
+                                                    <next>
+                                                      <block type="move_wait_for_eom" id="!tB2``iLEDvko!MrzYGt">
+                                                        <next>
+                                                          <block type="move_joint" id="2qPf$HAsEuz2[1],`%QS" collapsed="true">
+                                                            <value name="point_value">
+                                                              <block type="get_location" id="P34).Ils5Ho+VX9P|0HD">
+                                                                <field name="location_name">p2</field>
+                                                              </block>
+                                                            </value>
+                                                            <next>
+                                                              <block type="move_joint" id="zB~LTahQE]sCLsZ,rNGz">
+                                                                <value name="point_value">
+                                                                  <block type="get_location" id="i9[]sPCk3Yl`J+PSRR[P">
+                                                                    <field name="location_name">p1</field>
+                                                                  </block>
+                                                                </value>
+                                                                <next>
+                                                                  <block type="move_axis" id="%D%.C1hrL+s445EH2C2K">
+                                                                    <field name="axis_index">2</field>
+                                                                    <field name="angle_value">-40</field>
+                                                                    <next>
+                                                                      <block type="move_axis" id=":T|d;ED!x9$U/V/iPo4P">
+                                                                        <field name="axis_index">2</field>
+                                                                        <field name="angle_value">40</field>
+                                                                      </block>
+                                                                    </next>
+                                                                  </block>
+                                                                </next>
+                                                              </block>
+                                                            </next>
+                                                          </block>
+                                                        </next>
+                                                      </block>
+                                                    </next>
+                                                  </block>
+                                                </next>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+</xml>
