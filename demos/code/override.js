@@ -286,7 +286,7 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
         var loopInfo = this.info_.getLoopInfo();
         topRow.connection.connectionModel.setOffsetInBlock(/*this.constants_.DIAMOND_LONG + this.constants_.GAP_H*/loopInfo.width_left, 0);
       } else {
-        topRow.connection.connectionModel.setOffsetInBlock(topRow.width / 2 - topRow.connection.width / 2, 0); //居中
+        topRow.connection.connectionModel.setOffsetInBlock(topRow.width / 2 /*- topRow.connection.width / 2*/, 0); //居中
       }
     }
   },
@@ -694,8 +694,9 @@ Object.assign(Blockly.geras.Drawer.prototype, {
           connInfo.connectionModel.setOffsetInBlock(0, (connInfo.centerline - connInfo.height * 2 - 6));
           break;
         default:
+        debugger;
           // connInfo.connectionModel.setOffsetInBlock(connX, (connInfo.centerline - connInfo.height / 2));
-          connInfo.connectionModel.setOffsetInBlock(bottomRow.width / 2 - connInfo.width / 2, (connInfo.centerline - connInfo.height / 2)); //zjie 将nextConnection移到这个block中间  同时需要修改block的outlinePath
+          connInfo.connectionModel.setOffsetInBlock(bottomRow.width / 2 /*- connInfo.width / 2*/, (connInfo.centerline - connInfo.height / 2)); //zjie 将nextConnection移到这个block中间  同时需要修改block的outlinePath
       }
     }
   },

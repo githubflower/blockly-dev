@@ -51,7 +51,7 @@ Blockly.blockRendering.ConstantProvider = function() {
 
   this.TAB_WIDTH = 8;
 
-  this.NOTCH_WIDTH = 15;
+  this.NOTCH_WIDTH = 4; //15;
   this.NOTCH_HEIGHT = 4;
 
   // This is the minimum width of a block measuring from the end of a rounded

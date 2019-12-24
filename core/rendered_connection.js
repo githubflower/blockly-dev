@@ -262,13 +262,17 @@ Blockly.RenderedConnection.prototype.highlight = function() {
         Blockly.utils.svgPaths.lineOnAxis('v', yLen) +
         renderingConstants.PUZZLE_TAB.pathDown +
         Blockly.utils.svgPaths.lineOnAxis('v', yLen);
+
   } else {
-    var xLen = 5;
+    /*var xLen = 5;
     // Horizontal line, notch, horizontal line.
     steps = Blockly.utils.svgPaths.moveBy(-xLen, 0) +
         Blockly.utils.svgPaths.lineOnAxis('h', xLen) +
         renderingConstants.NOTCH.pathLeft +
-        Blockly.utils.svgPaths.lineOnAxis('h', xLen);
+        Blockly.utils.svgPaths.lineOnAxis('h', xLen);*/
+    var radius = 2;
+    steps = `m 0 0 a ${radius} ${radius} 0 1 1 ${2 * radius} 0 `;
+    steps += ` a ${radius} ${radius} 0 1 1 -${2 * radius} 0 z m ${2 * radius} 0 `;
   }
   var xy = this.sourceBlock_.getRelativeToSurfaceXY();
   var x = this.x_ - xy.x;
