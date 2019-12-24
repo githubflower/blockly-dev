@@ -201,4 +201,12 @@ ul,li{
 [data-theme='dark'] .blocklyFlyoutBackground{
 	fill: #120E33 !important;	
 }
+
+.line > .blocklyPath{
+	/*蓝色*/
+	/*fill: #1976D2;
+	stroke: #1976D2;*/
+	/*橙色*/
+	fill: #f2631f;
+}
 /*主题相关---end

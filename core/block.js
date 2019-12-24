@@ -1185,7 +1185,7 @@ Blockly.Block.prototype.setPreviousStatement = function(newBoolean, opt_check) {
  */
 Blockly.Block.prototype.setNextStatement = function(newBoolean, opt_check) {
   if (newBoolean) {
-    Blockly.utils.dom.addClass(this.svgGroup_, 'conn-up-down');
+    Blockly.utils.dom.addClass(this.svgGroup_, 'conn-up-down ' + this.type);
     if (opt_check === undefined) {
       opt_check = null;
     }

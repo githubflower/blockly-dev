@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="google" value="notranslate">
@@ -25,7 +26,6 @@
   <script src="../../blocks/text.js"></script>
   <script src="../../blocks/variables.js"></script>
   <script src="../../blocks/variables_dynamic.js"></script>
-
   <script src="../../javascript_compressed.js"></script>
   <!-- <script src="../../generators/javascript/variables.js"></script> -->
 
@@ -42,9 +42,49 @@
   <script type="text/javascript" src="./override.js"></script>
   <script type="text/javascript" src="./override_block.js"></script>
   <script type="text/javascript" src="./defineBlock.js"></script>
+
+
+
+  <script src='blocks/wait_blocks.js'></script>
+  <script src='blocks/wait_generators.js'></script>
+  <script src='blocks/system_blocks.js'></script>
+  <script src='blocks/system_generators.js'></script>
+  <script src='blocks/robot_blocks.js'></script>
+  <script src='blocks/robot_generators.js'></script>
+  <script src='blocks/move_blocks.js'></script>
+  <script src='blocks/move_generators.js'></script>
+  <script src='blocks/com_blocks.js'></script>
+  <script src='blocks/com_generators.js'></script>
+  <script src='blocks/io_blocks.js'></script>
+  <script src='blocks/io_generators.js'></script>
+  <script src='blocks/io_blocks.js'></script>
+  <script src='blocks/io_generators.js'></script>
+  <script src='blocks/netserver_blocks.js'></script>
+  <script src='blocks/netserver_generators.js'></script>
+  <script src='blocks/netclient_blocks.js'></script>
+  <script src='blocks/netclient_generators.js'></script>
+  <script src='blocks/netudp_blocks.js'></script>
+  <script src='blocks/netudp_generators.js'></script>
+  <script src='blocks/location_blocks.js'></script>
+  <script src='blocks/location_generators.js'></script>
+  <script src='blocks/locationjoint_blocks.js'></script>
+  <script src='blocks/locationjoint_generators.js'></script>
+  <script src='blocks/tool_blocks.js'></script>
+  <script src='blocks/tool_generators.js'></script>
+  <script src='blocks/profile_blocks.js'></script>
+  <script src='blocks/profile_generators.js'></script>
+  <script src='blocks/conveyor_blocks.js'></script>
+  <script src='blocks/conveyor_generators.js'></script>
+  <script src='blocks/hidden_blocks.js'></script>
+  <script src='blocks/hidden_generators.js'></script>
+
+
+
+
   <script type="text/javascript" src="./generate.js"></script>
   <script src="code.js"></script>
 </head>
+
 <body class="darkTheme">
   <table width="100%" height="100%">
     <tr>
@@ -76,7 +116,7 @@
             <td class="tabmin">&nbsp;</td>
             <td id="tab_xml" class="taboff">XML</td>
             <td class="tabmax">
-              <input type="file" name="loadXml" id="loadXml"/>
+              <input type="file" name="loadXml" id="loadXml" />
               <button id="trashButton" class="notext" title="...">
                 <img src='../../media/1x1.gif' class="trash icon21">
               </button>
@@ -100,10 +140,10 @@
     <div class="theme-wrap">
       <span class="icon iconfont icon-theme"></span>
       <ul>
-        <li data-theme="Light">Light 
+        <li data-theme="Light">Light
           <span class="icon iconfont icon-select"></span>
         </li>
-        <li data-theme="Dark">Dark 
+        <li data-theme="Dark">Dark
           <span class="icon iconfont icon-select"></span>
         </li>
       </ul>
@@ -430,11 +470,608 @@
     <!-- <category name="Easy create" colour="#0c9cb7">
       <block type="block_var"></block>
     </category> -->
+
+
     <category name="Connect" colour="%{BKY_CONNECT_HUE}">
       <block type="line"></block>
+      <block type="start"></block>
+      <block type="end" colour="#ff0000"></block>
     </category>
+
+
+    <category name='Pallas Library' colour='#009999'>
+      <category name='System' colour='#CDDD9C'>
+        <block type='system_info_robot_number'></block>
+        <block type='system_info_index'></block>
+        <block type='system_info_all'></block>
+        <block type='system_time_set'></block>
+        <block type='system_time_get'></block>
+        <block type='system_start'></block>
+        <block type='system_abort'></block>
+        <block type='system_stop'></block>
+        <block type='system_pause'></block>
+        <block type='system_continue'></block>
+        <block type='system_retry'></block>
+        <block type='system_speed_get'></block>
+        <block type='system_speed_set'></block>
+        <block type='system_login'></block>
+        <block type='system_logout'></block>
+        <block type='system_idnstring_set'></block>
+        <block type='system_clear_error_list'></block>
+        <block type='system_error_list'></block>
+        <block type='system_clear_variables'></block>
+        <block type='system_auto_set'></block>
+        <block type='system_auto_get'></block>
+      </category>
+
+      <category name='Robot' colour='%{BKY_MATH_HUE}'>
+        <block type='robot_power_enable'>
+          <field name='power_enable_state'>power_enable_off</field>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_home'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_brake_set'>
+          <field name='brake_state'>brake_unfree</field>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+          <field name='axis_index'>1</field>
+        </block>
+        <block type='robot_brake_get'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_where'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_where_angle'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_limit_set'>
+          <field name='axis_index'>1</field>
+          <field name='angle_p'>0</field>
+          <field name='angle_n'>30</field>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_limit_get'>
+          <field name='axis_index'>1</field>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_frame_set'>
+          <field name='frame_type'>type_1</field>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_frame_get'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_axis_numbe'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_speed_set'>
+          <field name='speed_value'>0</field>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_speed_get'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_state'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_jog_mode_set'>
+          <field name='mode_type'>type_0</field>
+          <field name='switch_type'>type_0</field>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_jog_mode_get'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_jog_distance_set'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_jog_distance_get'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_calib_set'>
+          <field name='axis_index'>1</field>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+          <value name='encoder_value'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_calib_get'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+          <field name='axis_index'>1</field>
+        </block>
+        <block type='robot_tool_set'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_user_frame_set'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_encoder'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+          <field name='axis_index'>1</field>
+        </block>
+        <block type='robot_target_location_joint'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_target_location'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_joint_speed'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_tcp_speed'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_target_joint_speed'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_target_tcp_speed'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='robot_joint_torque'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+          <field name='axis_index'>1</field>
+        </block>
+        <block type='robot_joint_temperature'>
+          <value name='robot_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+          <field name='axis_index'>1</field>
+        </block>
+      </category>
+
+      <category name='Move' colour='%{BKY_TEXTS_HUE}'>
+        <block type='move_joint'></block>
+        <block type='move_line'></block>
+        <block type='move_axis'>
+          <field name='axis_index'>1</field>
+          <field name='angle_value'>0</field>
+        </block>
+        <block type='move_joint_offset'>
+          <value name='x_offest'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='y_offest'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='z_offest'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='yaw_offest'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='pitch_offest'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='roll_offest'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='move_line_offset'>
+          <value name='x_offest'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='y_offest'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='z_offest'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='yaw_offest'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='pitch_offest'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='roll_offest'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='move_arc'></block>
+        <block type='move_circle'></block>
+        <block type='move_jog'>
+          <field name='axis_index'>X</field>
+        </block>
+        <block type='move_stop_jog'></block>
+        <block type='move_trigger'>
+          <field name='type_value'>type_t_p</field>
+          <field name='reference_position_value'>r_p_start</field>
+          <field name='do_status'>status_on</field>
+        </block>
+        <block type='move_jump'>
+          <field name='trigger_id1_value'>1</field>
+          <field name='trigger_id2_value'>1</field>
+          <field name='trigger_id3_value'>1</field>
+          <field name='trigger_id4_value'>1</field>
+        </block>
+        <block type='move_wait_for_eom'></block>
+      </category>
+
+      <category name='I/O' colour='%{BKY_COLOUR_HUE}'>
+        <block type='io_name'>
+          <value name='io_index'>
+            <shadow type='math_number'>
+              <field name='NUM'>1</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='io_index'></block>
+        <block type='io_name_pulse'></block>
+        <block type='io_pulse'></block>
+        <block type='io_set_dout'></block>
+        <block type='io_set_aout'></block>
+        <block type='io_get'></block>
+        <block type='io_get_name'></block>
+        <block type='io_default'></block>
+        <block type='io_default_name'></block>
+        <block type='io_delete'></block>
+        <block type='io_print'></block>
+      </category>
+      <category name='Location' colour='#a55ba5'>
+        <block type='new_location'>
+          <field name='location_name'>name</field>
+          <value name='location_x'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_y'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_z'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_yaw'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_pitch'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_roll'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_config'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_ex1'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_ex2'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_ex3'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_zclearance'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_zworld'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='get_location'>
+          <field name='location_name'>name</field>
+        </block>
+        <block type='get_location_member'>
+          <field name='location_member'>x</field>
+          <field name='location_name'>name</field>
+        </block>
+        <block type='change_location'>
+          <field name='location_name'>name</field>
+        </block>
+        <block type='change_location_member'>
+          <field name='location_member'>x</field>
+          <field name='location_name'>name</field>
+        </block>
+        <block type='location_tojoint'></block>
+        <block type='location_delete'></block>
+        <block type='location_print'></block>
+      </category>
+
+      <category name='Location Joint' colour='#a56d5b'>
+        <block type='new_location_joint'>
+          <field name='location_name'>name</field>
+          <value name='location_angle1'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_angle2'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_angle3'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_angle4'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_angle5'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_angle6'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_angle7'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_angle8'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='location_angle9'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='get_location_joint'>
+          <field name='location_name'>name</field>
+        </block>
+        <block type='change_location_joint'>
+          <field name='location_name'>name</field>
+        </block>
+        <block type='change_location_joint_member'>
+          <field name='location_member'>j1</field>
+          <field name='location_name'>name</field>
+        </block>
+        <block type='get_location_joint_member'>
+          <field name='location_member'>j1</field>
+          <field name='location_name'>name</field>
+        </block>
+        <block type='locationj_tofarme'></block>
+        <block type='locationj_delete'></block>
+        <block type='locationj_print'></block>
+      </category>
+      <category name='Profile' colour='#93a55b'>
+        <block type='new_profile'>
+          <field name='profile_name'>name</field>
+          <value name='profile_speed'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='profile_speed2'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='profile_accel'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='profile_decel'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='profile_accel_ramp'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='profile_decel_ramp'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='profile_inrange'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+          <value name='profile_type'>
+            <shadow type='math_number'>
+              <field name='NUM'>0</field>
+            </shadow>
+          </value>
+        </block>
+        <block type='get_profile'>
+          <field name='profile_name'>name</field>
+        </block>
+        <block type='get_profile_member'>
+          <field name='profile_member'>speed</field>
+          <field name='profile_name'>name</field>
+        </block>
+        <block type='change_profile'>
+          <field name='profile_name'>name</field>
+        </block>
+        <block type='change_profile_member'>
+          <field name='profile_member'>speed</field>
+          <field name='profile_name'>name</field>
+        </block>
+        <block type='profile_set'></block>
+        <block type='profile_get'></block>
+        <block type='profile_delete'></block>
+        <block type='profile_print'></block>
+      </category>
   </xml>
 
 
 </body>
+
 </html>

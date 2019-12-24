@@ -767,7 +767,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
         input.shape.pathDown;
 
 
-        var width = input.width;
+        /*var width = input.width;
         var height = input.height;
         var yPos = input.centerline - height / 2;
         var connectionTop = input.connectionOffsetY;
@@ -782,8 +782,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
             Blockly.utils.svgPaths.lineOnAxis('h', -(width - input.connectionWidth)) +
             Blockly.utils.svgPaths.lineOnAxis('v', -height) +
             'z';
-        pathDown = `h -20 v ${input.connectionHeight} h 20 `;
-            debugger;
+        pathDown = `h -20 v ${input.connectionHeight} h 20 `;*/
 
 
 

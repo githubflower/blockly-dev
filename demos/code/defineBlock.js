@@ -18,6 +18,38 @@ Blockly.Blocks['line'] = {
   }
 };
 
+Blockly.Blocks['start'] = {
+  init: function() {
+    this.jsonInit({
+      "nextStatement": true
+    });
+    this.width = 150;
+    debugger;
+    this.appendDummyInput()
+        .appendField('Start');
+    
+    this.setTooltip(function() {
+      return 'start from here.'
+    });
+    this.setStyle('connect_blocks');
+  }
+};
+
+Blockly.Blocks['end'] = {
+  init: function() {
+    this.jsonInit({
+      "previousStatement": true
+    });
+    this.appendDummyInput()
+        .appendField('End');
+
+    this.setTooltip(function() {
+      return 'end here.'
+    });
+    this.setStyle('connect_blocks');
+  }
+};
+
 Blockly.Blocks['set_local2'] = {
   init: function() {
     this.appendValueInput("location_x")
