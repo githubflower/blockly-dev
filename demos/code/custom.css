@@ -178,6 +178,14 @@ ul,li{
 	display: inline-block;
 }
 
+.test rect{
+	fill: #FFC107;
+	stroke: none;
+	opacity: 1 !important;
+}
+.test.connected rect{
+	fill: #00e676;
+}
 
 
 

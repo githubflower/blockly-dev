@@ -706,11 +706,17 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     }else{
       var input = row.getLastInput(),connX;
       if (input.connection) {
-        connX = row.xPos + row.width;
+        //1224
+        if(this.block_.type === 'lists_create_with' && row.hasExternalInput){
+          connX = this.block_.fixPositionX + 20;
+        }else{
+          connX = row.xPos + row.width;
+        }
         if (this.info_.RTL) {
           connX *= -1;
         }
         input.connection.setOffsetInBlock(connX, row.yPos);
+        input.connection.setHidden(false);
       }
     }
   },
@@ -763,12 +769,15 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       this['drawValueInput_' + this.block_.type](row);
     }else{
       var input = row.getLastInput();
+      if(!input){
+        return;
+      }
       var pathDown = (typeof input.shape.pathDown == "function") ?
         input.shape.pathDown(input.height) :
         input.shape.pathDown;
 
 
-        /*var width = input.width;
+       /* var width = input.width;
         var height = input.height;
         var yPos = input.centerline - height / 2;
         var connectionTop = input.connectionOffsetY;
@@ -878,6 +887,9 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       case 'controls_forEach':
         this.positionFieldsOfLoop(fieldInfo);
         break;
+      case 'lists_create_with':
+        this.positionFieldsOfListsCreateWith(fieldInfo);
+        break;
       default:
         this.drawDefaultLayoutField_(fieldInfo);
     }
@@ -980,6 +992,49 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       });
       svgGroup.setAttribute('transform', 'translate(' + info.xPos + ',' + info.yPos + ')' + info.scale);
       this.hideDoText(fieldInfo);
+    }
+
+    if (this.info_.isInsertionMarker) {
+      // Fields and icons are invisible on insertion marker.  They still have to
+      // be rendered so that the block can be sized correctly.
+      svgGroup.setAttribute('display', 'none');
+    }
+  },
+
+  positionFieldsOfListsCreateWith(fieldInfo){
+    if (Blockly.blockRendering.Types.isField(fieldInfo)) {
+      var svgGroup = fieldInfo.field.getSvgRoot();
+    } else if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
+      var svgGroup = fieldInfo.icon.iconGroup_;
+    }
+
+    var yPos = fieldInfo.centerline - fieldInfo.height / 2;
+    var xPos = fieldInfo.xPos;
+    print(xPos, yPos);
+    if(fieldInfo.field instanceof Blockly.FieldBtn){
+    debugger;
+    print(fieldInfo.field.getSvgRoot());
+    print(fieldInfo.parentInput.connection.targetBlock());
+      if(!this.block_.fixPositionX){
+        this.block_.fixPositionX = xPos;
+      }else{
+        xPos = this.block_.fixPositionX;
+      }
+    }
+    var scale = '';
+    if (this.info_.RTL) {
+      xPos = -(xPos + fieldInfo.width);
+      if (fieldInfo.flipRtl) {
+        xPos += fieldInfo.width;
+        scale = 'scale(-1 1)';
+      }
+    }
+    if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
+      svgGroup.setAttribute('display', 'block');
+      svgGroup.setAttribute('transform', 'translate(' + xPos + ',' + yPos + ')');
+      fieldInfo.icon.computeIconLocation();
+    } else {
+      svgGroup && svgGroup.setAttribute('transform', 'translate(' + xPos + ',' + yPos + ')' + scale);
     }
 
     if (this.info_.isInsertionMarker) {

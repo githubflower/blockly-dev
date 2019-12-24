@@ -481,7 +481,7 @@ Blockly.Constants.Logic.CONTROLS_IF_MUTATOR_MIXIN = {
     for (i = 1; i <= this.elseifCount_; i++) {
       this.appendValueInput('IF' + i)
           .setCheck('Boolean')
-          .appendField(new Blockly.FieldBtn("条件" + i, null, {
+          .appendField(new Blockly.FieldBtn("IF", null, {
             type: 'field_btn',
             eventType: 'toggleIF'
           }), 'IF' + i)

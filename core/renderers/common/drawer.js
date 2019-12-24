@@ -119,7 +119,9 @@ Blockly.blockRendering.Drawer.prototype.drawOutline_ = function() {
     } else if (row.hasStatement) { // 是否有块级代码输入 默认无
       this.drawStatementInput_(row);
     } else if (row.hasExternalInput) { // 如果是INPUT_VALUE 块 则有外部输入
-      this.drawValueInput_(row);
+      if(this.block_.type !== 'lists_create_with'){
+        this.drawValueInput_(row);
+      }
     } else {
       this.drawRightSideRow_(row);
     }
@@ -313,6 +315,18 @@ Blockly.blockRendering.Drawer.prototype.drawInternals_ = function() {
         this.layoutField_(
           /** @type {!Blockly.blockRendering.Field|!Blockly.blockRendering.Icon} */
           (elem));
+        //因为在layoutField_中给block.fixPositionX设置了值，绘制extraInputConnection时需要用到这个值，所以将drawValueInput_调整了执行的顺序（默认是在drawOutline时绘制的）
+        if(this.block_.type === 'lists_create_with'){
+          this.drawValueInput_(row);
+          //设置fieldBtn的样式
+          if(elem.field instanceof Blockly.FieldBtn){
+            if(elem.parentInput.connection && elem.parentInput.connection.targetBlock()){
+              Blockly.utils.dom.addClass(elem.field.getSvgRoot(), 'connected');
+            }else{
+              Blockly.utils.dom.removeClass(elem.field.getSvgRoot(), 'connected');
+            }
+          }
+        }
       }
     }
   }

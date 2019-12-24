@@ -273,7 +273,9 @@ Blockly.Field.prototype.init = function() {
     }
   }
   //this._opt_config
-  this.fieldGroup_ = Blockly.utils.dom.createSvgElement('g', {}, null);
+  this.fieldGroup_ = Blockly.utils.dom.createSvgElement('g', {
+    class: this._opt_config && this._opt_config.class
+  }, null);
   if (!this.isVisible()) {
     this.fieldGroup_.style.display = 'none';
   }

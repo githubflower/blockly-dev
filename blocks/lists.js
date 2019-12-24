@@ -243,6 +243,10 @@ Blockly.Blocks['lists_create_with'] = {
         if (i == 0) {
           input.appendField(Blockly.Msg['LISTS_CREATE_WITH_INPUT_WITH']);
         }
+        debugger;
+        input.appendField(new Blockly.FieldBtn('', null, {
+          class: 'test'
+        }));
       }
     }
     // Remove deleted inputs.
