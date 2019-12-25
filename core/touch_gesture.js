@@ -226,6 +226,20 @@ Blockly.TouchGesture.prototype.handleUp = function(e) {
     }
     return;
   }
+  //点击rect.blocklyMainBackground时删除所有mutator
+  if(e.target.classList && (e.target.classList.value === 'blocklyMainBackground')){
+    var bubbleCanvasDom = this.creatorWorkspace_.getBubbleCanvas();
+    var mutators = Array.prototype.slice.call(bubbleCanvasDom.children);
+    var gesture = this;
+    mutators.forEach(mutator => {
+      var blockId = mutator.getAttribute('data-block-id');
+      var block = gesture.creatorWorkspace_.getBlockById(blockId);
+      if(block && block.mutator){
+        block.mutator.setVisible(false);
+      }
+    })
+  }
+  
   if (Blockly.Touch.isTouchEvent(e) && !this.isDragging()) {
     this.handleTouchEnd(e);
   }
