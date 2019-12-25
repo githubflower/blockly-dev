@@ -302,6 +302,7 @@ Blockly.blockRendering.Drawer.prototype.drawLeft_ = function() {
  * @protected
  */
 Blockly.blockRendering.Drawer.prototype.drawInternals_ = function() {
+  var allValueInputConnected = true;
   for (var i = 0, row;
     (row = this.info_.rows[i]); i++) {
     for (var j = 0, elem;
@@ -320,16 +321,25 @@ Blockly.blockRendering.Drawer.prototype.drawInternals_ = function() {
           this.drawValueInput_(row);
           //设置fieldBtn的样式
           if(elem.field instanceof Blockly.FieldBtn){
-            if(elem.parentInput.connection && elem.parentInput.connection.targetBlock()){
-              Blockly.utils.dom.addClass(elem.field.getSvgRoot(), 'connected');
-            }else{
-              Blockly.utils.dom.removeClass(elem.field.getSvgRoot(), 'connected');
+            if(elem.parentInput.connection){
+              if(elem.parentInput.connection.targetBlock()){
+                Blockly.utils.dom.addClass(elem.field.getSvgRoot(), 'connected');
+                Blockly.utils.dom.addClass(
+                  elem.parentInput.connection.targetBlock().getSvgRoot(),
+                  'external-input-group'
+                )
+              }else{
+                Blockly.utils.dom.removeClass(elem.field.getSvgRoot(), 'connected');
+                allValueInputConnected = false;
+              }
             }
           }
         }
       }
     }
   }
+  
+  Blockly.utils.dom[allValueInputConnected ? 'addClass': 'removeClass'](this.block_.svgGroup_, 'all-inputs-connected');
 };
 
 /**

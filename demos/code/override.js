@@ -795,7 +795,6 @@ Object.assign(Blockly.geras.Drawer.prototype, {
         pathDown = `h -20 v ${input.connectionHeight} h 20 `;*/
 
 
-
       //zjie 当有外部输入的时候，是否画右边的凹槽
       if (window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner) {
         this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
@@ -1012,7 +1011,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     var xPos = fieldInfo.xPos;
     print(xPos, yPos);
     if(fieldInfo.field instanceof Blockly.FieldBtn){
-    debugger;
+    // debugger;   //1225
     print(fieldInfo.field.getSvgRoot());
     print(fieldInfo.parentInput.connection.targetBlock());
       if(!this.block_.fixPositionX){
@@ -1221,6 +1220,10 @@ Object.assign(Blockly.geras.RenderInfo.prototype, {
     this.widthWithChildren = widestRowWithConnectedBlocks + this.startX + this.constants_.DARK_PATH_OFFSET;
     this.width += this.constants_.DARK_PATH_OFFSET;
     this.width_google = this.width;//按照google的计算框架计算出的block的宽度
+
+  
+
+
     if(this.block_.type === 'threads_def' ||
         this.block_.type === 'procedures_defnoreturn' ||
         this.block_.type === 'procedures_defreturn' ){

@@ -21,7 +21,7 @@
  */
 'use strict';
 
-goog.provide('Blockly.FieldImage');
+goog.provide('Blockly.FieldSvg');
 
 goog.require('Blockly.Field');
 goog.require('Blockly.fieldRegistry');
@@ -37,7 +37,7 @@ goog.require('Blockly.utils.Size');
  * @param {!(string|number)} width Width of the image.
  * @param {!(string|number)} height Height of the image.
  * @param {string=} opt_alt Optional alt text for when block is collapsed.
- * @param {function(!Blockly.FieldImage)=} opt_onClick Optional function to be
+ * @param {function(!Blockly.FieldSvg)=} opt_onClick Optional function to be
  *     called when the image is clicked. If opt_onClick is defined, opt_alt must
  *     also be defined.
  * @param {boolean=} opt_flipRtl Whether to flip the icon in RTL.
@@ -47,23 +47,12 @@ goog.require('Blockly.utils.Size');
  * @extends {Blockly.Field}
  * @constructor
  */
-Blockly.FieldImage = function(src, width, height,
+Blockly.FieldSvg = function(svgTag, attrs
     opt_alt, opt_onClick, opt_flipRtl, opt_config) {
   // Return early.
-  if (!src) {
-    throw Error('Src value of an image field is required');
-  }
-  src = Blockly.utils.replaceMessageReferences(src);
-  var imageHeight = Number(Blockly.utils.replaceMessageReferences(height));
-  var imageWidth = Number(Blockly.utils.replaceMessageReferences(width));
-  if (isNaN(imageHeight) || isNaN(imageWidth)) {
-    throw Error('Height and width values of an image field must cast to' +
-      ' numbers.');
-  }
-  if (imageHeight <= 0 || imageWidth <= 0) {
-    throw Error('Height and width values of an image field must be greater' +
-      ' than 0.');
-  }
+  
+  this.svgTag = svgTag || 'path';
+  this.attrs = attrs;
 
   // Initialize configurable properties.
   /**
@@ -80,34 +69,18 @@ Blockly.FieldImage = function(src, width, height,
    */
   this.altText_ = '';
 
-  Blockly.FieldImage.superClass_.constructor.call(
-      this, src || '', null, opt_config);
+  Blockly.FieldSvg.superClass_.constructor.call(
+      this, svgTag || '', null, opt_config);
 
   if (!opt_config) {  // If the config wasn't passed, do old configuration.
     this.flipRtl_ = !!opt_flipRtl;
     this.altText_ = Blockly.utils.replaceMessageReferences(opt_alt) || '';
   }
 
-  // Initialize other properties.
-  /**
-   * The size of the area rendered by the field.
-   * @type {Blockly.utils.Size}
-   * @protected
-   * @override
-   */
-  this.size_ = new Blockly.utils.Size(imageWidth,
-      imageHeight + Blockly.FieldImage.Y_PADDING);
-
-  /**
-   * Store the image height, since it is different from the field height.
-   * @type {number}
-   * @private
-   */
-  this.imageHeight_ = imageHeight;
 
   /**
    * The function to be called when this field is clicked.
-   * @type {?function(!Blockly.FieldImage)}
+   * @type {?function(!Blockly.FieldSvg)}
    * @private
    */
   this.clickHandler_ = null;
@@ -116,20 +89,20 @@ Blockly.FieldImage = function(src, width, height,
     this.clickHandler_ = opt_onClick;
   }
 };
-Blockly.utils.object.inherits(Blockly.FieldImage, Blockly.Field);
+Blockly.utils.object.inherits(Blockly.FieldSvg, Blockly.Field);
 
 /**
- * Construct a FieldImage from a JSON arg object,
+ * Construct a FieldSvg from a JSON arg object,
  * dereferencing any string table references.
  * @param {!Object} options A JSON object with options (src, width, height,
  *    alt, and flipRtl).
- * @return {!Blockly.FieldImage} The new field instance.
+ * @return {!Blockly.FieldSvg} The new field instance.
  * @package
  * @nocollapse
  */
-Blockly.FieldImage.fromJson = function(options) {
-  return new Blockly.FieldImage(
-      options['src'], options['width'], options['height'],
+Blockly.FieldSvg.fromJson = function(options) {
+  return new Blockly.FieldSvg(
+      options['svgTag'], options['attrs'],
       undefined, undefined, undefined, options);
 };
 
@@ -139,14 +112,14 @@ Blockly.FieldImage.fromJson = function(options) {
  * @type {number}
  * @private
  */
-Blockly.FieldImage.Y_PADDING = 1;
+Blockly.FieldSvg.Y_PADDING = 1;
 
 /**
  * Editable fields usually show some sort of UI indicating they are
  * editable. This field should not.
  * @type {boolean}
  */
-Blockly.FieldImage.prototype.EDITABLE = false;
+Blockly.FieldSvg.prototype.EDITABLE = false;
 
 /**
  * Used to tell if the field needs to be rendered the next time the block is
@@ -155,34 +128,24 @@ Blockly.FieldImage.prototype.EDITABLE = false;
  * @type {boolean}
  * @protected
  */
-Blockly.FieldImage.prototype.isDirty_ = false;
+Blockly.FieldSvg.prototype.isDirty_ = false;
 
 /**
  * Configure the field based on the given map of options.
  * @param {!Object} config A map of options to configure the field based on.
  * @private
  */
-Blockly.FieldImage.prototype.configure_ = function(config) {
-  Blockly.FieldImage.superClass_.configure_.call(this, config);
+Blockly.FieldSvg.prototype.configure_ = function(config) {
+  Blockly.FieldSvg.superClass_.configure_.call(this, config);
   this.flipRtl_ = !!config['flipRtl'];
-  this.altText_ = Blockly.utils.replaceMessageReferences(config['alt']) || '';
 };
 
 /**
  * Create the block UI for this image.
  * @package
  */
-Blockly.FieldImage.prototype.initView = function() {
-  this.imageElement_ = Blockly.utils.dom.createSvgElement(
-      'image',
-      {
-        'height': this.imageHeight_ + 'px',
-        'width': this.size_.width + 'px',
-        'alt': this.altText_
-      },
-      this.fieldGroup_);
-  this.imageElement_.setAttributeNS(Blockly.utils.dom.XLINK_NS,
-      'xlink:href', /** @type {string} */ (this.value_));
+Blockly.FieldSvg.prototype.initView = function() {
+  this.svgElement_ = Blockly.utils.dom.createSvgElement( this.svgTag, this.attrs || {}, this.fieldGroup_);
 };
 
 /**
@@ -191,7 +154,7 @@ Blockly.FieldImage.prototype.initView = function() {
  * @return {?string} A string, or null if invalid.
  * @protected
  */
-Blockly.FieldImage.prototype.doClassValidation_ = function(opt_newValue) {
+Blockly.FieldSvg.prototype.doClassValidation_ = function(opt_newValue) {
   if (typeof opt_newValue != 'string') {
     return null;
   }
@@ -204,16 +167,12 @@ Blockly.FieldImage.prototype.doClassValidation_ = function(opt_newValue) {
  * that this is a string.
  * @protected
  */
-Blockly.FieldImage.prototype.doValueUpdate_ = function(newValue) {
-  this.value_ = newValue;
-  if (this.imageElement_) {
-    this.imageElement_.setAttributeNS(Blockly.utils.dom.XLINK_NS,
-        'xlink:href', this.value_ || '');
-  }
+Blockly.FieldSvg.prototype.doValueUpdate_ = function(attrs) {
+  Blockly.utils.dom.update(this.svgElement_, attrs);
 };
 
-Blockly.FieldImage.prototype.replaceImageElement = function(dom) {
-  this.imageElement_ = dom;
+Blockly.FieldSvg.prototype.replaceImageElement = function(dom) {
+  this.svgElement_ = dom;
 };
 
 /**
@@ -221,30 +180,16 @@ Blockly.FieldImage.prototype.replaceImageElement = function(dom) {
  * @return {boolean} True if we should flip in RTL.
  * @override
  */
-Blockly.FieldImage.prototype.getFlipRtl = function() {
+Blockly.FieldSvg.prototype.getFlipRtl = function() {
   return this.flipRtl_;
 };
 
-/**
- * Set the alt text of this image.
- * @param {?string} alt New alt text.
- * @public
- */
-Blockly.FieldImage.prototype.setAlt = function(alt) {
-  if (alt == this.altText_) {
-    return;
-  }
-  this.altText_ = alt || '';
-  if (this.imageElement_) {
-    this.imageElement_.setAttribute('alt', this.altText_);
-  }
-};
 
 /**
  * If field click is called, and click handler defined,
  * call the handler.
  */
-Blockly.FieldImage.prototype.showEditor_ = function() {
+Blockly.FieldSvg.prototype.showEditor_ = function() {
   if (this.clickHandler_) {
     this.clickHandler_(this);
   }
@@ -252,10 +197,10 @@ Blockly.FieldImage.prototype.showEditor_ = function() {
 
 /**
  * Set the function that is called when this image  is clicked.
- * @param {?function(!Blockly.FieldImage)} func The function that is called
+ * @param {?function(!Blockly.FieldSvg)} func The function that is called
  *    when the image is clicked, or null to remove.
  */
-Blockly.FieldImage.prototype.setOnClickHandler = function(func) {
+Blockly.FieldSvg.prototype.setOnClickHandler = function(func) {
   this.clickHandler_ = func;
 };
 
@@ -267,8 +212,8 @@ Blockly.FieldImage.prototype.setOnClickHandler = function(func) {
  * @protected
  * @override
  */
-Blockly.FieldImage.prototype.getText_ = function() {
+Blockly.FieldSvg.prototype.getText_ = function() {
   return this.altText_;
 };
 
-Blockly.fieldRegistry.register('field_image', Blockly.FieldImage);
+Blockly.fieldRegistry.register('field_svg', Blockly.FieldSvg);

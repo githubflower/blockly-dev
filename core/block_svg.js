@@ -68,6 +68,7 @@ Blockly.BlockSvg = function(workspace, prototypeName, opt_id, isVisible) {
   }
   this.svgGroup_ = Blockly.utils.dom.createSvgElement('g', attrs, null);
   this.svgGroup_.translate_ = '';
+  debugger;
 
   /**
    * The renderer's path object.
@@ -1772,7 +1773,6 @@ Blockly.BlockSvg.prototype.setMarkerSvg = function(markerSvg) {
     this.markerSvg_ = null;
     return;
   }
-
   if (this.cursorSvg_) {
     this.svgGroup_.insertBefore(markerSvg, this.cursorSvg_);
   } else {

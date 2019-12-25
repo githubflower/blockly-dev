@@ -30,6 +30,7 @@ goog.provide('Blockly.Blocks.lists');  // Deprecated
 goog.provide('Blockly.Constants.Lists');
 
 goog.require('Blockly');
+goog.require('Blockly.FieldSvg');
 goog.require('Blockly.Blocks');
 goog.require('Blockly.FieldDropdown');
 goog.require('Blockly.FieldLabel');
@@ -243,18 +244,14 @@ Blockly.Blocks['lists_create_with'] = {
         var input = this.appendValueInput('ADD' + i);
         if (i == 0) {
           input.appendField(Blockly.Msg['LISTS_CREATE_WITH_INPUT_WITH']);
-          input.appendField(new Blockly.FieldImage('./img/collapse.svg', 20, 14, '', function(fieldImg){
+          input.appendField(new Blockly.FieldSvg('path', {
+            class: 'xxx',
+            d: `m 0 0 h 9 v 9 h -9 v -9 z`,
+            stroke: '#ff0000',
+            fill: '#ff00cc'
+          }, '', function(fieldImg){
             var isExpanded = jQuery(fieldImg.getSvgRoot()).is('.collapse');
-            fieldImg.doValueUpdate_(isExpanded ? './img/expand.svg': './img/collapse.svg');
-
-       /*     fieldImg.replaceImageElement(
-              Blockly.utils.dom.createSvgElement('path', {
-                class: 'xxx',
-                d: `m 0 0 h 9 v 9 h -9 v -9 z`,
-                stroke: '#ff0000',
-                fill: '#ff00cc'
-              }, fieldImg.getSvgRoot())
-            );*/
+            // fieldImg.doValueUpdate_(isExpanded ? './img/expand.svg': './img/collapse.svg');
 
             jQuery('.signal').toggleClass('hide');
             jQuery(fieldImg.getSvgRoot()).toggleClass('collapse expand');

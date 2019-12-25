@@ -178,13 +178,21 @@ ul,li{
 	display: inline-block;
 }
 
-.test rect{
+.signal rect{
+	display: block;
 	fill: #FFC107;
 	stroke: none;
 	fill-opacity: 1;
 }
-.test.connected rect{
+.signal.connected rect{
 	fill: #00e676;
+}
+.signal.hide{
+	display: none;
+}
+.collapse > image,
+.expand > image{
+	cursor: pointer;
 }
 
 
