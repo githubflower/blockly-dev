@@ -291,6 +291,8 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     }
   },
   drawRight_: function() {
+    debugger
+  
     for (var r = 1; r < this.info_.rows.length - 1; r++) {
       var row = this.info_.rows[r];
       if (row.hasJaggedEdge) { // 是否有锯齿 如果是收拢状态则有锯齿 默认无锯齿
@@ -992,7 +994,6 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     var xPos = fieldInfo.xPos;
     // print(xPos, yPos);
     if(fieldInfo.field instanceof Blockly.FieldBtn){
-    debugger;   //1225
     // print(fieldInfo.field.getSvgRoot());
     // print(fieldInfo.parentInput.connection.targetBlock());
       if(!this.block_.fixPositionX){
@@ -1601,4 +1602,101 @@ Blockly.RenderedConnection.prototype.disconnectInternal_ = function (parentBlock
     childBlock.render(false/* opt_bubble  @Blockly.BlockSvg.prototype.render */, true/* force render */);
   }
 };
+
+
+
+
+//重写block.js
+Object.assign(Blockly.Block.prototype, {
+  setStatus(status){
+    this._status = status;
+    if(status === 'expand'){
+      Blockly.utils.dom.removeClass(this.svgGroup_, 'collapse');
+      Blockly.utils.dom.addClass(this.svgGroup_, 'expand');
+    }else{
+      Blockly.utils.dom.removeClass(this.svgGroup_, 'expand');
+      Blockly.utils.dom.addClass(this.svgGroup_, 'collapse');
+    }
+  },
+
+  getStatus(){
+    return this._status || '';
+  }
+})
+
+//重写\core\renderers\common\info.js
+Object.assign(Blockly.blockRendering.RenderInfo.prototype, {
+  createRows_() {
+    this.populateTopRow_();
+    this.rows.push(this.topRow);
+    var activeRow = new Blockly.blockRendering.InputRow(this.constants_);
+
+    // Icons always go on the first row, before anything else.
+    var icons = this.block_.getIcons();
+    if (icons.length) {
+      for (var i = 0, icon; (icon = icons[i]); i++) {
+        var iconInfo = new Blockly.blockRendering.Icon(this.constants_, icon);
+        if (this.isCollapsed && icon.collapseHidden) {
+          this.hiddenIcons.push(iconInfo);
+        } else {
+          activeRow.elements.push(iconInfo);
+        }
+      }
+    }
+
+    var lastInput = null;
+    // Loop across all of the inputs on the block, creating objects for anything
+    // that needs to be rendered and breaking the block up into visual rows.
+    var allValueInputConnected = true;
+    for (var i = 0, input; (input = this.block_.inputList[i]); i++) {
+      if (!input.isVisible()) {
+        continue;
+      }
+      debugger;
+      if(input.connection){
+        if(!input.connection.targetBlock()){
+          allValueInputConnected = false;
+        }else{
+          // Blockly.utils.dom.addClass(elem.field.getSvgRoot(), 'connected');
+          Blockly.utils.dom.addClass(
+            input.connection.targetBlock().getSvgRoot(),
+            'external-input-group'
+          )
+        }
+        //设置信号灯样式 也就是fieldBtn
+
+      }
+
+      if (this.shouldStartNewRow_(input, lastInput)) {
+        // Finish this row and create a new one.
+        this.rows.push(activeRow);
+        activeRow = new Blockly.blockRendering.InputRow(this.constants_);
+      }
+
+      // All of the fields in an input go on the same row.
+      for (var j = 0, field; (field = input.fieldRow[j]); j++) {
+        activeRow.elements.push(
+            new Blockly.blockRendering.Field(this.constants_, field, input));
+      }
+      this.addInput_(input, activeRow);
+      lastInput = input;
+    }
+    
+    Blockly.utils.dom[allValueInputConnected ? 'addClass': 'removeClass'](this.block_.svgGroup_, 'all-inputs-connected');
+    
+
+    if (this.isCollapsed) {
+      activeRow.hasJaggedEdge = true;
+      activeRow.elements.push(
+          new Blockly.blockRendering.JaggedEdge(this.constants_));
+    }
+
+    if (activeRow.elements.length || activeRow.hasDummyInput) {
+      this.rows.push(activeRow);
+    }
+    this.populateBottomRow_();
+    this.rows.push(this.bottomRow);
+  },
+
+})
 

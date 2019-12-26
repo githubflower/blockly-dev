@@ -49,9 +49,17 @@ goog.require('Blockly.utils.Size');
  */
 Blockly.FieldSvg = function(svgTag, attrs, opt_alt, opt_onClick, opt_flipRtl, opt_config) {
   // Return early.
-  
+  var a = 4, b = 6;
+  var collapsePath = `M 0 0 h 16 v 16 h -16 z M 6 2 l -${a} ${b}  l ${a} ${b} M 12 2 l -${a} ${b} m 0 0 l ${a} ${b} z`;
+  var defaultAttrs = {
+    class: 'detail-icon',
+    d: collapsePath,
+    'stroke-width': 2,
+    fill: 'transparent'
+  };
+
   this.svgTag = svgTag || 'path';
-  this.attrs = attrs;
+  this.attrs = Object.assign({}, defaultAttrs, attrs);
 
   // Initialize configurable properties.
   /**
@@ -67,6 +75,10 @@ Blockly.FieldSvg = function(svgTag, attrs, opt_alt, opt_onClick, opt_flipRtl, op
    * @private
    */
   this.altText_ = '';
+
+  opt_config = Object.assign({
+    class: 'detail-icon-wrap'
+  }, opt_config || {});
 
   Blockly.FieldSvg.superClass_.constructor.call(
       this, svgTag || '', null, opt_config);
@@ -87,7 +99,28 @@ Blockly.FieldSvg = function(svgTag, attrs, opt_alt, opt_onClick, opt_flipRtl, op
 
   if (typeof opt_onClick == 'function') {
     this.clickHandler_ = opt_onClick;
-  }
+  }else if(opt_onClick === 'toggleExpand' || typeof !opt_onClick){
+    this.clickHandler_ = function(field){
+      //点击expand/collapse图标控制sourceBlock重绘
+      //获取sourceBlock的状态 避免和block类的collapse混淆 这里我们用status定义field的展开和收起
+      var blockStatus = field.sourceBlock_.getStatus();
+      if(blockStatus === 'expand'){
+        if(typeof field.sourceBlock_.setStatus === 'function'){
+          field.sourceBlock_.setStatus('collapse');
+        }
+        field.setIcon('expand');
+      }else{
+        if(typeof field.sourceBlock_.setStatus === 'function'){
+          field.sourceBlock_.setStatus('expand');
+        }
+        field.setIcon('collapse');
+      }
+
+      field.sourceBlock_.render();
+    }
+  }/*else if(typeof opt_onClick == 'undefined'){
+    //todo
+  }*/
 };
 Blockly.utils.object.inherits(Blockly.FieldSvg, Blockly.Field);
 
@@ -217,18 +250,17 @@ Blockly.FieldSvg.prototype.getText_ = function() {
 };
 
 //获取fieldSvg的状态  返回 'expand' or  'collapse'
-Blockly.FieldSvg.prototype.getStatus = function(){
+Blockly.FieldSvg.prototype.getIcon = function(){
   return this._status;
 }
 
 //设置fieldSvg的状态  暂时将参数范围放开，方便自定义  可传任意值
-Blockly.FieldSvg.prototype.setStatus = function(status){
+Blockly.FieldSvg.prototype.setIcon = function(status){
   this._status = status;
   this.updateByStatus(status);
 }
 
 Blockly.FieldSvg.prototype.updateByStatus = function(status){
-  print('status:', status);
   var a = 4, b = 6;
   var expandPath = `M 0 0 h 16 v 16 h -16 z M 2 2 l ${a} ${b}  l -${a} ${b} M 8 2 l ${a} ${b} m 0 0 l -${a} ${b} z`;
   var collapsePath = `M 0 0 h 16 v 16 h -16 z M 6 2 l -${a} ${b}  l ${a} ${b} M 12 2 l -${a} ${b} m 0 0 l ${a} ${b} z`;
@@ -237,7 +269,9 @@ Blockly.FieldSvg.prototype.updateByStatus = function(status){
     // class: status,
     d: path
   })
-  jQuery(this.svgElement_).toggleClass(status);
+  Blockly.utils.dom.toggleClass(this.svgElement_, status);
 }
+
+
 
 Blockly.fieldRegistry.register('field_svg', Blockly.FieldSvg);

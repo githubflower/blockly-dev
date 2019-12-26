@@ -249,28 +249,7 @@ Blockly.Blocks['lists_create_with'] = {
           //1226
           var a = 4, b = 6;
           var collapsePath = `M 0 0 h 16 v 16 h -16 z M 6 2 l -${a} ${b}  l ${a} ${b} M 12 2 l -${a} ${b} m 0 0 l ${a} ${b} z`;
-          this._fieldSvg = new Blockly.FieldSvg('path', {
-            class: 'detail-icon',
-            d: collapsePath,
-            'stroke-width': 2,
-            fill: 'transparent'
-          }, '', (field)=>{
-            //点击expand/collapse图标控制block重绘
-            //获取field的状态 避免和block类的collapse混淆 这里我们用status定义field的展开和收起
-            var blockStatus = field.sourceBlock_.getStatus();
-            if(blockStatus === 'expand'){
-              field.sourceBlock_.setStatus('collapse');
-              field.setStatus('expand');
-            }else{
-              field.sourceBlock_.setStatus('expand');
-              field.setStatus('collapse');
-            }
-
-            print(field.getStatus());
-            field.sourceBlock_.render();
-          }, false, {
-            class: 'detail-icon-wrap'
-          });
+          this._fieldSvg = new Blockly.FieldSvg('path', {}, '', null, false);
           input.appendField(this._fieldSvg);
         }
         // debugger;   //1225

@@ -304,6 +304,11 @@ Blockly.utils.dom.update = function(node, attrs){
   }
 }
 
+Blockly.utils.dom.toggleClass = function(node, clazz){
+  jQuery(node).toggleClass(clazz);
+}
+
+
 Blockly.utils.dom.isLastChild = function(node){
   if(node.parentNode.lastElementChild === node){
     return true;
