@@ -33,6 +33,7 @@ goog.require('Blockly');
 goog.require('Blockly.Blocks');
 goog.require('Blockly.FieldDropdown');
 goog.require('Blockly.FieldLabel');
+goog.require('Blockly.FieldSvg');
 goog.require('Blockly.Mutator');
 
 
@@ -140,6 +141,7 @@ Blockly.Blocks['lists_create_with'] = {
     this.setOutput(true, 'Array');
     this.setMutator(new Blockly.Mutator(['lists_create_with_item']));
     this.setTooltip(Blockly.Msg['LISTS_CREATE_WITH_TOOLTIP']);
+    this.setStatus('expand');
   },
   /**
    * Create XML to represent list inputs.
@@ -239,30 +241,37 @@ Blockly.Blocks['lists_create_with'] = {
     // Add new inputs.
     for (var i = 0; i < this.itemCount_; i++) {
       if (!this.getInput('ADD' + i)) {
-        debugger;
+        var _this = this;
         var input = this.appendValueInput('ADD' + i);
         if (i == 0) {
           input.appendField(Blockly.Msg['LISTS_CREATE_WITH_INPUT_WITH']);
-          input.appendField(new Blockly.FieldImage('./img/collapse.svg', 20, 14, '', function(fieldImg){
-            var isExpanded = jQuery(fieldImg.getSvgRoot()).is('.collapse');
-            fieldImg.doValueUpdate_(isExpanded ? './img/expand.svg': './img/collapse.svg');
 
-       /*     fieldImg.replaceImageElement(
-              Blockly.utils.dom.createSvgElement('path', {
-                class: 'xxx',
-                d: `m 0 0 h 9 v 9 h -9 v -9 z`,
-                stroke: '#ff0000',
-                fill: '#ff00cc'
-              }, fieldImg.getSvgRoot())
-            );*/
+          //1226
+          var a = 4, b = 6;
+          var collapsePath = `M 0 0 h 16 v 16 h -16 z M 6 2 l -${a} ${b}  l ${a} ${b} M 12 2 l -${a} ${b} m 0 0 l ${a} ${b} z`;
+          this._fieldSvg = new Blockly.FieldSvg('path', {
+            class: 'detail-icon',
+            d: collapsePath,
+            'stroke-width': 2,
+            fill: 'transparent'
+          }, '', (field)=>{
+            //点击expand/collapse图标控制block重绘
+            //获取field的状态 避免和block类的collapse混淆 这里我们用status定义field的展开和收起
+            var blockStatus = field.sourceBlock_.getStatus();
+            if(blockStatus === 'expand'){
+              field.sourceBlock_.setStatus('collapse');
+              field.setStatus('expand');
+            }else{
+              field.sourceBlock_.setStatus('expand');
+              field.setStatus('collapse');
+            }
 
-            jQuery('.signal').toggleClass('hide');
-            jQuery(fieldImg.getSvgRoot()).toggleClass('collapse expand');
-
-            jQuery(fieldImg.getSvgRoot()).siblings('.external-input-group')[isExpanded ? 'hide' : 'show']();
+            print(field.getStatus());
+            field.sourceBlock_.render();
           }, false, {
-            class: 'collapse'
-          }));
+            class: 'detail-icon-wrap'
+          });
+          input.appendField(this._fieldSvg);
         }
         // debugger;   //1225
         input.appendField(new Blockly.FieldBtn('', null, {
@@ -275,6 +284,21 @@ Blockly.Blocks['lists_create_with'] = {
       this.removeInput('ADD' + i);
       i++;
     }
+  },
+
+  setStatus(status){
+    this._status = status;
+    if(status === 'expand'){
+      Blockly.utils.dom.removeClass(this.svgGroup_, 'collapse');
+      Blockly.utils.dom.addClass(this.svgGroup_, 'expand');
+    }else{
+      Blockly.utils.dom.removeClass(this.svgGroup_, 'expand');
+      Blockly.utils.dom.addClass(this.svgGroup_, 'collapse');
+    }
+  },
+
+  getStatus(){
+    return this._status || '';
   }
 };
 

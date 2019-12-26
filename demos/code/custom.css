@@ -195,6 +195,26 @@ ul,li{
 	cursor: pointer;
 }
 
+.detail-icon{
+	stroke: yellow;
+}
+.detail-icon-wrap:hover > .detail-icon{
+	cursor: pointer;
+}
+.all-inputs-connected .detail-icon{
+	stroke: #00e676;
+}
+
+.collapse > .external-input-group{
+	display: none;
+}
+.expand > .external-input-group{
+	display: block;
+}
+.collapse > .signal{
+	display: none;
+}
+
 
 
 /*主题相关---start*/

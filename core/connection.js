@@ -54,6 +54,7 @@ Blockly.Connection.REASON_TARGET_NULL = 3;
 Blockly.Connection.REASON_CHECKS_FAILED = 4;
 Blockly.Connection.REASON_DIFFERENT_WORKSPACES = 5;
 Blockly.Connection.REASON_SHADOW_PARENT = 6;
+Blockly.Connection.REASON_PARAM_COLLAPSE = 7;
 
 /**
  * Connection this connection connects to.  Null if not connected.
@@ -261,6 +262,7 @@ Blockly.Connection.prototype.canConnectWithReason_ = function(target) {
   if (!target) {
     return Blockly.Connection.REASON_TARGET_NULL;
   }
+  // blockA 始终是父类
   if (this.isSuperior()) {
     var blockA = this.sourceBlock_;
     var blockB = target.getSourceBlock();
@@ -268,6 +270,14 @@ Blockly.Connection.prototype.canConnectWithReason_ = function(target) {
     var blockB = this.sourceBlock_;
     var blockA = target.getSourceBlock();
   }
+
+  // debugger; //1226
+  print('-------------', target.sourceBlock_.type);
+  if(blockA.type === 'lists_create_with' && blockA._status === 'collapse'){
+    return Blockly.Connection.REASON_PARAM_COLLAPSE;
+  }
+
+
   if (blockA && blockA == blockB) {
     return Blockly.Connection.REASON_SELF_CONNECTION;
   } else if (target.type != Blockly.OPPOSITE_TYPE[this.type]) {
@@ -308,7 +318,10 @@ Blockly.Connection.prototype.checkConnection_ = function(target) {
       throw Error(msg);
     case Blockly.Connection.REASON_SHADOW_PARENT:
       throw Error('Connecting non-shadow to shadow block.');
+    case Blockly.Connection.REASON_PARAM_COLLAPSE:
+      throw Error('Parent block\'s input-params has been hidden by user.');
     default:
+      //1226
       throw Error('Unknown connection failure: this should never happen!');
   }
 };

@@ -338,8 +338,9 @@ Blockly.blockRendering.Drawer.prototype.drawInternals_ = function() {
       }
     }
   }
-  
-  Blockly.utils.dom[allValueInputConnected ? 'addClass': 'removeClass'](this.block_.svgGroup_, 'all-inputs-connected');
+  if(this.block_.type === 'lists_create_with'){
+    Blockly.utils.dom[allValueInputConnected ? 'addClass': 'removeClass'](this.block_.svgGroup_, 'all-inputs-connected');
+  }
 };
 
 /**

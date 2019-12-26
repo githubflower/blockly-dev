@@ -47,8 +47,7 @@ goog.require('Blockly.utils.Size');
  * @extends {Blockly.Field}
  * @constructor
  */
-Blockly.FieldSvg = function(svgTag, attrs
-    opt_alt, opt_onClick, opt_flipRtl, opt_config) {
+Blockly.FieldSvg = function(svgTag, attrs, opt_alt, opt_onClick, opt_flipRtl, opt_config) {
   // Return early.
   
   this.svgTag = svgTag || 'path';
@@ -77,6 +76,7 @@ Blockly.FieldSvg = function(svgTag, attrs
     this.altText_ = Blockly.utils.replaceMessageReferences(opt_alt) || '';
   }
 
+  this.size_ = new Blockly.utils.Size(16, 16)
 
   /**
    * The function to be called when this field is clicked.
@@ -215,5 +215,29 @@ Blockly.FieldSvg.prototype.setOnClickHandler = function(func) {
 Blockly.FieldSvg.prototype.getText_ = function() {
   return this.altText_;
 };
+
+//获取fieldSvg的状态  返回 'expand' or  'collapse'
+Blockly.FieldSvg.prototype.getStatus = function(){
+  return this._status;
+}
+
+//设置fieldSvg的状态  暂时将参数范围放开，方便自定义  可传任意值
+Blockly.FieldSvg.prototype.setStatus = function(status){
+  this._status = status;
+  this.updateByStatus(status);
+}
+
+Blockly.FieldSvg.prototype.updateByStatus = function(status){
+  print('status:', status);
+  var a = 4, b = 6;
+  var expandPath = `M 0 0 h 16 v 16 h -16 z M 2 2 l ${a} ${b}  l -${a} ${b} M 8 2 l ${a} ${b} m 0 0 l -${a} ${b} z`;
+  var collapsePath = `M 0 0 h 16 v 16 h -16 z M 6 2 l -${a} ${b}  l ${a} ${b} M 12 2 l -${a} ${b} m 0 0 l ${a} ${b} z`;
+  var path = status === 'expand' ? expandPath: collapsePath;
+  Blockly.utils.dom.update(this.svgElement_, {
+    // class: status,
+    d: path
+  })
+  jQuery(this.svgElement_).toggleClass(status);
+}
 
 Blockly.fieldRegistry.register('field_svg', Blockly.FieldSvg);
