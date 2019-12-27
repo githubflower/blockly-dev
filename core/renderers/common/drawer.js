@@ -315,7 +315,7 @@ Blockly.blockRendering.Drawer.prototype.drawInternals_ = function() {
         Blockly.blockRendering.Types.isField(elem)) {
         this.layoutField_(
           /** @type {!Blockly.blockRendering.Field|!Blockly.blockRendering.Icon} */
-          (elem));
+          (elem), row);
         //因为在layoutField_中给block.fixPositionX设置了值，绘制extraInputConnection时需要用到这个值，所以将drawValueInput_调整了执行的顺序（默认是在drawOutline时绘制的）
         if(this.block_.type === 'lists_create_with'){
           this.drawValueInput_(row);

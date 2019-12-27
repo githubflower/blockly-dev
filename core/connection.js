@@ -272,8 +272,7 @@ Blockly.Connection.prototype.canConnectWithReason_ = function(target) {
   }
 
   // debugger; //1226
-  print('-------------', target.sourceBlock_.type);
-  if(blockA.type === 'lists_create_with' && blockA._status === 'collapse'){
+  if(blockA._status === 'collapse'){
     return Blockly.Connection.REASON_PARAM_COLLAPSE;
   }
 

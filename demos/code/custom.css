@@ -185,6 +185,7 @@ ul,li{
 	fill-opacity: 1;
 }
 .signal.connected rect{
+	display: none;
 	fill: #00e676;
 }
 .signal.hide{
@@ -201,7 +202,7 @@ ul,li{
 .detail-icon-wrap:hover > .detail-icon{
 	cursor: pointer;
 }
-.all-inputs-connected .detail-icon{
+.all-inputs-connected > .detail-icon-wrap > .detail-icon{
 	stroke: #00e676;
 }
 

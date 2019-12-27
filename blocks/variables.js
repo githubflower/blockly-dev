@@ -61,7 +61,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for variable setter.
   {
     "type": "variables_set",
-    "message0": "%{BKY_VARIABLES_SET}%3",
+    "message0": "%{BKY_VARIABLES_SET}%3%4",
     "args0": [
       {
         "type": "field_variable",
@@ -70,6 +70,11 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
       },
       {
         "type": "field_svg"
+      },
+      {
+        "type": "field_btn",
+        "text": "",
+        "class": "signal"
       },
       {
         "type": "input_value",
@@ -81,7 +86,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
     "style": "variable_blocks",
     "tooltip": "%{BKY_VARIABLES_SET_TOOLTIP}",
     "helpUrl": "%{BKY_VARIABLES_SET_HELPURL}",
-    "extensions": ["contextMenu_variableSetterGetter"]
+    "extensions": ["contextMenu_variableSetterGetter"],
+    "status": "expand" //将参数展开
   }
 ]);  // END JSON EXTRACT (Do not delete this comment.)
 

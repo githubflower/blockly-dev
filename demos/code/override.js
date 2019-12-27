@@ -291,8 +291,6 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
     }
   },
   drawRight_: function() {
-    debugger
-  
     for (var r = 1; r < this.info_.rows.length - 1; r++) {
       var row = this.info_.rows[r];
       if (row.hasJaggedEdge) { // 是否有锯齿 如果是收拢状态则有锯齿 默认无锯齿
@@ -696,7 +694,6 @@ Object.assign(Blockly.geras.Drawer.prototype, {
           connInfo.connectionModel.setOffsetInBlock(0, (connInfo.centerline - connInfo.height * 2 - 6));
           break;
         default:
-        debugger;
           // connInfo.connectionModel.setOffsetInBlock(connX, (connInfo.centerline - connInfo.height / 2));
           connInfo.connectionModel.setOffsetInBlock(bottomRow.width / 2 /*- connInfo.width / 2*/, (connInfo.centerline - connInfo.height / 2)); //zjie 将nextConnection移到这个block中间  同时需要修改block的outlinePath
       }
@@ -708,8 +705,10 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     }else{
       var input = row.getLastInput(),connX;
       if (input.connection) {
-        //1224
-        if(this.block_.type === 'lists_create_with' && row.hasExternalInput){
+        //1227
+        if((this.block_.type === 'lists_create_with' || this.block_.type === 'variables_set')
+         && row.hasExternalInput){
+          debugger;
           connX = this.block_.fixPositionX ;
         }else{
           connX = row.xPos + row.width;
@@ -858,7 +857,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     return;
   },
   //调整field的位置  覆盖 \core\renderers\common\drawer.js
-  layoutField_: function(fieldInfo) {
+  layoutField_: function(fieldInfo, row) {
     switch (this.block_.type) {
       case 'controls_if':
         this.positionFieldsOfControlsIf(fieldInfo);
@@ -870,7 +869,8 @@ Object.assign(Blockly.geras.Drawer.prototype, {
         this.positionFieldsOfLoop(fieldInfo);
         break;
       case 'lists_create_with':
-        this.positionFieldsOfListsCreateWith(fieldInfo);
+      case 'variables_set':
+        this.positionFieldsOfListsCreateWith(fieldInfo, row);
         break;
       default:
         this.drawDefaultLayoutField_(fieldInfo);
@@ -983,7 +983,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     }
   },
 
-  positionFieldsOfListsCreateWith(fieldInfo){
+  positionFieldsOfListsCreateWith(fieldInfo, row){
     if (Blockly.blockRendering.Types.isField(fieldInfo)) {
       var svgGroup = fieldInfo.field.getSvgRoot();
     } else if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
@@ -998,9 +998,13 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     // print(fieldInfo.parentInput.connection.targetBlock());
       if(!this.block_.fixPositionX){
         this.block_.fixPositionX = xPos;
+        //1227
+        print(this.block_.type, ' ----- ', xPos);
       }else{
         xPos = this.block_.fixPositionX;
       }
+      debugger;
+      this.positionExternalValueConnection_(row);
     }
     var scale = '';
     if (this.info_.RTL) {
@@ -1652,12 +1656,22 @@ Object.assign(Blockly.blockRendering.RenderInfo.prototype, {
       if (!input.isVisible()) {
         continue;
       }
-      debugger;
+      //1227
+      print(Blockly.blockRendering.Types.isExternalInput(input), input.connection);
+
       if(input.connection){
         if(!input.connection.targetBlock()){
           allValueInputConnected = false;
+          var fieldBtn = input.fieldRow[input.fieldRow.length - 1];
+          if(fieldBtn instanceof Blockly.FieldBtn){
+            Blockly.utils.dom.removeClass(fieldBtn.getSvgRoot(), 'connected');
+          }
         }else{
-          // Blockly.utils.dom.addClass(elem.field.getSvgRoot(), 'connected');
+          var fieldBtn = input.fieldRow[input.fieldRow.length - 1];
+          if(fieldBtn instanceof Blockly.FieldBtn){
+            Blockly.utils.dom.addClass(fieldBtn.getSvgRoot(), 'connected');
+          }
+          // debugger
           Blockly.utils.dom.addClass(
             input.connection.targetBlock().getSvgRoot(),
             'external-input-group'

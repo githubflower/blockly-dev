@@ -1498,6 +1498,11 @@ Blockly.Block.prototype.jsonInit = function(json) {
       Blockly.Extensions.apply(extensionName, this, false);
     }
   }
+  if(json['status'] === 'expand'){
+    this.setStatus('expand');
+  }else if(json['status'] === 'collapse'){
+    this.setStatus('collapse');
+  }
 };
 
 /**
