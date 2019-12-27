@@ -421,10 +421,14 @@ Blockly.Blocks['procedures_defreturn'] = {
     this.appendDummyInput()
         .appendField(Blockly.Msg['PROCEDURES_DEFRETURN_TITLE'])
         .appendField(nameField, 'NAME')
-        .appendField('', 'PARAMS');
+        .appendField('', 'PARAMS')
+        .appendField(new Blockly.FieldSvg('path', {}, '', null, false));
     this.appendValueInput('RETURN')
         .setAlign(Blockly.ALIGN_RIGHT)
-        .appendField(Blockly.Msg['PROCEDURES_DEFRETURN_RETURN']);
+        .appendField(Blockly.Msg['PROCEDURES_DEFRETURN_RETURN'])
+        .appendField(new Blockly.FieldBtn('', null, {
+          class: 'signal'
+        }));
     this.setMutator(new Blockly.Mutator(['procedures_mutatorarg']));
     if ((this.workspace.options.comments ||
          (this.workspace.options.parentWorkspace &&
@@ -439,6 +443,7 @@ Blockly.Blocks['procedures_defreturn'] = {
     this.argumentVarModels_ = [];
     this.setStatements_(true);
     this.statementConnection_ = null;
+    this.setStatus('expand');
   },
   setStatements_: Blockly.Blocks['procedures_defnoreturn'].setStatements_,
   updateParams_: Blockly.Blocks['procedures_defnoreturn'].updateParams_,

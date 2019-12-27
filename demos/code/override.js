@@ -706,7 +706,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       var input = row.getLastInput(),connX;
       if (input.connection) {
         //1227
-        if((this.block_.type === 'lists_create_with' || this.block_.type === 'variables_set')
+        if((this.block_.type === 'lists_create_with' || this.block_.type === 'variables_set' || this.block_.type === 'procedures_defreturn' )
          && row.hasExternalInput){
           debugger;
           connX = this.block_.fixPositionX ;
@@ -871,6 +871,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
         break;
       case 'lists_create_with':
       case 'variables_set':
+      case 'procedures_defreturn':
         this.positionFieldsOfListsCreateWith(fieldInfo, row);
         break;
       default:
@@ -1662,7 +1663,11 @@ Object.assign(Blockly.blockRendering.RenderInfo.prototype, {
 
       if(input.connection){
         if(!input.connection.targetBlock()){
-          allValueInputConnected = false;
+print(this.block_.type, '-------', input);
+          debugger;
+          if(input.fieldRow.length){
+            allValueInputConnected = false;
+          }
           var fieldBtn = input.fieldRow[input.fieldRow.length - 1];
           if(fieldBtn instanceof Blockly.FieldBtn){
             Blockly.utils.dom.removeClass(fieldBtn.getSvgRoot(), 'connected');
