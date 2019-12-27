@@ -815,10 +815,14 @@ Blockly.Blocks['procedures_callnoreturn'] = {
         field = new Blockly.FieldLabel(this.arguments_[i] + ' :');
         var input = this.appendValueInput('ARG' + i)
             .setAlign(Blockly.ALIGN_RIGHT)
-            .appendField(field, 'ARGNAME' + i);
+            .appendField(field, 'ARGNAME' + i)
+            .appendField(new Blockly.FieldBtn('', null, {
+              class: 'signal'
+            }));
         input.init();
       }
     }
+
     // Remove deleted inputs.
     while (this.getInput('ARG' + i)) {
       this.removeInput('ARG' + i);
@@ -827,12 +831,17 @@ Blockly.Blocks['procedures_callnoreturn'] = {
     // Add 'with:' if there are parameters, remove otherwise.
     var topRow = this.getInput('TOPROW');
     if (topRow) {
+      if(!topRow.fieldSvg){
+        topRow.fieldSvg = new Blockly.FieldSvg();
+      }
       if (this.arguments_.length) {
+        topRow.appendField(topRow.fieldSvg);
         if (!this.getField('WITH')) {
-          topRow.appendField(Blockly.Msg['PROCEDURES_CALL_BEFORE_PARAMS'], 'WITH');
+          // topRow.appendField(Blockly.Msg['PROCEDURES_CALL_BEFORE_PARAMS'], 'WITH');
           topRow.init();
         }
       } else {
+        topRow.removeField(topRow.fieldSvg);
         if (this.getField('WITH')) {
           topRow.removeField('WITH');
         }
