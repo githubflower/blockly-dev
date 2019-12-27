@@ -654,7 +654,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     if(childBlocks && childBlocks.length){
       curBlock = childBlocks[0];
       while(curBlock){
-        maxOffsetX = Math.max(maxOffsetX, curBlock.previousConnection.offsetInBlock_.x);
+        maxOffsetX = Math.max(maxOffsetX, curBlock.previousConnection && curBlock.previousConnection.offsetInBlock_.x);
         if(curBlock.nextConnection){
           curBlock = curBlock.nextConnection.targetBlock()
         }else{
@@ -779,10 +779,11 @@ Object.assign(Blockly.geras.Drawer.prototype, {
 
       //zjie 当有外部输入的时候，是否画右边的凹槽
       if (window.CUSTOM_CFG_OUTLINE && !CUSTOM_CFG_OUTLINE.leftRoundedCorner) {
-        this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
+        this.outlinePath_ += 
           (window.CUSTOM_CFG_OUTLINE.rightNotch ? pathDown : '') +  //zjie
           Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
       } else {
+
         this.outlinePath_ += Blockly.utils.svgPaths.lineOnAxis('H', input.xPos + input.width) +
           pathDown +
           Blockly.utils.svgPaths.lineOnAxis('v', row.height - input.connectionHeight);
