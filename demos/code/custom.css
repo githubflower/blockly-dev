@@ -44,12 +44,15 @@
 	stroke: #f2631f;
 	/*stroke: #d1f30d;*/
 }
+.blocklySelected > .blocklyPath{
+	stroke-width: 2px;
+}
 .blocklyPath:hover{
 	stroke-dasharray: 5 0 !important;
-	stroke-width: 3px !important;
+	stroke-width: 2px !important;
 	stroke-dashoffset: 5 !important;
 	stroke: #06D6A0 !important;
-	transform: translate(1px, 1px);
+	/*transform: translate(1px, 1px);*/
 }
 .blocklyNonEditableText>rect, .blocklyEditableText>rect{
 	stroke: #222222;
@@ -203,6 +206,9 @@ ul,li{
 	cursor: pointer;
 }
 .all-inputs-connected > .detail-icon-wrap > .detail-icon{
+	stroke: #00e676;
+}
+.detail-icon-wrap.connected > .detail-icon{
 	stroke: #00e676;
 }
 

@@ -51,9 +51,10 @@ Blockly.FieldSvg = function(svgTag, attrs, opt_alt, opt_onClick, opt_flipRtl, op
   // Return early.
   var a = 4, b = 6;
   var collapsePath = `M 0 0 h 16 v 16 h -16 z M 6 2 l -${a} ${b}  l ${a} ${b} M 12 2 l -${a} ${b} m 0 0 l ${a} ${b} z`;
+  var expandPath = `M 0 0 h 16 v 16 h -16 z M 2 2 l ${a} ${b}  l -${a} ${b} M 8 2 l ${a} ${b} m 0 0 l -${a} ${b} z`;
   var defaultAttrs = {
     class: 'detail-icon',
-    d: collapsePath,
+    d: (opt_config && opt_config.icon === 'expand') ? expandPath : collapsePath,
     'stroke-width': 2,
     fill: 'transparent'
   };
@@ -74,14 +75,13 @@ Blockly.FieldSvg = function(svgTag, attrs, opt_alt, opt_onClick, opt_flipRtl, op
    * @type {string}
    * @private
    */
-  this.altText_ = '';
+  this.altText_ = opt_alt || '';
 
   opt_config = Object.assign({
     class: 'detail-icon-wrap'
   }, opt_config || {});
-
   Blockly.FieldSvg.superClass_.constructor.call(
-      this, svgTag || '', null, opt_config);
+      this, svgTag || '', this.attrs, /*this.altText_, opt_onClick, this.flipRtl_,*/ opt_config);
 
   if (!opt_config) {  // If the config wasn't passed, do old configuration.
     this.flipRtl_ = !!opt_flipRtl;
@@ -136,7 +136,7 @@ Blockly.utils.object.inherits(Blockly.FieldSvg, Blockly.Field);
 Blockly.FieldSvg.fromJson = function(options) {
   return new Blockly.FieldSvg(
       options['svgTag'], options['attrs'],
-      undefined, undefined, undefined, options);
+      undefined, options.opt_onClick, undefined, options);
 };
 
 /**
@@ -248,6 +248,19 @@ Blockly.FieldSvg.prototype.setOnClickHandler = function(func) {
 Blockly.FieldSvg.prototype.getText_ = function() {
   return this.altText_;
 };
+
+Blockly.FieldSvg.prototype.toggle = function(){
+  if(this._status === 'expand'){
+    this.setIcon('collapse');
+  }else{
+    this.setIcon('expand');
+  }
+}
+
+//当前是否是展开图标  返回   是：返回true    
+Blockly.FieldSvg.prototype.isExpandIcon = function(){
+  return this._status === 'expand';
+}
 
 //获取fieldSvg的状态  返回 'expand' or  'collapse'
 Blockly.FieldSvg.prototype.getIcon = function(){

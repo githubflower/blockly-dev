@@ -66,13 +66,29 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for if/elseif/else condition.
   {
     "type": "controls_if",
-    "message0": "%{BKY_CONTROLS_IF_MSG_IF} %1%2",
+    "message0": "%{BKY_CONTROLS_IF_MSG_IF} %1%2%3",
     "args0": [
       {
+        "type": "field_svg",
+        "opt_onClick": function(field){
+          var input = field.getParentInput();
+          if(input){
+            if(input.connection && input.connection.targetBlock()){
+              var targetBlock = input.connection.targetBlock();
+              var isVisible = targetBlock.isVisible();
+              targetBlock.setVisible(!isVisible);
+
+              field.toggle();
+            }
+          }
+        },
+        "name": "expandBtn",
+        "icon": "collapse"/* @\core\field_svg.js Line:53*/
+      },
+      {
         "type": "field_btn",
-        "eventType": "toggleIF",
-        "name": "IF0",
-        "text": "IF"
+        "text": "",
+        "class": "signal"
         // "text": Blockly.Msg['CONTROLS_IF_MSG_IF']
       },
       {
@@ -81,7 +97,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
         "check": "Boolean"
       }
     ],
-    "message1": "%{BKY_CONTROLS_IF_MSG_THEN} %1",
+    // "message1": "%{BKY_CONTROLS_IF_MSG_THEN} %1",
+    "message1": "%1",
     "args1": [
       {
         "type": "input_statement",
@@ -481,17 +498,33 @@ Blockly.Constants.Logic.CONTROLS_IF_MUTATOR_MIXIN = {
     for (i = 1; i <= this.elseifCount_; i++) {
       this.appendValueInput('IF' + i)
           .setCheck('Boolean')
-          .appendField(new Blockly.FieldBtn("IF", null, {
+          .appendField(Blockly.Msg['CONTROLS_IF_MSG_ELSEIF'])
+          .appendField(new Blockly.FieldSvg('path', {}, '', function(field){
+            var input = field.getParentInput();
+            if(input){
+              if(input.connection && input.connection.targetBlock()){
+                var targetBlock = input.connection.targetBlock();
+                var isVisible = targetBlock.isVisible();
+                targetBlock.setVisible(!isVisible);
+                field.toggle();
+              }
+            }
+          }, false, {
+            "icon": "collapse"/* @\core\field_svg.js Line:53*/
+          }),'expandBtn')
+          .appendField(new Blockly.FieldBtn('', null, {
+            class: 'signal'
+          }));
+          /*.appendField(new Blockly.FieldBtn("IF", null, {
             type: 'field_btn',
             eventType: 'toggleIF'
-          }), 'IF' + i)
-          .appendField(Blockly.Msg['CONTROLS_IF_MSG_ELSEIF']);
+          }), 'IF' + i)*/
       this.appendStatementInput('DO' + i)
-          .appendField(Blockly.Msg['CONTROLS_IF_MSG_THEN']);
+          // .appendField(Blockly.Msg['CONTROLS_IF_MSG_THEN']);
     }
     if (this.elseCount_) {
       this.appendStatementInput('ELSE')
-          .appendField(Blockly.Msg['CONTROLS_IF_MSG_ELSE']);
+          // .appendField(Blockly.Msg['CONTROLS_IF_MSG_ELSE']);
     }
   },
   /**

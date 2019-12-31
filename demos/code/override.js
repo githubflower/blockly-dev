@@ -706,9 +706,8 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       var input = row.getLastInput(),connX;
       if (input.connection) {
         //1227
-        if((this.block_.type === 'lists_create_with' || this.block_.type === 'variables_set' || this.block_.type === 'procedures_defreturn' )
+        if((this.block_.type === 'lists_create_with' || this.block_.type === 'variables_set' || this.block_.type === 'procedures_defreturn'|| this.block_.type === 'procedures_defnoreturn' )
          && row.hasExternalInput){
-          debugger;
           connX = this.block_.fixPositionX ;
         }else{
           connX = row.xPos + row.width;
@@ -819,7 +818,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     }
     var xPos = getAllWidthLeft(index, doElseBranchInfo.branchs) + doElseBranchInfo.branchs[index].width_left;
     var yPos = this.constants_.DIAMOND_SHORT / 2;
-    this.outlinePath_ += (` M ${xPos} ${yPos} v 35 z`);
+    // this.outlinePath_ += (` M ${xPos} ${yPos} v 35 z`);  //1231
   
     /*var lineColor = jQuery('.blocklyMainBackground').css('fill');
     var defaultAttrs = {
@@ -1005,7 +1004,6 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       }else{
         xPos = this.block_.fixPositionX;
       }
-      debugger;
       this.positionExternalValueConnection_(row);
     }
     var scale = '';
@@ -1078,7 +1076,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     var yPos = fieldInfo.centerline - fieldInfo.height / 2;
     var xPos = fieldInfo.xPos;
     var scale = '';
-
+print('xPos: ', xPos); //1231
     if (Blockly.blockRendering.Types.isField(fieldInfo)) {
       svgGroup = fieldInfo.field.getSvgRoot();
     } else if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
@@ -1092,8 +1090,8 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       }
     }
     if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
-      xPos += doElseBranchInfo.branchs[0].width_left - this.constants_.DIAMOND_LONG + 7;
-      yPos = this.constants_.DIAMOND_SHORT - fieldInfo.height / 2;
+      xPos = this.constants_.DIAMOND_LONG - fieldInfo.width / 2 + doElseBranchInfo.branchs[0].width_left - this.constants_.DIAMOND_LONG;
+      yPos = 10;
       svgGroup.setAttribute('display', 'block');
       svgGroup.setAttribute('transform', 'translate(' + xPos + ',' + yPos + ')');
       fieldInfo.icon.computeIconLocation();
@@ -1105,21 +1103,8 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       type = type && type.toLowerCase();
       switch (type) {
         case 'if':
-          if (index > 0) {
-            if (fieldInfo.field.type === 'field_btn') {
-              xPos = this.getAllWidthLeft(index, doElseBranchInfo.branchs) + doElseBranchInfo.branchs[index].width_left - 50;
-              yPos = this.constants_.DIAMOND_SHORT - fieldInfo.height / 2;
-            } else {
-              xPos = this.getAllWidthLeft(index, doElseBranchInfo.branchs) - fieldInfo.width /*+ doElseBranchInfo.branchs[index].width_left - 50*/ ;
-              yPos = this.constants_.DIAMOND_SHORT - fieldInfo.height - 10;
-            }
-          } else {
-            xPos = doElseBranchInfo.branchs[0].width_left - fieldInfo.width - 5;
-            yPos = this.constants_.DIAMOND_SHORT - fieldInfo.height / 2;
-            if(fieldInfo.field.value_ === 'if'){
-              fieldInfo.field.fieldGroup_.setAttribute('display', 'none')
-            }
-          }
+          yPos = this.constants_.DIAMOND_SHORT - fieldInfo.height / 2;
+          xPos += this.getAllWidthLeft(index, doElseBranchInfo.branchs) + doElseBranchInfo.branchs[index].width_left - this.constants_.DIAMOND_LONG;
           break;
         case 'do':
           xPos = this.getAllWidthLeft(index, doElseBranchInfo.branchs) + doElseBranchInfo.branchs[index].width_left;
@@ -1127,7 +1112,6 @@ Object.assign(Blockly.geras.Drawer.prototype, {
           break;
         case 'else':
           xPos = this.getAllWidthLeft(doElseBranchInfo.branchs.length - 1, doElseBranchInfo.branchs) - 35;
-          yPos += 8;
           break;
         default:
           if (fieldInfo.parentInput.name === '_TEMP_COLLAPSED_INPUT') {
@@ -1619,7 +1603,7 @@ Object.assign(Blockly.Block.prototype, {
     if(status === 'expand'){
       Blockly.utils.dom.removeClass(this.svgGroup_, 'collapse');
       Blockly.utils.dom.addClass(this.svgGroup_, 'expand');
-    }else{
+    }else if(status === 'collapse'){
       Blockly.utils.dom.removeClass(this.svgGroup_, 'expand');
       Blockly.utils.dom.addClass(this.svgGroup_, 'collapse');
     }
@@ -1662,22 +1646,34 @@ Object.assign(Blockly.blockRendering.RenderInfo.prototype, {
       print(Blockly.blockRendering.Types.isExternalInput(input), input.connection);
 
       if(input.connection){
+        var fieldBtn = input.fieldRow.find(item => {
+          return item instanceof Blockly.FieldBtn;
+        });
+
+        var expandBtn = input.fieldRow.find(item => {
+          return item.name === 'expandBtn';
+        });
+     
+        //valueInput没有连接外部输出块
         if(!input.connection.targetBlock()){
-print(this.block_.type, '-------', input);
-          debugger;
           if(input.fieldRow.length){
             allValueInputConnected = false;
           }
-          var fieldBtn = input.fieldRow[input.fieldRow.length - 1];
-          if(fieldBtn instanceof Blockly.FieldBtn){
+          if(fieldBtn){
             Blockly.utils.dom.removeClass(fieldBtn.getSvgRoot(), 'connected');
           }
+          if(expandBtn){
+            Blockly.utils.dom.removeClass(expandBtn.getSvgRoot(), 'connected');
+          }
         }else{
-          var fieldBtn = input.fieldRow[input.fieldRow.length - 1];
-          if(fieldBtn instanceof Blockly.FieldBtn){
+        //valueInput有连接外部输出块
+          if(fieldBtn){
             Blockly.utils.dom.addClass(fieldBtn.getSvgRoot(), 'connected');
           }
-          // debugger
+          if(expandBtn){
+            Blockly.utils.dom.addClass(expandBtn.getSvgRoot(), 'connected');
+          }
+          
           Blockly.utils.dom.addClass(
             input.connection.targetBlock().getSvgRoot(),
             'external-input-group'
@@ -1717,6 +1713,24 @@ print(this.block_.type, '-------', input);
     this.populateBottomRow_();
     this.rows.push(this.bottomRow);
   },
-
+  recordElemPositions_(
+      row) {
+    var xCursor = row.xPos;
+    for (var j = 0, elem; (elem = row.elements[j]); j++) {
+      // Now that row heights are finalized, make spacers use the row height.
+      if (Blockly.blockRendering.Types.isSpacer(elem)) {
+        elem.height = row.height;
+      }
+      elem.xPos = xCursor;
+      elem.centerline = this.getElemCenterline_(row, elem);
+      //1231
+      if(this.block_.type === 'controls_if'){
+        if(Blockly.blockRendering.Types.isIcon(elem)){
+          continue;
+        }
+      }
+      xCursor += elem.width;
+    }
+  }
 })
 

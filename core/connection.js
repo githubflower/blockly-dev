@@ -272,7 +272,7 @@ Blockly.Connection.prototype.canConnectWithReason_ = function(target) {
   }
 
   // debugger; //1226
-  if(blockA._status === 'collapse'){
+  if(this.type === Blockly.OUTPUT_VALUE && blockA._status === 'collapse'){
     return Blockly.Connection.REASON_PARAM_COLLAPSE;
   }
 

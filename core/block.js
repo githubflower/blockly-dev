@@ -1653,7 +1653,6 @@ Blockly.Block.prototype.interpolate_ = function(message, args, lastDummyAlign) {
               // This should handle all field JSON parsing, including
               // options that can be applied to any field type.
               field = Blockly.fieldRegistry.fromJson(element);
-
               // Unknown field.
               if (!field) {
                 if (element['alt']) {
