@@ -1671,6 +1671,7 @@ Object.assign(Blockly.blockRendering.RenderInfo.prototype, {
             Blockly.utils.dom.addClass(fieldBtn.getSvgRoot(), 'connected');
           }
           if(expandBtn){
+            expandBtn.setIcon('collapse');
             Blockly.utils.dom.addClass(expandBtn.getSvgRoot(), 'connected');
           }
           
@@ -1733,4 +1734,43 @@ Object.assign(Blockly.blockRendering.RenderInfo.prototype, {
     }
   }
 })
+
+/**
+ * [setVisible google在设置input的显示和隐藏时用的是行内样式style="display: none/block" 
+ * 而控制一个block的显示和隐藏时用的是display属性  这里将其统一为display属性，否则当我们想
+ * 单独设置某一input的显示隐藏时就会产生bug，当然产生bug的条件是同时去调用了块的展开和折叠]
+ * @param {[type]} visible [description]
+ */
+Blockly.Input.prototype.setVisible = function(visible) {
+  // Note: Currently there are only unit tests for block.setCollapsed()
+  // because this function is package. If this function goes back to being a
+  // public API tests (lots of tests) should be added.
+  var renderList = [];
+  if (this.visible_ == visible) {
+    return renderList;
+  }
+  this.visible_ = visible;
+
+  var display = visible ? 'block' : 'none';
+  for (var y = 0, field; field = this.fieldRow[y]; y++) {
+    field.setVisible(visible);
+  }
+  if (this.connection) {
+    // Has a connection.
+    if (visible) {
+      renderList = this.connection.unhideAll();
+    } else {
+      this.connection.hideAll();
+    }
+    var child = this.connection.targetBlock();
+    if (child) {
+      // child.getSvgRoot().style.display = display;
+      child.getSvgRoot().setAttribute('display', display);
+      if (!visible) {
+        child.rendered = false;
+      }
+    }
+  }
+  return renderList;
+}
 
