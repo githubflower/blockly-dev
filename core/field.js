@@ -262,16 +262,7 @@ Blockly.Field.prototype.init = function() {
     // Field has already been initialized once.
     return;
   }
-  if(this._opt_config && this._opt_config.addWrap ||/* this.sourceBlock_.type ==='controls_for'*/
-      (this._opt_config && this._opt_config.type === 'field_number') ||
-      (this.getParentInput && this.getParentInput() && (['FROM', 'TO', 'BY'].indexOf(this.getParentInput().name) !== -1) && (this._opt_config ? this._opt_config.type !== 'field_btn' : true))
-    ){
-    if(!this.sourceBlock_.wrapGroup || !Blockly.utils.dom.containsNode(this.sourceBlock_.getSvgRoot(), this.sourceBlock_.wrapGroup)){
-      this.sourceBlock_.wrapGroup = Blockly.utils.dom.createSvgElement('g', {
-        class: 'loop'
-      }, this.sourceBlock_.getSvgRoot());
-    }
-  }
+
   //this._opt_config
   this.fieldGroup_ = Blockly.utils.dom.createSvgElement('g', {
     class: this._opt_config && this._opt_config.class
@@ -279,12 +270,9 @@ Blockly.Field.prototype.init = function() {
   if (!this.isVisible()) {
     this.fieldGroup_.style.display = 'none';
   }
-  var wrapGroup = this.sourceBlock_.wrapGroup;
-  if(wrapGroup || (this._opt_config && this._opt_config.type === 'field_number')/*this.sourceBlock_.type ==='controls_for'*/){
-    wrapGroup.appendChild(this.fieldGroup_);
-  }else{
-    this.sourceBlock_.getSvgRoot().appendChild(this.fieldGroup_);
-  }
+ 
+  this.sourceBlock_.getSvgRoot().appendChild(this.fieldGroup_);
+  
   this.initView();
   this.updateEditable();
   this.setTooltip(this.tooltip_);

@@ -62,7 +62,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
         "check": "Number"
       }
     ],
-    "message1": "%{BKY_CONTROLS_REPEAT_INPUT_DO} %1",
+    "message1": "%1",
     "args1": [{
       "type": "input_statement",
       "name": "DO"
@@ -99,7 +99,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for 'do while/until' loop.
   {
     "type": "controls_whileUntil",
-    "message0": "%1 %2",
+    "message0": "%1 %2%3%4",
     "args0": [
       {
         "type": "field_dropdown",
@@ -109,13 +109,39 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
           ["%{BKY_CONTROLS_WHILEUNTIL_OPERATOR_UNTIL}", "UNTIL"]
         ]
       },
+     
+      {
+        "type": "field_svg",
+        "opt_onClick": function (field) {
+           var input = field.getParentInput();
+          if (input) {
+            if (input.connection && input.connection.targetBlock()) {
+              var targetBlock = input.connection.targetBlock();
+              var isVisible = targetBlock.isVisible();
+              targetBlock.setVisible(!isVisible);
+
+              field.toggle();
+            }
+          } 
+        },
+        "name": "expandBtn",
+        "icon": "collapse"/* @\core\field_svg.js Line:53*/
+      },
+      {
+        "type": "field_btn",
+        "text": "",
+        "name": "condition_input_flag",
+        "class": "signal"
+        // "text": Blockly.Msg['CONTROLS_IF_MSG_IF']
+      },
       {
         "type": "input_value",
         "name": "BOOL",
         "check": "Boolean"
-      }
+      }, 
     ],
-    "message1": "%{BKY_CONTROLS_REPEAT_INPUT_DO} %1",
+    // "message1": "%{BKY_CONTROLS_REPEAT_INPUT_DO} %1",
+    "message1": "%1",
     "args1": [{
       "type": "input_statement",
       "name": "DO"
@@ -129,44 +155,67 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for 'for' loop.
   {
     "type": "controls_for",
-    "message0": "%5%{BKY_CONTROLS_FOR_TITLE}",
+    "message0": "%5 %6 %{BKY_CONTROLS_FOR_TITLE}",
+    // "message0": "%1 %2 count with %3 from %4 to %5 by %6",
     "args0": [
-     
       {
         "type": "field_variable",
         "name": "VAR",
         "variable": null,
-        "addWrap": "loop"
+        "class": "condition-group"
       },
       {
         "type": "input_value",
         "name": "FROM",
         "check": "Number",
         "align": "RIGHT",
-        "addWrap": "loop"
+        "class": "condition-group"
       },
       {
         "type": "input_value",
         "name": "TO",
         "check": "Number",
         "align": "RIGHT",
-        "addWrap": "loop"
+        "class": "condition-group"
       },
       {
         "type": "input_value",
         "name": "BY",
         "check": "Number",
         "align": "RIGHT",
-        "addWrap": "loop"
       },
       {
+        "type": "field_svg",
+        "opt_onClick": function (field) {
+          field.sourceBlock_.inputList.forEach(input => {
+            // 'FROM'  'TO'  'BY'   'DO'
+            const hiddenAry = ['FROM', 'TO', 'BY'];
+            if(hiddenAry.indexOf(input.name) > -1){ 
+              let isVisible = input.isVisible();
+              input.setVisible(!isVisible);
+              // var i = 0;
+              // while(i < input.fieldRow.length){
+              //   input.fieldRow[i++].fieldGroup_.style.display = (isVisible ? 'none': 'block');
+              // }
+            }
+          })
+          field.toggle();
+        },
+        "name": "expandBtn",
+        "icon": "collapse"/* @\core\field_svg.js Line:53*/
+      },
+    /*  {
         "type": "field_btn",
-        "eventType": "toggleInput",
-        "name": "toggleInput",
-        "text": "条件"
+        "text": "",
+        "name": "condition_input_flag",
+        "class": "signal"
+        // "text": Blockly.Msg['CONTROLS_IF_MSG_IF']
+      },*/
+      {
+        "type": "input_dummy",  //@ block.js Line:1644
       }
     ],
-    "message1": "%{BKY_CONTROLS_REPEAT_INPUT_DO} %1",
+    "message1": "%1",
     "args1": [{
       "type": "input_statement",
       "name": "DO"
@@ -184,7 +233,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   // Block for 'for each' loop.
   {
     "type": "controls_forEach",
-    "message0": "%3%{BKY_CONTROLS_FOREACH_TITLE}",
+    "message0": "%4 %5 %{BKY_CONTROLS_FOREACH_TITLE} %3",
     "args0": [
       {
         "type": "field_variable",
@@ -192,18 +241,39 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
         "variable": null
       },
       {
+        "type": "field_btn",
+        "text": "",
+        "name": "condition_input_flag",
+        "class": "signal"
+      },
+      {
         "type": "input_value",
         "name": "LIST",
         "check": "Array"
       },
       {
-        "type": "field_btn",
-        "eventType": "toggleInput",
-        "name": "toggleInput",
-        "text": "条件"
+        "type": "field_svg",
+        "opt_onClick": function (field) {
+          field.sourceBlock_.inputList.forEach(input => {
+            const hiddenAry = ['LIST'];
+            if(hiddenAry.indexOf(input.name) > -1){ 
+              let isVisible = input.isVisible();
+              input.setVisible(!isVisible);
+             
+            }
+          })
+          field.toggle();
+        },
+        "name": "expandBtn",
+        "icon": "collapse"/* @\core\field_svg.js Line:53*/
+      },
+  
+      {
+        "type": "input_dummy",  //@ block.js Line:1644
+        "inline": true
       }
     ],
-    "message1": "%{BKY_CONTROLS_REPEAT_INPUT_DO} %1",
+    "message1": " %1",
     "args1": [{
       "type": "input_statement",
       "name": "DO"
@@ -212,6 +282,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
     "nextStatement": null,
     "style": "loop_blocks",
     "helpUrl": "%{BKY_CONTROLS_FOREACH_HELPURL}",
+    "inputsInline": true,
     "extensions": [
       "contextMenu_newGetVariableBlock",
       "controls_forEach_tooltip"

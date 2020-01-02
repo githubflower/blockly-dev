@@ -19,7 +19,7 @@ function drawArrow(arrow){
 Object.assign(Blockly.blockRendering.Drawer.prototype, {
   drawSomeRect(){
     switch(this.block_.type){
-      case 'controls_for':
+    /*  case 'controls_for':
       case 'controls_forEach':
         this.drawConditionLayerRect({
           x: this.info_.getLoopInfo().width_left || 0,
@@ -30,7 +30,7 @@ Object.assign(Blockly.blockRendering.Drawer.prototype, {
           fill: '#01579b',
           // fill: '#ff4b2c',
         }, this.block_, true);
-        break;
+        break;*/
       case 'line':
         if(!this.block_.transparentRect){
           this.block_.transparentRect = Blockly.utils.dom.createSvgElement('rect', {
@@ -743,15 +743,26 @@ Object.assign(Blockly.geras.Drawer.prototype, {
   },
 
   positionExternalValueConnection_controls_whileUntil(row){
+    //设置while/until循环的的条件连接位置为信号输入按钮的位置
+    var inputFlagElement = row.elements.find(item => {
+      if(Blockly.blockRendering.Types.isField(item)){
+        return item.field.name === 'condition_input_flag';
+      }
+    });
+    // var inputFlagField = inputFlagElement.field;
+
     var input = row.getLastInput(),
     loopInfo = this.info_.getLoopInfo(),
     connX;
     if (input.connection) {
       connX = row.xPos + row.width;
+      if(inputFlagElement){
+        connX = inputFlagElement.xPos;
+      }
       if (this.info_.RTL) {
         connX *= -1;
       }
-      input.connection.setOffsetInBlock(loopInfo.width_left, this.constants_.DIAMOND_SHORT - row.height / 2);
+      input.connection.setOffsetInBlock(connX, this.constants_.DIAMOND_SHORT - row.height / 2);
     }
   },
 
@@ -878,41 +889,6 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     }
   },
 
-  /**
-   * [getLayoutFieldInfo description]
-   * @param  {[type]} fieldInfo [description]
-   * @param  {[Object]} params    [xPos, yPos, scale]
-   * @return {[Object]}           [description]
-   */
-  getLayoutFieldInfo(fieldInfo, params) {
-    var loopInfo = this.info_.getLoopInfo();
-    // params.xPos = params.xPos + this.constants_.LOOP_FIELD_OFFSET_X;
-   
-    params.yPos += this.constants_.LOOP_FIELD_OFFSET_Y;
-    switch(this.block_.type){
-      case 'controls_repeat_ext':
-        params.xPos = loopInfo.width_left + 10;
-        // params.yPos += 5;//this.constants_.LOOP_FIELD_OFFSET_Y;
-        break;
-      case 'controls_whileUntil':
-        params.xPos = loopInfo.width_left - fieldInfo.width;
-        params.yPos += 5;
-        break;
-      case 'controls_for':
-      case 'controls_forEach':
-      //todo
-        // params.xPos += loopInfo.width_left - fieldInfo.width;
-        params.xPos += loopInfo.width_left - 50;
-        // params.yPos += 5;
-        break;
-    }
-    return {
-      xPos: params.xPos,
-      yPos: params.yPos,
-      scale: params.scale
-    }
-  },
-
   positionInlineInputConnection_(input) {
     var yPos = input.centerline - input.height / 2;
     // Move the connection.
@@ -929,9 +905,6 @@ Object.assign(Blockly.geras.Drawer.prototype, {
       }
       if(this.block_.type === 'controls_for' ||
        this.block_.type === 'controls_forEach'){
-        var loopInfo = this.info_.getLoopInfo();
-        // connX += loopInfo.width_left - this.constants_.DIAMOND_LONG + this.constants_.LOOP_FIELD_OFFSET_X;
-        connX += loopInfo.width_left - 50; //整体向左偏移50px   TODO
         yPos += this.constants_.LOOP_FIELD_OFFSET_Y;
       }
       if (this.info_.RTL) {
@@ -952,9 +925,9 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     } else if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
       var svgGroup = fieldInfo.icon.iconGroup_;
     }
-
-    var yPos = fieldInfo.centerline - fieldInfo.height / 2;
+    var yPos = this.constants_.DIAMOND_SHORT - fieldInfo.height / 2;
     var xPos = fieldInfo.xPos;
+print('xPos-----> ',xPos)
     var scale = '';
     if (this.info_.RTL) {
       xPos = -(xPos + fieldInfo.width);
@@ -963,18 +936,13 @@ Object.assign(Blockly.geras.Drawer.prototype, {
         scale = 'scale(-1 1)';
       }
     }
+
     if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
       svgGroup.setAttribute('display', 'block');
       svgGroup.setAttribute('transform', 'translate(' + xPos + ',' + yPos + ')');
       fieldInfo.icon.computeIconLocation();
     } else {
-      var info = this.getLayoutFieldInfo(fieldInfo, {
-        xPos,
-        yPos,
-        scale
-      });
-      svgGroup.setAttribute('transform', 'translate(' + info.xPos + ',' + info.yPos + ')' + info.scale);
-      this.hideDoText(fieldInfo);
+      svgGroup && svgGroup.setAttribute('transform', 'translate(' + xPos + ',' + yPos + ')' + scale);
     }
 
     if (this.info_.isInsertionMarker) {
@@ -1047,6 +1015,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
 
     var yPos = fieldInfo.centerline - fieldInfo.height / 2;
     var xPos = fieldInfo.xPos;
+
     var scale = '';
     if (this.info_.RTL) {
       xPos = -(xPos + fieldInfo.width);
@@ -1055,6 +1024,7 @@ Object.assign(Blockly.geras.Drawer.prototype, {
         scale = 'scale(-1 1)';
       }
     }
+   
     if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
       svgGroup.setAttribute('display', 'block');
       svgGroup.setAttribute('transform', 'translate(' + xPos + ',' + yPos + ')');
@@ -1076,7 +1046,6 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     var yPos = fieldInfo.centerline - fieldInfo.height / 2;
     var xPos = fieldInfo.xPos;
     var scale = '';
-print('xPos: ', xPos); //1231
     if (Blockly.blockRendering.Types.isField(fieldInfo)) {
       svgGroup = fieldInfo.field.getSvgRoot();
     } else if (Blockly.blockRendering.Types.isIcon(fieldInfo)) {
@@ -1639,12 +1608,6 @@ Object.assign(Blockly.blockRendering.RenderInfo.prototype, {
     // that needs to be rendered and breaking the block up into visual rows.
     var allValueInputConnected = true;
     for (var i = 0, input; (input = this.block_.inputList[i]); i++) {
-      if (!input.isVisible()) {
-        continue;
-      }
-      //1227
-      print(Blockly.blockRendering.Types.isExternalInput(input), input.connection);
-
       if(input.connection){
         var fieldBtn = input.fieldRow.find(item => {
           return item instanceof Blockly.FieldBtn;
@@ -1717,6 +1680,17 @@ Object.assign(Blockly.blockRendering.RenderInfo.prototype, {
   recordElemPositions_(
       row) {
     var xCursor = row.xPos;
+    if(this.block_.type === 'controls_whileUntil' || this.block_.type === 'controls_repeat_ext' || this.block_.type === 'controls_for' || this.block_.type === 'controls_forEach'){
+      //0102
+      var offset_x;
+      var firstStatementBlock = this.block_.getFirstStatementConnection().targetBlock();
+      if(firstStatementBlock){
+        offset_x = this.getWidestChildInfo(firstStatementBlock).width_left - this.constants_.DIAMOND_LONG + this.constants_.LOOP_FIELD_OFFSET_X;
+      }else{
+        offset_x = this.constants_.LOOP_FIELD_OFFSET_X;
+      }
+      xCursor += offset_x;
+    }
     for (var j = 0, elem; (elem = row.elements[j]); j++) {
       // Now that row heights are finalized, make spacers use the row height.
       if (Blockly.blockRendering.Types.isSpacer(elem)) {
