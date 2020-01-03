@@ -193,6 +193,9 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
             if(hiddenAry.indexOf(input.name) > -1){ 
               let isVisible = input.isVisible();
               input.setVisible(!isVisible);
+
+              var layerRect = Blockly.utils.dom.find(field.sourceBlock_.svgGroup_, '.conditionLayerRect')
+              layerRect.style.display = (isVisible ? 'none': '');
               // var i = 0;
               // while(i < input.fieldRow.length){
               //   input.fieldRow[i++].fieldGroup_.style.display = (isVisible ? 'none': 'block');
@@ -259,7 +262,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
             if(hiddenAry.indexOf(input.name) > -1){ 
               let isVisible = input.isVisible();
               input.setVisible(!isVisible);
-             
+              var layerRect = Blockly.utils.dom.find(field.sourceBlock_.svgGroup_, '.conditionLayerRect')
+              layerRect.style.display = (isVisible ? 'none': '');
             }
           })
           field.toggle();
@@ -270,7 +274,6 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   
       {
         "type": "input_dummy",  //@ block.js Line:1644
-        "inline": true
       }
     ],
     "message1": " %1",
@@ -371,6 +374,19 @@ Blockly.Constants.Loops.CUSTOM_CONTEXT_MENU_CREATE_VARIABLES_GET_MIXIN = {
       xmlBlock.appendChild(xmlField);
       option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
       options.push(option);
+    }
+
+    /*options.forEach(item => {
+      if( item.text === Blockly.Msg['EXTERNAL_INPUTS'] || item.text === Blockly.Msg['INLINE_INPUTS']){
+        item.enabled = false;
+      }
+    })*/
+    for(var i = 0; i < options.length; i++){
+      var item = options[i];
+      if( item.text === Blockly.Msg['EXTERNAL_INPUTS'] || item.text === Blockly.Msg['INLINE_INPUTS']){
+        options.splice(i, 1);
+        break;
+      }
     }
   }
 };

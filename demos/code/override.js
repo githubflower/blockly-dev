@@ -19,18 +19,24 @@ function drawArrow(arrow){
 Object.assign(Blockly.blockRendering.Drawer.prototype, {
   drawSomeRect(){
     switch(this.block_.type){
-    /*  case 'controls_for':
+      case 'controls_for':
       case 'controls_forEach':
+        var conditionInputRow = this.info_.rows.find(item => {
+          return Blockly.blockRendering.Types.isInputRow(item)
+        })
+        // var h = Math.max(conditionInputRow.height, 27);
+        var h = 27;
+        var x = this.info_.getLoopInfo().width_left - this.constants_.DIAMOND_LONG + this.constants_.LOOP_FIELD_OFFSET_X;
         this.drawConditionLayerRect({
-          x: this.info_.getLoopInfo().width_left || 0,
-          y: 20,
-          width: Math.max(this.info_.width_google - 50, 0), //todo 向左偏移了50
-          height: 30,
+          x: x,
+          y: this.constants_.DIAMOND_SHORT - h / 2 - 1,
+          width: conditionInputRow.width - 10, // this.info_.width_google,
+          height: h + 2,
           class: 'conditionLayerRect',
           fill: '#01579b',
           // fill: '#ff4b2c',
         }, this.block_, true);
-        break;*/
+        break;
       case 'line':
         if(!this.block_.transparentRect){
           this.block_.transparentRect = Blockly.utils.dom.createSvgElement('rect', {
@@ -927,7 +933,6 @@ Object.assign(Blockly.geras.Drawer.prototype, {
     }
     var yPos = this.constants_.DIAMOND_SHORT - fieldInfo.height / 2;
     var xPos = fieldInfo.xPos;
-print('xPos-----> ',xPos)
     var scale = '';
     if (this.info_.RTL) {
       xPos = -(xPos + fieldInfo.width);
@@ -1685,9 +1690,12 @@ Object.assign(Blockly.blockRendering.RenderInfo.prototype, {
       var offset_x;
       var firstStatementBlock = this.block_.getFirstStatementConnection().targetBlock();
       if(firstStatementBlock){
-        offset_x = this.getWidestChildInfo(firstStatementBlock).width_left - this.constants_.DIAMOND_LONG + this.constants_.LOOP_FIELD_OFFSET_X;
+        offset_x = this.getWidestChildInfo(firstStatementBlock).width_left - this.constants_.DIAMOND_LONG + this.constants_.GAP_H + this.constants_.LOOP_FIELD_OFFSET_X;
       }else{
-        offset_x = this.constants_.LOOP_FIELD_OFFSET_X;
+        offset_x = this.constants_.LOOP_FIELD_OFFSET_X + this.constants_.GAP_H;
+      }
+      if(this.block_.type === 'controls_forEach' && Blockly.blockRendering.Types.isInputRow(row) && !row.hasDummyInput){
+        offset_x += 26;
       }
       xCursor += offset_x;
     }
