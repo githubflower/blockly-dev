@@ -82,9 +82,10 @@ Blockly.JavaScript['variables_set_hidden'] = function(block) {
     }
   })
   var varValue = block.getInput('VAR_VALUE').fieldRow[0].getValue()
-  if(varName){
+  if(varName && varValue){
     return `${varName} = ${varValue};\n`;
   }else{
     return '';
   }
 }
+
