@@ -61,6 +61,7 @@ Blockly.inject = function(container, opt_options) {
   var subContainer = document.createElement('div');
   subContainer.className = 'injectionDiv';
   container.appendChild(subContainer);
+  debugger;
   var svg = Blockly.createDom_(subContainer, options);
 
   // Create surfaces for dragging things. These are optimizations

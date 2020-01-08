@@ -86,6 +86,9 @@ Blockly.Themes.Light.defaultBlockStyles = {
     "colourSecondary": "#dbbdd6",
     "colourTertiary": "#84497a"
   },
+  "connect_blocks": {
+    "colourPrimary": "#5D4037",
+  },
 };
 
 Blockly.Themes.Light.categoryStyles = {

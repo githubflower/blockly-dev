@@ -42,6 +42,7 @@
 .conn-up-down > .blocklyPath{
 	/*stroke: #dd2c00;*/
 	stroke: #f2631f;
+	filter: url(#shadowGrey);
 	/*stroke: #d1f30d;*/
 }
 .blocklySelected > .blocklyPath{
@@ -53,6 +54,9 @@
 	stroke-dashoffset: 5 !important;
 	stroke: #06D6A0 !important;
 	/*transform: translate(1px, 1px);*/
+}
+.start > path.blocklyPath{
+	filter: url(#shadowGrey);
 }
 .blocklyNonEditableText>rect, .blocklyEditableText>rect{
 	stroke: #222222;

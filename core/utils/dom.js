@@ -283,14 +283,23 @@ Blockly.utils.dom.find = function(node, selector){
   var selectorType = 'id'; // ['id', 'class', 'tag'] 默认为id选择器   语法同jquery   #id  .class  tag
   if(/^\./.test(selector)){
     selectorType = 'class';
+  }else if(/^#/.test(selector)){
+    selectorType = 'id';
+  }else{
+    selectorType = 'tag';
   }
   if(node.children){
     var ary = Array.prototype.slice.call(node.children)
     tagPath = ary.find(item => {
-      if(selectorType === 'class'){
-        return item.className.baseVal === selector.slice(1);
+      switch(selectorType){
+        case 'class':
+          return item.className.baseVal === selector.slice(1);
+          break;
+        case 'id':
+          break; //TODO
+        case 'tag':
+          debugger;
       }
-      //TODO id, tag 
     })
   }
   return tagPath;

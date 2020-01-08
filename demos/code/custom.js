@@ -44,4 +44,48 @@ jQuery(function(){
 		jQuery('.theme-wrap > ul').toggleClass('active');
 	})
 
+
+	var svg = document.querySelector('svg.blocklySvg');
+	var defs = Blockly.utils.dom.createSvgElement('defs', {}, svg);
+	var shadowGrey = Blockly.utils.dom.createSvgElement('filter', {
+		id: 'shadowGrey',
+		x: "0", 
+		y: "0",
+		width: "200%",
+		height: "200%"
+	}, defs);
+	Blockly.utils.dom.createSvgElement('feOffset', {
+		in: 'SourceGraphic', 
+		result: 'offOut',
+		dx: 5,
+		dy: 5
+	}, shadowGrey);
+	Blockly.utils.dom.createSvgElement('feGaussianBlur', {
+		in: 'offOut', 
+		stdDeviation: 5, 
+		result: 'blurOut',
+	}, shadowGrey);
+	Blockly.utils.dom.createSvgElement('feBlend', {
+		in: 'SourceGraphic', 
+		in2: "blurOut",
+		mode: "normal"
+	}, shadowGrey);
+
 })
+
+//添加滤镜等定义
+/*  var embossFilter = Blockly.utils.dom.createSvgElement('filter',
+      {'id': 'blocklyEmbossFilter' + rnd}, defs);
+  Blockly.utils.dom.createSvgElement('feGaussianBlur',
+      {'in': 'SourceAlpha', 'stdDeviation': 1, 'result': 'blur'}, embossFilter);
+  var feSpecularLighting = Blockly.utils.dom.createSvgElement('feSpecularLighting',
+      {
+        'in': 'blur',
+        'surfaceScale': 1,
+        'specularConstant': 0.5,
+        'specularExponent': 10,
+        'lighting-color': 'white',
+        'result': 'specOut'
+      },
+      embossFilter);*/
+

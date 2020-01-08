@@ -69,6 +69,6 @@ blockly主题有4个  core/theme/*
 blockly对主题的设计是通过js将主题配置注入到行内属性；这种做法有1个大的缺陷就是不方便主题热替换，替换完必须刷新页面才有效果，如果设计成类名+css控制会更灵活；
 
 
-
+ps:  http://big.xiazaicc.com/bigfile/200/pscs664wei_downcc.com.zip
 
 
